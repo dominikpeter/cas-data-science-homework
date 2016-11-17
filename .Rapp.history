@@ -1,0 +1,36 @@
+rm(list=ls()) #bereinige Workspace
+if (!require("data.table")) install.packages("data.table")
+if (!require("MASS")) install.packages("MASS")
+df <- data.table(Painter = rownames(painters), painters)
+head(df, 5)
+N <- table(df$Composition)
+cbind(N)
+count.school <- df[, .N, by=School]
+count.school <- df[, .N, by=School]
+count.school[N == max(N)]
+RH <- prop.table(table(df$Composition))
+cbind(RH)
+tbl <- table(df$Composition)
+colors <- c("#6E9BD5", "#F04903", "#ECE653", "#3E4651",
+"#00B5B5", "#92F22A", "#D8335B", "#59A9C2",
+"#E6567A", "#27AE60", "#BBA900", "#81E2E6",
+"#FF4C43", "#FFDE49", "#22202B", "#39B4FF",
+"#B6FF75", "#B6FF75")
+barplot(tbl, col = colors, main = "Häufigkeitsverteilung der Variablen Composition")
+tbl <- table(df$Composition)#
+colors <- c("#6E9BD5", "#F04903", "#ECE653", "#3E4651",#
+            "#00B5B5", "#92F22A", "#D8335B", "#59A9C2",#
+            "#E6567A", "#27AE60", "#BBA900", "#81E2E6",#
+            "#FF4C43", "#FFDE49", "#22202B", "#39B4FF",#
+            "#B6FF75", "#B6FF75")#
+#
+pie(tbl, col = colors, radius = 1, main = "Häufigkeitsverteilung der Variablen Composition")
+df[Composition == max(Composition), .(School, Composition)]
+check <- df[, ColorCheck := Colour >= 14]
+head(check, 5)
+sum.ColorCheck <- sum(check$ColorCheck)
+sum.ColorCheck
+mean.ColorCheck <- mean(check$ColorCheck)
+mean.ColorCheck
+paste0("Anzahl Maler >= 14: ", sum.ColorCheck)
+paste0("Relative Anzahl Maler >= 14: ", round(mean.ColorCheck * 100, 2), "%")
