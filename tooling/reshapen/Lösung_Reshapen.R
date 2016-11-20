@@ -44,8 +44,6 @@ head(tidy.df, 6)
 
 library(ggplot2)
 
-breaks <- pretty(tidy.df, nclass.FD())
-
 tidy.df[, cuts := cut(alter,breaks = pretty(alter, nclass.Sturges(alter)))] %>%
   .[alter > quantile(alter, 0.05) & alter < quantile(alter, 0.95)] %>%
   na.omit() %>%
