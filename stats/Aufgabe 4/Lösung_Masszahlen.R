@@ -38,10 +38,11 @@ quantile(df$waiting, c(0.17, 0.43, 0.67, 0.85))
 # ==================================================
 # Problem: Bestimmen Sie die Spannweite der Wartezeiten aus faithful.
 
-range <- range(df$waiting)
-diff(range)
 
 # max(df$waiting) - min(df$waiting)
+
+diff(range(df$waiting))
+
 
   
 # ==================================================
@@ -56,11 +57,8 @@ IQR(df$waiting)
 # ==================================================
 # Problem: Bestimmen Sie den Boxplot der Wartezeiten aus faithful.
 
-boxplot(df$waiting)
-mean <- mean(df$waiting)
-
-boxplot(df$waiting, col = "#ecf0f1")
-
+boxplot(df$waiting, col = "#ecf0f1", notch = TRUE, main = "Boxplot der Wartezeiten")
+grid(nx=NA, ny=NULL)
 
 # ==================================================
 # Aufgabe: Varianz
@@ -73,13 +71,13 @@ var2 <- function(x, sample = TRUE){
   
   var(x)*(length(x)-1)/length(x)
 }
+  
 
 # Stichprobenvarianz
-var2(df$waiting, sample = TRUE)
+round(var2(df$waiting, sample = TRUE), 3)
 
 # Populationsvarianz
-var2(df$waiting, sample = FALSE)
-
+round(var2(df$waiting, sample = FALSE), 3)
 
 # ==================================================
 # Aufgabe: Standardabweichung
@@ -94,10 +92,10 @@ sd2 <- function(x, sample = TRUE){
 }
 
 # Stichprobenstandardabweichung
-sd2(df$waiting, sample = TRUE)
+round(sd2(df$waiting, sample = TRUE), 3)
 
 # Populationsstandardabweichung
-sd2(df$waiting, sample = FALSE)
+round(sd2(df$waiting, sample = FALSE), 3)
 
 
 # ==================================================
@@ -111,12 +109,9 @@ ch <- swiss
 # ?swiss
 
 # [,1]	Fertility	Ig, ‘common standardized fertility measure’
-# [,2]	Agriculture	% of males involved in agriculture as occupation
-# [,3]	Examination	% draftees receiving highest mark on army examination
 # [,4]	Education	% education beyond primary school for draftees.
-# [,5]	Catholic	% ‘catholic’ (as opposed to ‘protestant’).
-# [,6]	Infant.Mortality	live births who live less than 1 year.
 
-cor(ch$Fertility, ch$Education)
+round(cor(ch$Fertility, ch$Education), 3)
 
+# Es herrscht ein starker negativer Zusammenhang zwischen den Variablen (Faustregel)
 
