@@ -6,7 +6,8 @@ library(magrittr)
 library(data.table)
 library(stringr)
 
-
+# Load Excels
+# ------------------------------------------------------------------------------------------------
 bev <- "~/Google/datenanalyse/homework/tooling/datenimport/bevoelkerung.xls" %>%
   read_excel(sheet = "2014", skip = 6) %>%
   as.data.table %>%
@@ -23,9 +24,14 @@ wald <- "~/Google/datenanalyse/homework/tooling/Datenimport/waldflaeche.xls" %>%
 
 names(wald) <- c("Kanton", "Waldfläche")
 
+# Clean Kanton string
+# ------------------------------------------------------------------------------------------------
 wald[, Kanton := str_trim(Kanton, side = "both")]
 bev[, Kanton := str_trim(Kanton, side = "both")]
 
+
+# Merge and Calculate
+# ------------------------------------------------------------------------------------------------
 merged <- merge(bev, wald, by = "Kanton")
 
 merged[, AnzahlBäume := Waldfläche * 400] %>% 
@@ -35,6 +41,8 @@ merged[, AnzahlBäume := Waldfläche * 400] %>%
 rank <- merged[order(-BaumProPers)]
 head(rank)
 
+# Write to CSV
+# ------------------------------------------------------------------------------------------------
 rank %>% 
   write.table("~/Google/datenanalyse/homework/tooling/datenimport/rank.csv",
               row.names = FALSE, sep = ";")
