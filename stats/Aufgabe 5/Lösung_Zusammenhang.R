@@ -47,7 +47,7 @@ round(cramersV(m), 3)
 # 1.0         = vollständiger
 # --------------------------------
 
-# nach der Faustregel von Cramer's V herrscht mit einem Wert von **0.354**
+# Nach der Faustregel von Cramer's V herrscht mit einem Wert von **0.354**
 # eine **mittlerer** Zusammenhang zwischen den Variablen
 
 
@@ -99,7 +99,8 @@ whiskey
 round(cor(whiskey[1,], whiskey[2,], method = "spearman"), 3)
 
 # Spearmanscher Korrelationskoeffizient kann wie der Korrelatoionskoffizient nach Pearson
-# intepretiert werden. Mit einem Korrelationskoeffizient von **0.371** herrscht eine **mittlerer**
+# intepretiert werden.
+# Mit einem Korrelationskoeffizient von **0.371** herrscht eine **mittlerer**
 # Zusammenhang zwischen den Variablen
 
 

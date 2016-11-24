@@ -53,4 +53,43 @@ tidy.df[, cuts := cut(alter,breaks = pretty(alter, nclass.Sturges(alter)))] %>%
   xlab("\nAlterskategorie")
 
 
+# Musterlösung
+library(dplyr)
+library(tidyr)
+library(reshape2)
+#Das sind Alters und Zufriedenheitsdaten (Generelle Lebenszufriedenheit) von
+#SHP Teilnehmern, die von 2000 bis 2014 im Panel waren
+
+#Man muss die Daten ins sehr lange Längsformat überführen
+#damit man auf die Jahresinformation (in den Variablennamen enthalten)
+#zugreifen kannID=c("idpers"),
+data<-melt(data,
+           id.vars = "idpers",
+           variable.name = "variable",
+           value.name = "wert",
+           measure.vars = names(data)[names(data)!="idpers"])
+
+
+#Alternativ:
+
+# data<-gather(data,
+#              key= variable,
+#              value= wert,
+#              p00c44:age14)
+
+#Aus den Variablennamen die Jahresinformation hinausziehen und 
+#eine Jahresvariable, sowie eine "Variablenvariable" (Welche Art
+#von Information?) bilden
+data<-data%>%
+  mutate(jahr=ifelse(grepl("c44",variable),
+                     2000+as.numeric(substr(variable,2,3)),
+                     2000+as.numeric(substr(variable,4,5))),
+         variable=ifelse(grepl("c44",variable),"zufriedenheit",
+                         "alter"))
+
+#Aus der "Variablenvariable" jeweils ein Beobachtung pro Personenjahr und Dimension
+#erstellen
+data<-dcast(data, idpers+jahr~variable,value.var="wert")
+
+data
 

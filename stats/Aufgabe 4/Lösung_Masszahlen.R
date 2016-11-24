@@ -25,7 +25,7 @@ median(df$waiting, na.rm = TRUE)
 # Problem: Bestimmen Sie die Quartile der Wartezeiten aus faithful
 quantile(df$waiting)
 
-# ==================================================
+  # ==================================================
 # Aufgabe: Quartile
 # ==================================================
 # Problem: Bestimmen Sie das 0.17-Quantil, das 43%-Quantil,
