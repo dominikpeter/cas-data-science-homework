@@ -28,15 +28,15 @@ bev[, Kanton := str_trim(Kanton, side = "both")]
 
 merged <- merge(bev, wald, by = "Kanton")
 
-merged[, `:=` (AnzahlBäume = Waldfläche * 400,
-               BaumProPers = AnzahlEinwohner / AnzahlBäume)]
+merged[, AnzahlBäume := Waldfläche * 400] %>% 
+  .[, BaumProPers := AnzahlEinwohner / AnzahlBäume]
 
-head(merged)
 
 rank <- merged[order(-BaumProPers)]
 head(rank)
 
-
-write.table(rank, "~/Google/datenanalyse/homework/tooling/Datenimport/rank.csv", row.names = FALSE, sep = ";")
+rank %>% 
+  write.table("~/Google/datenanalyse/homework/tooling/datenimport/rank.csv",
+              row.names = FALSE, sep = ";")
 
 
