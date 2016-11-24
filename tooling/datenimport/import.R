@@ -56,7 +56,7 @@ rank
 # ------------------------------------------------------------------------------------------------
 rank %>% 
   write.table("~/Google/datenanalyse/homework/tooling/datenimport/rank.csv",
-              row.names = FALSE, sep = ";")
+              row.names = FALSE, sep = ",")
 
 
 
