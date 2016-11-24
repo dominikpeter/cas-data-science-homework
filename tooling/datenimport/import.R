@@ -41,12 +41,17 @@ bev %>% setkey(Kanton)
 merged <- merge(bev, wald, all.x = TRUE)
 
 merged[, AnzahlBäume := Waldfläche * 400] %>% 
-  .[, BaumProPers := AnzahlEinwohner / AnzahlBäume]
+  .[, BaumProPers := AnzahlBäume / AnzahlEinwohner]
 
 
+rank <- merged[ , `:=` (RangBaumProPers = rank(-BaumProPers),
+                       RangEinwohner = rank(-AnzahlEinwohner),
+                       RangWaldfläche = rank(-Waldfläche))] %>%
+  .[order(RangWaldfläche)] %>% 
+  .[, KumWaldfläche := cumsum(Waldfläche)] %>% 
+  .[, RelKumWaldFläche := KumWaldfläche / sum(Waldfläche)]
+  
 
-rank <- merged[, Rang := rank(-BaumProPers)] %>%
-  .[order(Rang)]
 
 rank
 
