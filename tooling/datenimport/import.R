@@ -26,8 +26,9 @@ names(wald) <- c("Kanton", "Waldfläche")
 
 # Clean Kanton string
 # ------------------------------------------------------------------------------------------------
-wald[, Kanton := str_trim(Kanton, side = "both")]
-wald[, Kanton := str_replace(Kanton, "\\. ", "\\.")] #St.Gallen und Appenzell machen Probleme
+wald[, Kanton := str_trim(Kanton, side = "both")] %>% 
+  .[, Kanton := str_replace(Kanton, "\\. ", "\\.")] #St.Gallen und Appenzell machen Probleme
+
 bev[, Kanton := str_trim(Kanton, side = "both")]
 
 
@@ -44,8 +45,9 @@ merged[, AnzahlBäume := Waldfläche * 400] %>%
 
 
 
-rank <- merged[, Rang := rank(-BaumProPers)] %>% 
+rank <- merged[, Rang := rank(-BaumProPers)] %>%
   .[order(Rang)]
+
 rank
 
 
