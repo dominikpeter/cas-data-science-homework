@@ -1,8 +1,0 @@
----
-title: "Homework"
-output: github_document
----
-
-## Homework 
-
-# Homework Scripts
