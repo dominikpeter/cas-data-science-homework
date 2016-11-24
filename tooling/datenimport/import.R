@@ -27,24 +27,35 @@ names(wald) <- c("Kanton", "Waldfläche")
 # Clean Kanton string
 # ------------------------------------------------------------------------------------------------
 wald[, Kanton := str_trim(Kanton, side = "both")]
+wald[, Kanton := str_replace(Kanton, "\\. ", "\\.")] #St.Gallen und Appenzell machen Probleme
 bev[, Kanton := str_trim(Kanton, side = "both")]
+
 
 
 # Merge and Calculate
 # ------------------------------------------------------------------------------------------------
-merged <- merge(bev, wald, by = "Kanton")
+wald %>% setkey(Kanton)
+bev %>% setkey(Kanton)
+
+merged <- merge(bev, wald, all.x = TRUE)
 
 merged[, AnzahlBäume := Waldfläche * 400] %>% 
   .[, BaumProPers := AnzahlEinwohner / AnzahlBäume]
 
 
-rank <- merged[order(-BaumProPers)]
-head(rank)
+
+rank <- merged[, Rang := rank(-BaumProPers)] %>% 
+  .[order(Rang)]
+rank
+
+
 
 # Write to CSV
 # ------------------------------------------------------------------------------------------------
 rank %>% 
   write.table("~/Google/datenanalyse/homework/tooling/datenimport/rank.csv",
               row.names = FALSE, sep = ";")
+
+
 
 
