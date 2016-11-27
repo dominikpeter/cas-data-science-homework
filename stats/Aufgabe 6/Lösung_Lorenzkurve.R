@@ -21,14 +21,15 @@ Lcx <- Lc(markt.daten)
 # Zeichnen Sie die Lorenzkurve
 # --------------------------------------------------------------------------------------------------
 
-plot(Lcx, main = "Lorenzkurve",
+plot(Lcx,
+     main = "Lorenzkurve",
      col = "red",
      lty = 5,
      lwd = 1,
-     xlab=expression(u[i]),
+     xlab = expression(u[i]),
      ylab = expression(v[i]),
-     xaxt="n",
-     yaxt="n")
+     xaxt = "n",
+     yaxt = "n")
 
 seq <- seq(0,1, by = 0.2)
 labels <- paste0(seq * 100, "%")
