@@ -10,13 +10,13 @@ if(!require("ineq")) install.packages("ineq")
 # Problem: In der folgenden Tabelle sind die Marktanteile der 5 marktstärksten
 # TV-Sender des deutschen Fernsehmarktes aus dem Jahr 2007 in Prozent angegeben.
 
-markt.daten <- c("ARD-Dritte" = 13.5,
+marktdaten <- c("ARD-Dritte" = 13.5,
                  "ARD" = 13.4,
                  "ZDF" = 12.9,
                  "RTL" = 12.4,
                  "Sat.1" = 9.6)
 
-Lcx <- Lc(markt.daten)
+Lcx <- Lc(marktdaten)
 
 # Zeichnen Sie die Lorenzkurve
 # --------------------------------------------------------------------------------------------------
@@ -43,13 +43,13 @@ grid()
 # Berechnen Sie den normalen Ginikoeffizienten
 # --------------------------------------------------------------------------------------------------
 
-round(Gini(markt.daten), 3)
+round(Gini(marktdaten), 3)
 
 
 # Berechnen Sie den normierten 
 # --------------------------------------------------------------------------------------------------
 
-round(Gini(markt.daten, corr = TRUE), 3)
+round(Gini(marktdaten, corr = TRUE), 3)
 
 
 
