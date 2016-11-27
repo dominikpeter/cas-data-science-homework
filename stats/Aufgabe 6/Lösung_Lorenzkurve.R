@@ -29,14 +29,13 @@ plot(Lcx, main = "Lorenzkurve",
 # Berechnen Sie den normalen Ginikoeffizienten
 # --------------------------------------------------------------------------------------------------
 
-gini <- round(Gini(markt.daten), 3)
-gini
+round(Gini(markt.daten), 3)
+
 
 # Berechnen Sie den normierten 
 # --------------------------------------------------------------------------------------------------
 
-gini.normiert <- round(Gini(markt.daten, corr = TRUE), 3)
-gini.normiert
+round(Gini(markt.daten, corr = TRUE), 3)
 
 
 
