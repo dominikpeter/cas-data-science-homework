@@ -29,8 +29,8 @@ new_df <- df %>%
   .[, makellos := factor(rating > 0.98, levels = c(TRUE, FALSE), labels = c("Ja", "Nein"))] %>%
   .[, cat := str_trim(str_replace(subcat, "\\ \\(\\d+\\)", ""))] %>% # clean categorie name
   .[, sold := factor(sold, levels = c(1, 0), labels = c("Ja", "Nein"))] %>%
-  .[sepos > 11]  # eigentlich sollten ja nur die verkauften analyisiert betrachtet werden . sold = "Ja"
-
+  .[sepos > 11] %>%   # eigentlich sollten ja nur die verkauften analyisiert betrachtet werden . sold = "Ja"
+  .[, !"subcat", with = FALSE]
 
 rbindlist(list(head(new_df), tail(new_df)))
 
@@ -39,20 +39,22 @@ rbindlist(list(head(new_df), tail(new_df)))
 
 mn <- mean(new_df$price, na.rm = TRUE)
 
-# es gibt preise mit NA, daher funktioniert der reorder nicht ohne anonyme funktion mit na.rm = TRUE
+# es gibt preise mit NA (nicht verkauft), daher funktioniert der reorder nicht ohne anonyme funktion mit na.rm = TRUE
 # -1 als hack zum reversen
 new_df %>%
   ggplot(aes(x=reorder(factor(cat), price, function(x) mean(x, na.rm = TRUE)*-1), y = price)) +
   geom_hline(yintercept = mn, color = "white", size = 2) +
-  geom_boxplot(aes(fill = makellos), notch = TRUE, alpha = .75) +
+  geom_boxplot(aes(fill = makellos), notch = TRUE, alpha = .65, position=position_dodge(.85)) +
   scale_fill_manual(values = c("#66CC99", "#FC575E"), name = "Makellos") +
-  # theme(axis.text.x = element_text(angle = 45, hjust = 1)) +
   xlab("\nKategorie") +
-  ylab("Preis")
+  ylab("Preis") +
+  ggtitle("Ebay Verkäufe nach Kategorie")
+
+# es besteht eine signifikanter Preisunterschied zwischen den Kategorien, jedoch nicht zwischen den
+# makellos und nicht Makellosen Ratings
 
 
-
-# Plotting
+# Regression
 # ------------------------------------------------------------------------------------------------
 
 
