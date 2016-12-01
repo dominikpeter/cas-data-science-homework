@@ -25,11 +25,11 @@ df <- read.dta("http://www.farys.org/daten/ebay.dta") %>% as.data.table
 
 # data wrangling
 new_df <- df %>% 
+  .[sepos > 11] %>% 
   .[, rating := sepos/rowSums(.SD), .SDcols = c("sepos", "seneg")] %>% 
   .[, makellos := factor(rating > 0.98, levels = c(TRUE, FALSE), labels = c("Ja", "Nein"))] %>%
   .[, cat := str_trim(str_replace(subcat, "\\ \\(\\d+\\)", ""))] %>% # clean categorie name
   .[, sold := factor(sold, levels = c(1, 0), labels = c("Ja", "Nein"))] %>%
-  .[sepos > 11] %>%   # eigentlich sollten ja nur die verkauften analyisiert betrachtet werden . sold = "Ja"
   .[, !"subcat", with = FALSE]
 
 rbindlist(list(head(new_df), tail(new_df)))
