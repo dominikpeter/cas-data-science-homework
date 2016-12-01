@@ -1,4 +1,11 @@
 rm(list=ls())
+
+
+# ------------------------------------------------------------------------------------------------
+# Analyieren von Ebay Daten
+# ------------------------------------------------------------------------------------------------
+
+
 library(ggplot2)
 library(magrittr)
 library(foreign)
@@ -24,16 +31,36 @@ new_df <- df %>%
   .[, sold := factor(sold, levels = c(1, 0), labels = c("Ja", "Nein"))] %>%
   .[sepos > 11]  # eigentlich sollten ja nur die verkauften analyisiert betrachtet werden . sold = "Ja"
 
+
 rbindlist(list(head(new_df), tail(new_df)))
+
+# Plotting
+# ------------------------------------------------------------------------------------------------
+
+mn <- mean(new_df$price, na.rm = TRUE)
 
 # es gibt preise mit NA, daher funktioniert der reorder nicht ohne anonyme funktion mit na.rm = TRUE
 # -1 als hack zum reversen
-new_df[sold == "Ja"] %>%
-  ggplot(aes(x=reorder(factor(cat), price, function(x) mean(x, na.rm = TRUE)*-1), y = price)) + 
-  geom_boxplot(aes(fill = makellos), notch = TRUE, alpha = .8) +
+new_df %>%
+  ggplot(aes(x=reorder(factor(cat), price, function(x) mean(x, na.rm = TRUE)*-1), y = price)) +
+  geom_hline(yintercept = mn, color = "white", size = 2) +
+  geom_boxplot(aes(fill = makellos), notch = TRUE, alpha = .75) +
   scale_fill_manual(values = c("#66CC99", "#FC575E"), name = "Makellos") +
+  # theme(axis.text.x = element_text(angle = 45, hjust = 1)) +
   xlab("\nKategorie") +
   ylab("Preis")
 
-  
+
+
+# Plotting
+# ------------------------------------------------------------------------------------------------
+
+
+
+
+
+
+
+
+
 
