@@ -1,11 +1,11 @@
-rm(list=ls())
 
 # --------------------------------------------------------------------------------------------------
 # Aufgabe: Lorenzkurve und Ginikoeffizient
 # --------------------------------------------------------------------------------------------------
 
-if(!require("ineq")) install.packages("ineq")
+rm(list=ls())
 
+if(!require("ineq")) install.packages("ineq")
 
 # Problem:
 # In der folgenden Tabelle sind die Marktanteile der 5 marktstärksten
@@ -51,9 +51,8 @@ round(Gini(marktdaten), 3)
 # Berechnen Sie den normierten  Ginikoeffizienten
 # --------------------------------------------------------------------------------------------------
 
-# Achtung: Erst ab Version 0.2-11
+# Achtung: Erst ab Version 0.2-11 verfügbar
 round(Gini(marktdaten, corr = TRUE), 3)
-
 
 
 
