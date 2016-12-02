@@ -30,12 +30,14 @@ new_df <- df %>%
   .[, makellos := factor(rating > 0.98, levels = c(TRUE, FALSE), labels = c("Ja", "Nein"))] %>%
   .[, cat := str_trim(str_replace(subcat, "\\ \\(\\d+\\)", ""))] %>% # clean categorie name
   .[, sold := factor(sold, levels = c(1, 0), labels = c("Ja", "Nein"))] %>%
+  .[, sprice1 := factor(sprice == 1.0, levels = c(T, F), labels = c("Ja", "Nein"))] %>% 
   .[, !"subcat", with = FALSE]
 
 rbindlist(list(head(new_df), tail(new_df)))
 
 # Plotting
 # ------------------------------------------------------------------------------------------------
+
 
 mn <- mean(new_df$price, na.rm = TRUE)
 
@@ -52,13 +54,28 @@ new_df %>%
 
 # es besteht eine signifikanter Preisunterschied zwischen den Kategorien, jedoch nicht zwischen den
 # makellos und nicht Makellosen Ratings
+new_df %>%
+  ggplot(aes(x=sold, y = rating)) +
+  geom_boxplot() + scale_y
+  scale_fill_manual(values = c("#66CC99", "#FC575E"), name = "Makellos") +
+  xlab("\nKategorie") +
+  ylab("Preis") +
+  ggtitle("Ebay Verkäufe nach Kategorie")
 
 
 # Regression
 # ------------------------------------------------------------------------------------------------
 
 
-
+new_df[sold == "Ja"] %>%
+  ggplot(aes(x=cat, y=price)) +
+  geom_boxplot(aes(fill = sprice1), notch = TRUE)
+  
+  
+scale_fill_manual(values = c("#66CC99", "#FC575E"), name = "Makellos") +
+  xlab("\nKategorie") +
+  ylab("Preis") +
+  ggtitle("Ebay Verkäufe nach Kategorie")
 
 
 
