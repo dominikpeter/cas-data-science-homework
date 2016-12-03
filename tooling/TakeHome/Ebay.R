@@ -1,10 +1,8 @@
 rm(list=ls())
 
-
 # ------------------------------------------------------------------------------------------------
 # Analyieren von Ebay Daten
 # ------------------------------------------------------------------------------------------------
-
 
 library(ggplot2)
 library(magrittr)
@@ -28,7 +26,7 @@ new_df <- df %>%
   .[sepos > 11] %>% 
   .[, rating := sepos/rowSums(.SD), .SDcols = c("sepos", "seneg")] %>% 
   .[, makellos := factor(rating > 0.98, levels = c(TRUE, FALSE), labels = c("Ja", "Nein"))] %>%
-  .[, cat := str_trim(str_replace(subcat, "\\ \\(\\d+\\)", ""))] %>% # clean categorie name
+  .[, cat := str_replace(subcat, "\\ \\(\\d+\\)", "")] %>% # clean categorie name
   .[, sold := factor(sold, levels = c(1, 0), labels = c("Ja", "Nein"))] %>%
   .[, sprice1 := factor(sprice == 1.0, levels = c(T, F), labels = c("Ja", "Nein"))] %>% 
   .[, !"subcat", with = FALSE]
@@ -38,47 +36,39 @@ rbindlist(list(head(new_df), tail(new_df)))
 # Plotting
 # ------------------------------------------------------------------------------------------------
 
-
-mn <- mean(new_df$price, na.rm = TRUE)
-
 # es gibt preise mit NA (nicht verkauft), daher funktioniert der reorder nicht ohne anonyme funktion mit na.rm = TRUE
-# -1 als hack zum reversen
+# Absteigende Anordung mit -1
 new_df %>%
   ggplot(aes(x=reorder(factor(cat), price, function(x) mean(x, na.rm = TRUE)*-1), y = price)) +
-  geom_hline(yintercept = mn, color = "white", size = 2) +
-  geom_boxplot(aes(fill = makellos), notch = TRUE, alpha = .65, position=position_dodge(.85)) +
+  geom_boxplot(aes(fill = makellos), notch = TRUE, position=position_dodge(.85)) +
   scale_fill_manual(values = c("#66CC99", "#FC575E"), name = "Makellos") +
   xlab("\nKategorie") +
   ylab("Preis") +
-  ggtitle("Ebay Verkäufe nach Kategorie")
+  ggtitle("Ebay Verkäufe nach Kategorie") +
+  theme(panel.background = element_rect(fill = "#F0F1F5"),
+        panel.grid.major = element_line(color = "white", size = 1.1),
+        panel.grid.minor = element_blank())
 
 # es besteht eine signifikanter Preisunterschied zwischen den Kategorien, jedoch nicht zwischen den
 # makellos und nicht Makellosen Ratings
-new_df %>%
-  ggplot(aes(x=sold, y = rating)) +
-  geom_boxplot() + scale_y
-  scale_fill_manual(values = c("#66CC99", "#FC575E"), name = "Makellos") +
-  xlab("\nKategorie") +
-  ylab("Preis") +
-  ggtitle("Ebay Verkäufe nach Kategorie")
 
 
 # Regression
 # ------------------------------------------------------------------------------------------------
 
+# Rechnen Sie zwei kleine Regressionsmodelle für den Preis von verkauften Geräten.
+# Modell 1 soll als Prädiktoren den Modelltyp und das Rating beinhalten.
+# Modell 2 soll zusätzlich die Variable listpic beinhalten.
+# Haben das Rating und die Thumbnails einen Einfluss auf den Verkaufspreis?
+# Exportieren Sie eine Regressionstabelle, die beide Modelle beinhaltet.
 
-new_df[sold == "Ja"] %>%
-  ggplot(aes(x=cat, y=price)) +
-  geom_boxplot(aes(fill = sprice1), notch = TRUE)
-  
-  
-scale_fill_manual(values = c("#66CC99", "#FC575E"), name = "Makellos") +
-  xlab("\nKategorie") +
-  ylab("Preis") +
-  ggtitle("Ebay Verkäufe nach Kategorie")
+new_df %>% ggplot(aes(rating, price)) + geom_point() + geom_smooth(method = "lm") + facet_grid(. ~ cat) +
 
 
+model_1 <- new_df %>% 
+  lm(price ~ cat + rating, data = .)
 
+summary(model_1)
 
 
 
