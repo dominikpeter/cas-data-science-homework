@@ -1,18 +1,28 @@
-rm(list=ls())
+---
+title: "takehome webscraping"
+author: "Dominik Peter"
+date: "4 12 2016"
+output: html_document
+---
 
-# ------------------------------------------------------------------------------------------------
-# Webscraping and Tidying
-# ------------------------------------------------------------------------------------------------
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
 
+## Webscraping
+
+
+```{r loading}
 library(ggplot2)
 library(magrittr)
 library(stringr)
 library(data.table)
 library(rvest)
+```
 
-# get table from wikipedia
-# ------------------------------------------------------------------------------------------------
+## Get Table from Wikipedia
 
+```{r rvest}
 url <- "https://de.wikipedia.org/wiki/Bern#Klima"
 xpath <- '//*[@id="mw-content-text"]/table[4]'
 
@@ -21,13 +31,12 @@ html_table <- url %>%
   html_node(xpath=xpath) %>%
   html_table(fill = TRUE, header = FALSE) %>% 
   as.data.table()
-#sloppy xpath, is there a better one?
+```
 
-# clean table
-# ------------------------------------------------------------------------------------------------
 
-# some indexing to get relevant data (with false because of data.table formating)
+## Clean Table
 
+```{r clean}
 n <- length(month.name)
 
 df <- html_table %>% 
@@ -49,11 +58,12 @@ months <- colnames(df)[-1]
 df[, months] <- lapply(df[, months, with = FALSE], to_numeric)
 # remove NA's
 df <- df %>% na.omit()
+df
+```
 
+## Tidy data.frame
 
-# tidy df
-# ------------------------------------------------------------------------------------------------
-
+```{r tidying}
 tidy_df <- df[1:2] %>%
   melt(id.vars = "typ", variable.name = "Monat") %>% 
   dcast(Monat ~ typ)
@@ -62,22 +72,19 @@ col_names <- colnames(tidy_df)
 setnames(tidy_df, col_names, c(col_names[1], c("Max", "Min")))
 
 tidy_df
+```
 
-# plot (just for fun)
-# ------------------------------------------------------------------------------------------------
+## Plotting
 
-tidy_df[, Mittelwert := rowMeans(.SD), .SDcols = c("Max", "Min")] 
-
-tidy_df %>% 
+```{r plotting}
+tidy_df[, Mittelwert := rowMeans(.SD), .SDcols = c("Max", "Min")]  %>% 
   ggplot(aes(x=Monat, y=Mittelwert)) +
   geom_point(size = 2, color = "#444B54") +
-  geom_errorbar(aes(ymin = Min, ymax = Max), width = .5, color = "#444B54") +
+  geom_errorbar(aes(ymin = Min, ymax = Max), width = .5, color = "#444B54", size = .8) +
   ylab("\nTemperatur (°C)") +
   xlab("\nMonat") +
   ggtitle("Monatliche Durchschnittstemperaturen\nfür Bern 1981 – 2010") +
   theme(panel.background = element_rect(fill = "#F0F1F5"),
         panel.grid.major = element_line(color = "white", size = .8),
         panel.grid.minor = element_blank())
-
-
-
+```
