@@ -66,9 +66,7 @@ tidy_df
 # plot (just for fun)
 # ------------------------------------------------------------------------------------------------
 
-tidy_df[, Mittelwert := rowMeans(.SD), .SDcols = c("Max", "Min")] 
-
-tidy_df %>% 
+tidy_df[, Mittelwert := rowMeans(.SD), .SDcols = c("Max", "Min")]  %>% 
   ggplot(aes(x = Monat, y = Mittelwert)) +
   geom_point(size = 2, color = "#444B54") +
   geom_errorbar(aes(ymin = Min, ymax = Max), width = .5, color = "#444B54") +
