@@ -9,8 +9,7 @@ output: html_document
 knitr::opts_chunk$set(echo = TRUE)
 ```
 
-## Webscraping
-
+## Loading 
 
 ```{r loading}
 library(ggplot2)
