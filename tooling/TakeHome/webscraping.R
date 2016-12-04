@@ -6,29 +6,29 @@
 
 rm(list=ls())
 
-library(ggplot2)
+library(data.table)
 library(magrittr)
 library(stringr)
-library(data.table)
+library(ggplot2)
 library(rvest)
 
 # get table from wikipedia
 # ------------------------------------------------------------------------------------------------
 
 url <- "https://de.wikipedia.org/wiki/Bern#Klima"
-xpath <- '//*[@id="mw-content-text"]/table[4]'
+xpath <- '//*[@id="mw-content-text"]/table[4]' #sloppy xpath, is there a better one?
 
 html_table <- url %>%
   read_html() %>%
   html_node(xpath = xpath) %>%
   html_table(fill = TRUE, header = FALSE) %>% 
   as.data.table()
-#sloppy xpath, is there a better one?
+
 
 # clean table
 # ------------------------------------------------------------------------------------------------
 
-# some indexing to get relevant data (with false because of data.table formating)
+# some indexing to get relevant data (with false because of data.table formatting)
 n <- length(month.name)
 df <- html_table %>% 
   .[(1:n)[-1], 1:(n+1), with = FALSE]
