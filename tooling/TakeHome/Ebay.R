@@ -9,8 +9,9 @@ library(magrittr)
 library(foreign)
 library(stringr)
 library(data.table)
+library(broom)
 
-df <- read.dta("http://www.farys.org/daten/ebay.dta") %>% as.data.table
+raw_df <- read.dta("http://www.farys.org/daten/ebay.dta") %>% as.data.table
 # sold: Ob das Mobiltelefon verkauft wurde
 # price: Der erzielte Verkauftspreis
 # sprice: Der Startpreis der Auktion
@@ -22,23 +23,20 @@ df <- read.dta("http://www.farys.org/daten/ebay.dta") %>% as.data.table
 # sehasme: Dummy, ob der Verkäufer eine “Me-page” hat oder nicht
 
 # data wrangling
-new_df <- df %>% 
-  .[sepos > 11] %>% 
-  .[, rating := sepos/rowSums(.SD), .SDcols = c("sepos", "seneg")] %>% 
-  .[, makellos := factor(rating > 0.98, levels = c(TRUE, FALSE), labels = c("Ja", "Nein"))] %>%
-  .[, cat := str_replace(subcat, "\\ \\(\\d+\\)", "")] %>% # clean categorie name
-  .[, sold := factor(sold, levels = c(1, 0), labels = c("Ja", "Nein"))] %>%
-  .[, sprice1 := factor(sprice == 1.0, levels = c(T, F), labels = c("Ja", "Nein"))] %>% 
-  .[, !"subcat", with = FALSE]
+df <- raw_df %>% 
+  .[, rating := sepos/rowSums(.SD), .SDcols = c("sepos", "seneg")] %>%
+  .[, `:=` (makellos = factor(rating > .98, levels = c(TRUE, FALSE), labels = c("Ja", "Nein")),
+            cat = str_replace(subcat, "\\ \\(\\d+\\)", ""))] %>% 
+  .[sepos > 11, !"subcat", with = FALSE]
 
-rbindlist(list(head(new_df), tail(new_df)))
+rbindlist(list(head(df), tail(df)))
 
 # Plotting
 # ------------------------------------------------------------------------------------------------
 
 # es gibt preise mit NA (nicht verkauft), daher funktioniert der reorder nicht ohne anonyme funktion mit na.rm = TRUE
 # Absteigende Anordung mit -1
-new_df %>%
+df %>%
   ggplot(aes(x=reorder(factor(cat), price, function(x) mean(x, na.rm = TRUE)*-1), y = price)) +
   geom_boxplot(aes(fill = makellos), notch = TRUE, position=position_dodge(.85)) +
   scale_fill_manual(values = c("#66CC99", "#FC575E"), name = "Makellos") +
@@ -50,7 +48,7 @@ new_df %>%
         panel.grid.minor = element_blank())
 
 # es besteht eine signifikanter Preisunterschied zwischen den Kategorien, jedoch nicht zwischen den
-# makellos und nicht Makellosen Ratings
+# makellos und nicht makellosen Ratings
 
 
 # Regression
@@ -62,13 +60,29 @@ new_df %>%
 # Haben das Rating und die Thumbnails einen Einfluss auf den Verkaufspreis?
 # Exportieren Sie eine Regressionstabelle, die beide Modelle beinhaltet.
 
-new_df %>% ggplot(aes(rating, price)) + geom_point() + geom_smooth(method = "lm") + facet_grid(. ~ cat) +
+new_df[rating > 0.95] %>%
+  ggplot(aes(rating, price)) +
+  geom_point(alpha = 2/4) +
+  geom_smooth(method = "lm") +
+  facet_grid(.~cat)
 
-
-model_1 <- new_df %>% 
-  lm(price ~ cat + rating, data = .)
-
+# Linear Model 1
+model_1 <- lm(price ~ cat + rating, data = df)
 summary(model_1)
+
+# Linear Model 1
+model_2 <- lm(price ~ cat + rating + listpic, data = df)
+summary(model_2)
+
+# compare model
+list(Model1 = round(BIC(model_1),0),
+     Model2 = round(BIC(model_2),0))
+
+tidy(model_2)
+
+# die thumbnails haben mit einem P-Value ~ 7.7e-06 einen signifikanten Einfluss auf den Preis.
+# Mit einem Koeffienten von 6.72 steigt der Preis duchschnittlich um diesen Wert gegeüber dem Factor "none"
+
 
 
 
