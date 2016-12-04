@@ -1,8 +1,10 @@
-rm(list=ls())
+# ------------------------------------------------------------------------------------------------
+# Title:  Webscraping and Tidying
+# Autor:  Dominik Peter
+# Date:   2016-12-04
+# ------------------------------------------------------------------------------------------------
 
-# ------------------------------------------------------------------------------------------------
-# Webscraping and Tidying
-# ------------------------------------------------------------------------------------------------
+rm(list=ls())
 
 library(ggplot2)
 library(magrittr)
@@ -27,9 +29,7 @@ html_table <- url %>%
 # ------------------------------------------------------------------------------------------------
 
 # some indexing to get relevant data (with false because of data.table formating)
-
 n <- length(month.name)
-
 df <- html_table %>% 
   .[(1:n)[-1], 1:(n+1), with = FALSE]
 
@@ -39,13 +39,12 @@ setnames(df, names(df), c("typ", header))
 df <- df[-1, ]
 
 # convert value to numeric and eliminate NA columns
-
 to_numeric <- function(x) {
   x <- str_replace_all(x, ",", "\\.")
   as.numeric(x)
 }
-
 months <- colnames(df)[-1]
+# apply funtion
 df[, months] <- lapply(df[, months, with = FALSE], to_numeric)
 # remove NA's
 df <- df %>% na.omit()
