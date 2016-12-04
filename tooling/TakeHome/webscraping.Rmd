@@ -40,7 +40,7 @@ html_table <- url %>%
 n <- length(month.name)
 
 df <- html_table %>% 
-  .[(1:n)[-1], 1:(n-1), with = FALSE]
+  .[(1:n)[-1], 1:(n+1), with = FALSE]
 
 # make clean header
 header <- df[1, -1, with = FALSE] %>% as.character() 
