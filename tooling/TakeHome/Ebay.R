@@ -1,17 +1,19 @@
+# ------------------------------------------------------------------------------------------------
+# Title:  Webscraping and Tidying
+# Autor:  Dominik Peter
+# Date:   2016-12-04
+# ------------------------------------------------------------------------------------------------
+
 rm(list=ls())
 
-# ------------------------------------------------------------------------------------------------
-# Analyieren von Ebay Daten
-# ------------------------------------------------------------------------------------------------
-
-library(ggplot2)
+library(data.table)
 library(magrittr)
 library(foreign)
+library(ggplot2)
 library(stringr)
-library(data.table)
 library(broom)
 
-raw_df <- read.dta("http://www.farys.org/daten/ebay.dta") %>% as.data.table
+raw_df <- read.dta("http://www.farys.org/daten/ebay.dta") %>% as.data.table()
 # sold: Ob das Mobiltelefon verkauft wurde
 # price: Der erzielte Verkauftspreis
 # sprice: Der Startpreis der Auktion
