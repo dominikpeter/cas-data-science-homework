@@ -70,20 +70,24 @@ df %>%
 
 # Linear Model 1
 model_1 <- lm(price ~ cat + rating, data = df)
-summary(model_1)
+glance(mode_1)
+tidy(model_1)
 
-# Linear Model 1
+
+# Linear Model 2
 model_2 <- lm(price ~ cat + rating + listpic, data = df)
-summary(model_2)
+glance(model_2)
+tidy(model_2)
 
 # compare model
-list(Model1 = round(BIC(model_1),0),
-     Model2 = round(BIC(model_2),0))
-
-tidy(model_2)
+list(Model_1 = c(BIC = round(BIC(model_1),2),
+                AIC = round(AIC(model_1),2)),
+     Model_2 = c(BIC = round(BIC(model_2),2),
+                AIC = round(AIC(model_2),2)))
 
 # die thumbnails haben mit einem P-Value ~ 7.7e-06 einen signifikanten Einfluss auf den Preis.
 # Mit einem Koeffienten von 6.72 steigt der Preis duchschnittlich um diesen Wert gegeüber dem Factor "none"
+# Mit niedrigeren BIC sowie AIC Wereten verbesserte sich zudem das Modell beim hinzufügen des Predictors
 
 
 # analyse listpic
