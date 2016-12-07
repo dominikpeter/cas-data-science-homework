@@ -24,7 +24,7 @@ raw_df <- read.dta("http://www.farys.org/daten/ebay.dta") %>% as.data.table()
 # listbold: Dummy, ob die Auktion fettgedruckt gelistet ist
 # sehasme: Dummy, ob der Verkäufer eine “Me-page” hat oder nicht
 
-# data wrangling
+# Data Wrangling
 raw_df[, rating := sepos/rowSums(.SD), .SDcols = c("sepos", "seneg")]
 raw_df[, `:=` (makellos = factor(rating > .98, levels = c(TRUE, FALSE), labels = c("Ja", "Nein")),
                cat = str_replace(subcat, "\\ \\(\\d+\\)", ""))]
@@ -36,7 +36,7 @@ rbindlist(list(head(df), tail(df)))
 # Plotting
 # ------------------------------------------------------------------------------------------------
 
-# es gibt preise mit NA (nicht verkauft), daher funktioniert der reorder nicht ohne anonyme funktion mit na.rm = TRUE
+# Es gibt Preise mit NA (nicht verkauft), daher funktioniert der Reorder nicht ohne anonyme Funktion mit na.rm = TRUE
 # Absteigende Anordung mit -1
 df %>%
   ggplot(aes(x=reorder(factor(cat), price, function(x) mean(x, na.rm = TRUE)*-1), y = price)) +
@@ -49,8 +49,9 @@ df %>%
         panel.grid.major = element_line(color = "white", size = 1.1),
         panel.grid.minor = element_blank())
 
-# es besteht eine signifikanter Preisunterschied zwischen den Kategorien, jedoch nicht zwischen den
-# makellos und nicht makellosen Ratings
+# Bewertet anhand "Rule of Thumb", dass bei signifikanter Differenz die Notches nicht überlappen sollten.
+# Daher die Feststellung, dass kein signifikanter Unterschied zwischen den makellosen und
+# nicht makellosen besteht
 
 
 # Regression
@@ -85,9 +86,9 @@ list(Model_1 = c(BIC = round(BIC(model_1),2),
      Model_2 = c(BIC = round(BIC(model_2),2),
                 AIC = round(AIC(model_2),2)))
 
-# die thumbnails haben mit einem P-Value ~ 7.7e-06 einen signifikanten Einfluss auf den Preis.
-# Mit einem Koeffienten von 6.72 steigt der Preis duchschnittlich um diesen Wert gegeüber dem Factor "none"
-# Mit niedrigeren BIC sowie AIC Wereten verbesserte sich zudem das Modell beim hinzufügen des Predictors
+# Die Thumbnails haben mit einem P-Value ~ 7.7e-06 einen signifikanten Einfluss auf den Preis.
+# Mit einem Koeffizienten von 6.72 steigt der Preis durchschnittlich um diesen Wert, gegenüber dem Factor "none"
+# Mit niedrigeren BIC sowie AIC Werten verbessert sich zudem das Modell beim Hinzufügen des Predictors "listpic"
 
 
 # analyse listpic
