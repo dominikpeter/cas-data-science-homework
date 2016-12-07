@@ -16,26 +16,27 @@ library(rvest)
 # ------------------------------------------------------------------------------------------------
 
 url <- "https://de.wikipedia.org/wiki/Bern#Klima"
-xpath <- '//*[@id="mw-content-text"]/table[4]' #sloppy xpath, is there a better one?
+xpath <- '//*[@id="mw-content-text"]/table[4]' 
 
 # maybe nicer but the very specifique table selection could cause problem
 # with just little update on the wiki page
 # -----------------------------------------------------------------------
-html_table <- url %>%
-  read_html() %>%
-  html_node(xpath = xpath) %>%
-  html_table(fill = TRUE, header = FALSE) %>%
-  as.data.table()
+# html_table <- url %>%
+#   read_html() %>%
+#   html_node(xpath = xpath) %>%
+#   html_table(fill = TRUE, header = FALSE) %>%
+#   as.data.table()
 # -----------------------------------------------------------------------
 
 # search by table index or string pattern?
 # -----------------------------------------------------------------------
-# html_table <- url %>% read_html() %>%
-#   html_nodes("table") %>%
-#   .[str_detect(., "Monatliche Durchschnittstemperaturen und -niederschläge für Bern")] %>% 
-#   .[[1]] %>% 
-#   html_table(fill = TRUE, header = FALSE) %>% 
-#   as.data.table()
+html_table <- url %>%
+  read_html() %>%
+  html_nodes("table") %>%
+  .[str_detect(., "Monatliche Durchschnittstemperaturen")] %>%
+  .[[1]] %>%
+  html_table(fill = TRUE, header = FALSE) %>%
+  as.data.table()
 
 
 # clean table
@@ -43,11 +44,10 @@ html_table <- url %>%
 
 # some indexing to get relevant data (with false because of data.table formatting)
 n <- length(month.name)
-df <- html_table %>% 
-  .[(1:n)[-1], 1:(n+1), with = FALSE]
+df <- html_table %>% .[(1:n)[-1], 1:(n+1), with = FALSE]
 
 # make clean header
-header <- df[1, -1, with = FALSE] %>% as.character() 
+header <- df[1, -1, with = FALSE] %>% as.character()
 setnames(df, names(df), c("typ", header))
 df <- df[-1, ]
 
@@ -66,19 +66,17 @@ df
 # tidy df
 # ------------------------------------------------------------------------------------------------
 
-tidy_df <- df[1:2] %>%
+tidy_df <- df[1:3] %>%
   melt(id.vars = "typ", variable.name = "Monat") %>% 
   dcast(Monat ~ typ)
 
 col_names <- colnames(tidy_df)
-setnames(tidy_df, col_names, c(col_names[1], c("Max", "Min")))
+setnames(tidy_df, col_names, c(col_names[1], c("Max", "Min", "Mittelwert")))
 
 tidy_df
 
 # plotting 
 # ------------------------------------------------------------------------------------------------
-tidy_df[, Mittelwert := rowMeans(.SD), .SDcols = c("Max", "Min")]
-
 mean_temp <- mean(tidy_df$Mittelwert)
 
 tidy_df  %>% 
