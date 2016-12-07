@@ -18,13 +18,25 @@ library(rvest)
 url <- "https://de.wikipedia.org/wiki/Bern#Klima"
 xpath <- '//*[@id="mw-content-text"]/table[4]' #sloppy xpath, is there a better one?
 
-html_node()
-
+# maybe nicer but the very specifique table selection could cause problem
+# with just little update on the wiki page
+# -----------------------------------------------------------------------
 html_table <- url %>%
   read_html() %>%
   html_node(xpath = xpath) %>%
-  html_table(fill = TRUE, header = FALSE) %>% 
+  html_table(fill = TRUE, header = FALSE) %>%
   as.data.table()
+# -----------------------------------------------------------------------
+
+# search by table index or string pattern?
+# -----------------------------------------------------------------------
+# html_table <- url %>% read_html() %>%
+#   html_nodes("table") %>%
+#   .[str_detect(., "Monatliche Durchschnittstemperaturen und -niederschläge für Bern")] %>% 
+#   .[[1]] %>% 
+#   html_table(fill = TRUE, header = FALSE) %>% 
+#   as.data.table()
+
 
 # clean table
 # ------------------------------------------------------------------------------------------------

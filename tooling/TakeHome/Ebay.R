@@ -25,11 +25,11 @@ raw_df <- read.dta("http://www.farys.org/daten/ebay.dta") %>% as.data.table()
 # sehasme: Dummy, ob der Verkäufer eine “Me-page” hat oder nicht
 
 # data wrangling
-df <- raw_df %>% 
-  .[, rating := sepos/rowSums(.SD), .SDcols = c("sepos", "seneg")] %>%
-  .[, `:=` (makellos = factor(rating > .98, levels = c(TRUE, FALSE), labels = c("Ja", "Nein")),
-            cat = str_replace(subcat, "\\ \\(\\d+\\)", ""))] %>% 
-  .[sepos > 11, !"subcat", with = FALSE]
+raw_df[, rating := sepos/rowSums(.SD), .SDcols = c("sepos", "seneg")]
+raw_df[, `:=` (makellos = factor(rating > .98, levels = c(TRUE, FALSE), labels = c("Ja", "Nein")),
+               cat = str_replace(subcat, "\\ \\(\\d+\\)", ""))]
+
+df <- raw_df[sepos > 11, !"subcat", with = FALSE]
 
 rbindlist(list(head(df), tail(df)))
 
@@ -62,11 +62,11 @@ df %>%
 # Haben das Rating und die Thumbnails einen Einfluss auf den Verkaufspreis?
 # Exportieren Sie eine Regressionstabelle, die beide Modelle beinhaltet.
 
-new_df[rating > 0.95] %>%
-  ggplot(aes(rating, price)) +
-  geom_point(alpha = 2/4) +
-  geom_smooth(method = "lm") +
-  facet_grid(.~cat)
+# df[rating > 0.95] %>%
+#   ggplot(aes(rating, price)) +
+#   geom_point(alpha = 2/4) +
+#   geom_smooth(method = "lm") +
+#   facet_grid(.~cat)
 
 # Linear Model 1
 model_1 <- lm(price ~ cat + rating, data = df)
@@ -85,6 +85,19 @@ tidy(model_2)
 # die thumbnails haben mit einem P-Value ~ 7.7e-06 einen signifikanten Einfluss auf den Preis.
 # Mit einem Koeffienten von 6.72 steigt der Preis duchschnittlich um diesen Wert gegeüber dem Factor "none"
 
+
+# analyse listpic
+
+df %>%
+  ggplot(aes(x=reorder(factor(cat), price, function(x) mean(x, na.rm = TRUE)*-1), y = price)) +
+  geom_boxplot(aes(fill = listpic), position=position_dodge(.85)) +
+  scale_fill_manual(values = c("#e67e22", "#2ecc71", "#2980b9"), name = "Makellos") +
+  xlab("\nKategorie") +
+  ylab("Preis") +
+  ggtitle("Ebay Verkäufe nach Kategorie") +
+  theme(panel.background = element_rect(fill = "#F0F1F5"),
+        panel.grid.major = element_line(color = "white", size = 1.1),
+        panel.grid.minor = element_blank())
 
 
 
