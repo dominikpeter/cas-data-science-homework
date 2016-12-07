@@ -40,7 +40,7 @@ rbindlist(list(head(df), tail(df)))
 # Absteigende Anordung mit -1
 df %>%
   ggplot(aes(x=reorder(factor(cat), price, function(x) mean(x, na.rm = TRUE)*-1), y = price)) +
-  geom_boxplot(aes(fill = makellos), notch = TRUE, position=position_dodge(.85)) +
+  geom_boxplot(aes(fill = makellos), notch = TRUE, position = position_dodge(.85)) +
   scale_fill_manual(values = c("#66CC99", "#FC575E"), name = "Makellos") +
   xlab("\nKategorie") +
   ylab("Preis") +
