@@ -86,6 +86,9 @@ list(Model_1 = c(BIC = round(BIC(model_1),2),
                 AIC = round(AIC(model_1),2)),
      Model_2 = c(BIC = round(BIC(model_2),2),
                 AIC = round(AIC(model_2),2)))
+# https://en.wikipedia.org/wiki/Akaike_information_criterion
+# https://en.wikipedia.org/wiki/Bayesian_information_criterion
+
 
 # Die Thumbnails haben mit einem P-Value ~ 7.7e-06 einen signifikanten Einfluss auf den Preis.
 # Mit einem Koeffizienten von 6.72 steigt der Preis durchschnittlich um diesen Wert, gegenüber dem Factor "none"
