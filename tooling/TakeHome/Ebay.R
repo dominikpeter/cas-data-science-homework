@@ -51,7 +51,8 @@ df %>%
 
 # Bewertet anhand "Rule of Thumb", dass bei signifikanter Differenz die Notches nicht überlappen sollten.
 # Daher die Feststellung, dass kein signifikanter Unterschied zwischen den makellosen und
-# nicht makellosen besteht
+# nicht makellosen Ratings besteht
+# https://en.wikipedia.org/wiki/Box_plot#Variations
 
 
 # Regression
@@ -92,10 +93,9 @@ list(Model_1 = c(BIC = round(BIC(model_1),2),
 
 
 # analyse listpic
-
 df %>%
   ggplot(aes(x=reorder(factor(cat), price, function(x) mean(x, na.rm = TRUE)*-1), y = price)) +
-  geom_boxplot(aes(fill = listpic), position=position_dodge(.85)) +
+  geom_boxplot(aes(fill = listpic),notch = TRUE, position=position_dodge(.85)) +
   scale_fill_manual(values = c("#e67e22", "#2ecc71", "#2980b9"), name = "Makellos") +
   xlab("\nKategorie") +
   ylab("Preis") +
