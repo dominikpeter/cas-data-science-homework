@@ -17,18 +17,12 @@ library(rvest)
 url <- "https://de.wikipedia.org/wiki/Bern#Klima"
 xpath <- '//*[@id="mw-content-text"]/table[4]' 
 
-# html_table <- url %>%
-#   read_html() %>%
-#   html_nodes(xpath = xpath) %>% 
-#   html_table(fill = TRUE, header = FALSE) %>%
-#   as.data.table()
-
 html_table <- url %>%
   read_html() %>%
-  html_table(header = FALSE, fill = TRUE) %>%
-  .[[6]] %>%
+  html_node(xpath = xpath) %>%
+  html_table(fill = TRUE, header = FALSE) %>%
   as.data.table()
-
+  
 
 
 # clean table
@@ -37,7 +31,7 @@ html_table <- url %>%
 # some indexing to get relevant data (with false because of data.table formatting)
 n <- 12
 df <- html_table %>%
-  .[ , 1:(n+1), with = FALSE]
+  .[1:n, 1:(n+1), with = FALSE]
 
 # make clean header
 header <- df[1, -1, with = FALSE] %>% as.character()
