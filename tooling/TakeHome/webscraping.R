@@ -48,6 +48,7 @@ to_numeric <- function(x) {
   x <- str_replace_all(x, ",", "\\.")
   as.numeric(x)
 }
+
 months <- colnames(df)[-1]
 # apply funtion
 df[, months] <- lapply(df[, months, with = FALSE], to_numeric)
