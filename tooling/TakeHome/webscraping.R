@@ -25,9 +25,11 @@ xpath <- '//*[@id="mw-content-text"]/table[4]'
 
 html_table <- url %>%
   read_html() %>%
-  html_table(header = FALSE, fill = TRUE, dec = ".") %>%
+  html_table(header = FALSE, fill = TRUE) %>%
   .[[6]] %>%
   as.data.table()
+
+
 
 # clean table
 # ------------------------------------------------------------------------------------------------
