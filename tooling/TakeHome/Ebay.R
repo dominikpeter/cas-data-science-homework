@@ -72,12 +72,14 @@ df %>%
 
 # Linear Model 1
 model_1 <- lm(price ~ cat + rating, data = df)
+summary(model_1)
 glance(mode_1)
 tidy(model_1)
 
 
 # Linear Model 2
 model_2 <- lm(price ~ cat + rating + listpic, data = df)
+summary(model_2)
 glance(model_2)
 tidy(model_2)
 
