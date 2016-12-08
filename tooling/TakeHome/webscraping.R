@@ -17,39 +17,30 @@ library(rvest)
 url <- "https://de.wikipedia.org/wiki/Bern#Klima"
 xpath <- '//*[@id="mw-content-text"]/table[4]' 
 
-# maybe nicer but the very specifique table selection could cause problem
-# with just little update on the wiki page
-# -----------------------------------------------------------------------
 # html_table <- url %>%
 #   read_html() %>%
-#   html_node(xpath = xpath) %>%
+#   html_nodes(xpath = xpath) %>% 
 #   html_table(fill = TRUE, header = FALSE) %>%
 #   as.data.table()
-# -----------------------------------------------------------------------
 
-# search by table index or string pattern?
-# -----------------------------------------------------------------------
 html_table <- url %>%
   read_html() %>%
-  html_nodes("table") %>%
-  .[str_detect(., "Monatliche Durchschnittstemperaturen")] %>%
-  .[[1]] %>%
-  html_table(fill = TRUE, header = FALSE) %>%
+  html_table(header = FALSE, fill = TRUE, dec = ".") %>%
+  .[[6]] %>%
   as.data.table()
-
 
 # clean table
 # ------------------------------------------------------------------------------------------------
 
 # some indexing to get relevant data (with false because of data.table formatting)
-n <- length(month.name)
-df <- html_table %>% .[(1:n)[-1], 1:(n+1), with = FALSE]
+n <- 12
+df <- html_table %>%
+  .[ , 1:(n+1), with = FALSE]
 
 # make clean header
 header <- df[1, -1, with = FALSE] %>% as.character()
 setnames(df, names(df), c("typ", header))
 df <- df[-1, ]
-
 # convert value to numeric and eliminate NA columns
 to_numeric <- function(x) {
   x <- str_replace_all(x, ",", "\\.")
