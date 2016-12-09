@@ -29,7 +29,7 @@ raw_df[, rating := sepos/rowSums(.SD), .SDcols = c("sepos", "seneg")]
 raw_df[, `:=` (makellos = factor(rating > .98, levels = c(TRUE, FALSE), labels = c("Ja", "Nein")),
                cat = str_replace(subcat, "\\ \\(\\d+\\)", ""))]
 
-df <- raw_df[sepos > 11, !"subcat", with = FALSE]
+df <- raw_df[sepos > 11, !"subcat"]
 
 rbindlist(list(head(df), tail(df)))
 

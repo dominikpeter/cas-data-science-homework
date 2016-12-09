@@ -8,10 +8,10 @@ rm(list=ls())
 library(data.table)
 library(magrittr)
 library(stringr)
-library(ggplot2)
+library(ggplot2) 
 library(rvest)
 
-# get table from wikipedia
+# Daten von Wikipedia extrahieren
 # ------------------------------------------------------------------------------------------------
 
 url <- 'https://de.wikipedia.org/wiki/Bern'
@@ -24,13 +24,11 @@ html_table <- url %>%
   as.data.table()
 
 
-# clean table
+# Table bereinigen
 # ------------------------------------------------------------------------------------------------
-
 # some indexing to get relevant data (with false because of data.table formatting)
 n <- 12
-df <- html_table %>%
-  .[2:n, 1:(n+1), with = FALSE]
+df <- html_table[2:n, 1:(n+1)] # with=FALSE ist ab Version 1.10.0 nicht mehr nötig
 
 # make clean header
 header <- df[1, -1, with = FALSE] %>% as.character()
@@ -48,11 +46,9 @@ months <- colnames(df)[-1]
 df[, months] <- lapply(df[, months, with = FALSE], to_numeric)
 # remove NA's
 df <- df %>% na.omit()
-df
 
 # tidy df
 # ------------------------------------------------------------------------------------------------
-
 tidy_df <- df[1:3] %>%
   melt(id.vars = "typ", variable.name = "Monat") %>% 
   dcast(Monat ~ typ)
@@ -60,7 +56,7 @@ tidy_df <- df[1:3] %>%
 col_names <- colnames(tidy_df)
 setnames(tidy_df, col_names, c(col_names[1], c("Max", "Min", "Mittelwert")))
 
-tidy_df
+head(tidy_df)
 
 # plotting 
 # ------------------------------------------------------------------------------------------------
@@ -75,7 +71,7 @@ tidy_df  %>%
   xlab("\nMonat") +
   ggtitle("Monatliche Durchschnittstemperaturen", subtitle = "für Bern 1981 – 2010") +
   theme(panel.background = element_rect(fill = "#F0F1F5"),
-        panel.grid.major = element_line(color = "white", size = 4/5),
+        panel.grid.major = element_line(color = "white", size = 0.8),
         panel.grid.minor = element_blank())
 
 
