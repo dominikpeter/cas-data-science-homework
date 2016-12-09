@@ -14,15 +14,14 @@ library(rvest)
 # get table from wikipedia
 # ------------------------------------------------------------------------------------------------
 
-url <- "https://de.wikipedia.org/wiki/Bern#Klima"
-xpath <- '//*[@id="mw-content-text"]/table[4]' 
+url <- 'https://de.wikipedia.org/wiki/Bern'
+xpath <- '//*[@id="mw-content-text"]/table[4]'
 
 html_table <- url %>%
-  read_html() %>%
+  read_xml() %>%
   html_node(xpath = xpath) %>%
   html_table(fill = TRUE, header = FALSE) %>%
   as.data.table()
-  
 
 
 # clean table
@@ -31,12 +30,13 @@ html_table <- url %>%
 # some indexing to get relevant data (with false because of data.table formatting)
 n <- 12
 df <- html_table %>%
-  .[1:n, 1:(n+1), with = FALSE]
+  .[2:n, 1:(n+1), with = FALSE]
 
 # make clean header
 header <- df[1, -1, with = FALSE] %>% as.character()
 setnames(df, names(df), c("typ", header))
 df <- df[-1, ]
+
 # convert value to numeric and eliminate NA columns
 to_numeric <- function(x) {
   x <- str_replace_all(x, ",", "\\.")
@@ -68,9 +68,9 @@ mean_temp <- mean(tidy_df$Mittelwert)
 
 tidy_df  %>% 
   ggplot(aes(x = Monat, y = Mittelwert)) +
-  geom_point(size = 5/2, color = "#444B54") +
-  geom_hline(yintercept = mean_temp, color = "#2980B9", size = 3/2, alpha = 2/5) +
-  geom_errorbar(aes(ymin = Min, ymax = Max), width = 1/3, color = "#444B54", size = 3/4) +
+  geom_point(size = 1.5, color = "#444B54") +
+  geom_hline(yintercept = mean_temp, color = "#2980B9", size = 1.5, alpha = 0.5) +
+  geom_errorbar(aes(ymin = Min, ymax = Max), width = 0.3, color = "#444B54", size = 0.7) +
   ylab("\nTemperatur (°C)") +
   xlab("\nMonat") +
   ggtitle("Monatliche Durchschnittstemperaturen", subtitle = "für Bern 1981 – 2010") +
