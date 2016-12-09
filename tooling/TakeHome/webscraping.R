@@ -23,8 +23,6 @@ html_table <- url %>%
   html_table(fill = TRUE, header = FALSE) %>%
   as.data.table()
   
-
-
 # clean table
 # ------------------------------------------------------------------------------------------------
 
@@ -37,6 +35,7 @@ df <- html_table %>%
 header <- df[1, -1, with = FALSE] %>% as.character()
 setnames(df, names(df), c("typ", header))
 df <- df[-1, ]
+
 # convert value to numeric and eliminate NA columns
 to_numeric <- function(x) {
   x <- str_replace_all(x, ",", "\\.")
