@@ -44,7 +44,7 @@ to_numeric <- function(x) {
 }
 
 months <- colnames(df)[-1]
-# apply funtion
+# apply function
 df[, months] <- lapply(df[, months, with = FALSE], to_numeric)
 # remove NA's
 df <- df %>% na.omit()
