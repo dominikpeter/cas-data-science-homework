@@ -69,19 +69,24 @@ min_zeit <- 6+0+10 #6 Minuten bis zum Bus, 0 Minuten Warten, 10 Minuten Reisezei
 max_zeit <- 6+5+15 #6 Minuten bis zum Bus, 5 Minutan Warten, 15 Minuten Reisezeit
 
 # Die Reisezeit ist Gleichverteilt mit a = 16 und b = 26
-
-
-
-# Die Reisezeit ist Gleichverteilt X ~ U(16, 26)
-
+cat(paste0("X∼U(", min_zeit, "," , max_zeit,")"))
 
 # Mit welcher Wahrscheinlichkeit schaffen Sie es noch rechtzeitig ins Büro?
 
+# ℙ(X≤20)
+round(punif(20, min = min_zeit, max = max_zeit), 3)
 
-xv <- seq(0,5,length=100)
-plot(xv, dunif(xv,1,3), type = "l", ylab = "Uni(x)", xlab = "x")
 
 
-print(expression(X))
-  
+
+
+# ------------------------------------------------------------------------------------------------
+# Stetige Gleichverteilung
+# ------------------------------------------------------------------------------------------------s
+Problem: In einer vierwöchigen Datenerhebung missen Sie die Länge
+der Telefongespräche, die Sie auf Ihrem Handy führen. Sie finden
+heraus, dass die Dauer der Gespräche (in Minuten) einer
+Exponentialverteilung folgt, und Ihre Gespräche im Erwartungswert
+3 Minuten lang sind.
+
 
