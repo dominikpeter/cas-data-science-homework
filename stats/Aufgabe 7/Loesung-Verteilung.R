@@ -81,12 +81,56 @@ round(punif(20, min = min_zeit, max = max_zeit), 3)
 
 
 # ------------------------------------------------------------------------------------------------
-# Stetige Gleichverteilung
+# Exponentialverteilung
 # ------------------------------------------------------------------------------------------------s
-Problem: In einer vierwöchigen Datenerhebung missen Sie die Länge
-der Telefongespräche, die Sie auf Ihrem Handy führen. Sie finden
-heraus, dass die Dauer der Gespräche (in Minuten) einer
-Exponentialverteilung folgt, und Ihre Gespräche im Erwartungswert
-3 Minuten lang sind.
+# Problem: In einer vierwöchigen Datenerhebung missen Sie die Länge
+# der Telefongespräche, die Sie auf Ihrem Handy führen. Sie finden
+# heraus, dass die Dauer der Gespräche (in Minuten) einer
+# Exponentialverteilung folgt, und Ihre Gespräche im Erwartungswert
+# 3 Minuten lang sind.
+
+# Welche Verteilung hat die Zufallsvariable X, welche die Dauer der
+# Telefongespräche in Minuten beschreibt?
+
+# Sie ist Exponetialverteilt mit dem Erwartungswert:
+# 𝔼(X)=1/λ wobei λ = 3,  𝔼(X)=1/3
+
+
+# Das Telefon klingelt. Wie gross ist die Wahrscheinlichkeit, dass
+# dieses Gespräch höchstens eine Minute dauert?
+rate <- 1/3
+p <- pexp(1, rate = rate)
+round(p, 3)
+
+# Wie gross ist die Wahrscheinlichkeit, dass das Gespräch länger
+# als eine Minute dauert?
+round(1-p, 3)
+# pexp(1, rate = rate, lower.tail = FALSE)
+
+# Mit welcher Wahrscheinlichkeit dauert das Gespräch zwischen
+# einer und drei Minuten?
+
+lower_tail <- p
+upper_tail <- pexp(3, rate = rate, lower.tail = FALSE)
+tails <- sum(lower_tail, upper_tail)
+total <- 1
+
+round(total - tails, 3)
+
+# Berechnen und interpretieren Sie das 25%-Quantil dieser Verteilung.
+round(qexp(0.25, rate = rate), 3)
+# Das 25%-Quantil ist die Dauer in Minuten, 
+# die von den kürzesten 25% der Telefonate nicht überschritten wird.
+
+# Es dauern also 25% der Telefonate weniger als 0.863 Minuten.
+
+
+
+
+
+
+
+
+
 
 
