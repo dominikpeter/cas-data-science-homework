@@ -78,11 +78,9 @@ round(punif(20, min = min_zeit, max = max_zeit), 3)
 
 
 
-
-
 # ------------------------------------------------------------------------------------------------
 # Exponentialverteilung
-# ------------------------------------------------------------------------------------------------s
+# ------------------------------------------------------------------------------------------------
 # Problem: In einer vierwöchigen Datenerhebung missen Sie die Länge
 # der Telefongespräche, die Sie auf Ihrem Handy führen. Sie finden
 # heraus, dass die Dauer der Gespräche (in Minuten) einer
@@ -110,7 +108,7 @@ round(1-p, 3)
 # Mit welcher Wahrscheinlichkeit dauert das Gespräch zwischen
 # einer und drei Minuten?
 
-lower_tail <- p
+lower_tail <- pexp(1, rate = rate)
 upper_tail <- pexp(3, rate = rate, lower.tail = FALSE)
 tails <- sum(lower_tail, upper_tail)
 total <- 1
@@ -126,8 +124,51 @@ round(qexp(0.25, rate = rate), 3)
 
 
 
+# ------------------------------------------------------------------------------------------------
+# Normalverteilung
+# ------------------------------------------------------------------------------------------------
+# Problem: In einer Fabrik werden Tüten mit Kartoffelchips befüllt. Das durchschnittliche Gewicht der
+# Tüten soll nach den Angaben des Werkes 200 g betragen. Da die Tüten maschinell befüllt werden,
+# wird dieser Wert nur mit einer Standardabweichung von 4 g eingehalten. Mit welcher Wahrscheinlichkeit
+# werden Tüten abgefüllt, deren Gewicht...
+
+# um weniger als 2 g vom Mittelwert abweicht?
+m <- 200
+toleranz <- c(m -2, m + 2)
+sd <- 4
+
+tails <- pnorm(toleranz, mean = m, sd = sd)
+tails
+
+round(diff(tails), 3)
+
+# über 205 g liegt?
+round(pnorm(205, mean = m, sd = sd, lower.tail = FALSE), 3)
+
+# Welches Gewicht wird von 95% der Tüten überschritten?
+round(qnorm(.95, mean = m, sd = sd, lower.tail = FALSE),3)
 
 
+# ------------------------------------------------------------------------------------------------
+# Chi-Quadrat-Verteilung
+# ------------------------------------------------------------------------------------------------
+# Problem: Mit welcher Wahrscheinlichkeit liegt der Wert einer χ2-Verteilung 
+# mit df = 11 über 15?
+
+round(pchisq(15, df = 11, lower.tail = FALSE), 3)
+
+
+# ------------------------------------------------------------------------------------------------
+# Studentsche t-Verteilung
+# ------------------------------------------------------------------------------------------------
+# Problem: Mit welcher Wahrscheinlichkeit liegt der Wert der Studentschen t-Verteilung
+# unter −0.5, respektive unter 1? Der Freiheitsgrad sei 7.
+
+#unter -05
+round(pt(-0.5, df = 7), 3)
+
+#unter 1
+round(pt(1, df = 7), 3)
 
 
 
