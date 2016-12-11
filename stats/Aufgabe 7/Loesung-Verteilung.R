@@ -7,7 +7,6 @@
 # ------------------------------------------------------------------------------------------------
 # Binominalverteilung
 # ------------------------------------------------------------------------------------------------
-
 # Problem: Die Wahrscheinlichkeit, dass man im Roulette bei einmaligem Setzen auf „rot“ gewinnt, ist p = 18/37 = 0.486.
 # Definieren wir mit x jene Anzahl der Spiele, bei denen man bei fünfmaligem Setzen auf „rot“ gewinnt.
 # Wie gross ist bei fünfmaligem Setzen auf „rot“ die Wahrscheinlichkeit, dass man öfter gewinnt als verliert?
@@ -26,7 +25,6 @@ qbinom(0.9, size = 5, prob = 18/37, lower.tail = TRUE)
 # ------------------------------------------------------------------------------------------------
 # Poissonverteilung
 # ------------------------------------------------------------------------------------------------
-
 # Problem: Das Restaurant Fat’s Pizza führt Buch über die Anzahl an Gästen,
 # die das Restaurant betreten. Laut der Aufzeichnungen ist der Erwartungswert μ = 12,1
 # zwischen 20:00 und 22:00 Uhr. Bestimmen Sie mit der Poisson-Verteilung die Wahrscheinlichkeit,
