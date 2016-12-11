@@ -18,7 +18,7 @@ url <- 'https://de.wikipedia.org/wiki/Bern'
 xpath <- '//*[@id="mw-content-text"]/table[4]'
 
 html_table <- url %>%
-  read_xml() %>%
+  read_html() %>%
   html_node(xpath = xpath) %>%
   html_table(fill = TRUE, header = FALSE) %>%
   as.data.table()
@@ -28,7 +28,7 @@ html_table <- url %>%
 # ------------------------------------------------------------------------------------------------
 # some indexing to get relevant data (with false because of data.table formatting)
 n <- 12
-df <- html_table[2:n, 1:(n+1)] # with=FALSE ist ab Version 1.10.0 nicht mehr nötig
+df <- html_table[2:n, 1:(n+1), with = FALSE] # with=FALSE ist ab Version 1.10.0 nicht mehr nötig
 
 # make clean header
 header <- df[1, -1, with = FALSE] %>% as.character()
