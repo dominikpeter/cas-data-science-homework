@@ -64,14 +64,24 @@ round(ppois(10, lambda = lambda, lower.tail = FALSE), 3)
 # 10 bis 15 Minuten bis ins Büro.
 
 # Welche Verteilung hat die Zufallsvariable X, welche die gesamte Pendelzeit von Haustür bis ins Büro beschreibt?
-# Sie ist gleich Verteilt
+
+min_zeit <- 6+0+10 #6 Minuten bis zum Bus, 0 Minuten Warten, 10 Minuten Reisezeit
+max_zeit <- 6+5+15 #6 Minuten bis zum Bus, 5 Minutan Warten, 15 Minuten Reisezeit
+
+# Die Reisezeit ist Gleichverteilt mit a = 16 und b = 26
+
+
+
+# Die Reisezeit ist Gleichverteilt X ~ U(16, 26)
 
 
 # Mit welcher Wahrscheinlichkeit schaffen Sie es noch rechtzeitig ins Büro?
 
-Zeit <- 20
 
-plot(1:(Zeit+3), dunif(1:(Zeit+3), min = 0, max = 5))
+xv <- seq(0,5,length=100)
+plot(xv, dunif(xv,1,3), type = "l", ylab = "Uni(x)", xlab = "x")
 
 
+print(expression(X))
+  
 
