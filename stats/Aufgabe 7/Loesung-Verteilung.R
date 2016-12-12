@@ -15,11 +15,13 @@ rm(list=ls())
 
 # Wie gross ist bei fünfmaligem Setzen auf „rot“ die
 # Wahrscheinlichkeit, dass man öfter gewinnt als verliert?
+
+# X∼B(5,18/37)
+
 round(pbinom(q = 2, size = 5, prob = 18/37, lower.tail = FALSE), 3)
 
 
-# Welche Anzahl der Gewinne wird in 90% der Fälle höchstens
-# erreicht?
+# Welche Anzahl der Gewinne wird in 90% der Fälle höchstens erreicht?
 qbinom(0.9, size = 5, prob = 18/37, lower.tail = TRUE)
 
 
@@ -34,6 +36,16 @@ qbinom(0.9, size = 5, prob = 18/37, lower.tail = TRUE)
 
 lambda <- 12.1
 
+# Plot zum Verständnis
+# #CDF
+x <- seq(0, 25, 0.01)
+plot(x, ppois(x,lambda), type = "s", ylab = "F(x)", main = "Poisson(1) CDF")
+# 
+# #PDF
+x <- seq(0, 25, 0.01)
+plot(x, dpois(x,lambda), type = "s", ylab = "F(x)", main = "Poisson(1) PDF")
+
+
 # Es sind genau 8 Gäste im Restaurant.
 round(dpois(8, lambda = lambda), 3)
 
@@ -44,10 +56,7 @@ round(ppois(10, lambda = lambda), 3)
 # Es sind zwischen 9 und 15 Gäste im Restaurant.
 lower_tail <- ppois(8, lambda = lambda) 
 upper_tail <- ppois(15, lambda = lambda, lower.tail = FALSE)
-tails <- lower_tail + upper_tail
-total <- 1
-
-round(total - tails, 3)
+round(1 - (lower_tail + upper_tail), 3)
 
 # Es sind mindestens 11 Gäste anwesend.
 round(ppois(10, lambda = lambda, lower.tail = FALSE), 3)
@@ -70,7 +79,7 @@ min_zeit <- 6+0+10 #6 Minuten bis zum Bus, 0 Minuten Warten, 10 Minuten Reisezei
 max_zeit <- 6+5+15 #6 Minuten bis zum Bus, 5 Minutan Warten, 15 Minuten Reisezeit
 
 # Die Reisezeit ist Gleichverteilt mit a = 16 und b = 26
-cat(paste0("X∼U(", min_zeit, "," , max_zeit,")"))
+# X∼U(16,26)
 
 # Mit welcher Wahrscheinlichkeit schaffen Sie es noch rechtzeitig ins Büro?
 
@@ -103,24 +112,23 @@ round(p, 3)
 
 # Wie gross ist die Wahrscheinlichkeit, dass das Gespräch länger
 # als eine Minute dauert?
-round(1-p, 3)
-# pexp(1, rate = rate, lower.tail = FALSE)
+# round(1-p, 3)
+round(pexp(1, rate = rate, lower.tail = FALSE), 3)
 
 # Mit welcher Wahrscheinlichkeit dauert das Gespräch zwischen
 # einer und drei Minuten?
 
 lower_tail <- pexp(1, rate = rate)
 upper_tail <- pexp(3, rate = rate, lower.tail = FALSE)
-tails <- sum(lower_tail, upper_tail)
-total <- 1
+round(1-(lower_tail + upper_tail), 3)
 
-round(total - tails, 3)
 
-# Berechnen und interpretieren Sie das 25%-Quantil dieser Verteilung.
+# Berechnen Sie das 25%-Quantil dieser Verteilung.
 round(qexp(0.25, rate = rate), 3)
+
+# und interpretieren 
 # Das 25%-Quantil ist die Dauer in Minuten, 
 # die von den kürzesten 25% der Telefonate nicht überschritten wird.
-
 # Es dauern also 25% der Telefonate weniger als 0.863 Minuten.
 
 
@@ -135,7 +143,8 @@ round(qexp(0.25, rate = rate), 3)
 
 # um weniger als 2 g vom Mittelwert abweicht?
 m <- 200
-toleranz <- c(m -2, m + 2)
+toleranz <- c(m-2, m+2)
+toleranz
 sd <- 4
 
 tails <- pnorm(toleranz, mean = m, sd = sd)
@@ -143,19 +152,19 @@ tails
 
 round(diff(tails), 3)
 
+# diff(pnorm(c(-1, 1))) # zum verständnis, sollte ~68% geben
+
 # über 205 g liegt?
 round(pnorm(205, mean = m, sd = sd, lower.tail = FALSE), 3)
 
 # Welches Gewicht wird von 95% der Tüten überschritten?
-round(qnorm(.95, mean = m, sd = sd, lower.tail = FALSE),3)
-
+round(qnorm(.95, mean = m, sd = sd, lower.tail = FALSE), 3)
 
 # ------------------------------------------------------------------------------------------------
 # Chi-Quadrat-Verteilung
 # ------------------------------------------------------------------------------------------------
 # Problem: Mit welcher Wahrscheinlichkeit liegt der Wert einer χ2-Verteilung 
 # mit df = 11 über 15?
-
 round(pchisq(15, df = 11, lower.tail = FALSE), 3)
 
 
