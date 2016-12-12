@@ -72,6 +72,10 @@ dpois(3, lambda = 3)
 
 # c) Mit welcher Wahrscheinlichkeit gehen zwei bis vier Schadensmeldungen ein?
 
+lower <- ppois(1, 3)
+upper <- ppois(4, 3, lower.tail = FALSE)
+1 - (lower+upper)
+
 ppois(1, lambda = 3, lower.tail = FALSE) - ppois(4, lambda = 3, lower.tail = FALSE)
 
 # d) Wie hoch ist die Wahrscheinlichkeit, dass mindestens eine Schadensmeldung hereinkommt?
