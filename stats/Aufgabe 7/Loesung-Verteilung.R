@@ -5,6 +5,9 @@
 # ------------------------------------------------------------------------------------------------
 
 rm(list=ls())
+# library(ggplot2)
+# library(magrittr)
+
 
 # ------------------------------------------------------------------------------------------------
 # Binominalverteilung
@@ -12,6 +15,11 @@ rm(list=ls())
 # Problem: Die Wahrscheinlichkeit, dass man im Roulette bei einmaligem Setzen auf „rot“ gewinnt, ist p = 18/37 = 0.486.
 # Definieren wir mit x jene Anzahl der Spiele, bei denen man bei fünfmaligem Setzen auf „rot“ gewinnt.
 # Wie gross ist bei fünfmaligem Setzen auf „rot“ die Wahrscheinlichkeit, dass man öfter gewinnt als verliert?
+
+# plot
+# data.frame(x = factor(0:5), y = dbinom(0:5, 5, 18/37)) %>%
+#   ggplot(aes(x, y)) +
+#   stat_sum(geom = "bar")
 
 # Wie gross ist bei fünfmaligem Setzen auf „rot“ die
 # Wahrscheinlichkeit, dass man öfter gewinnt als verliert?
@@ -26,7 +34,7 @@ qbinom(0.9, size = 5, prob = 18/37, lower.tail = TRUE)
 
 
 
-# ------------------------------------------------------------------------------------------------
+  # ------------------------------------------------------------------------------------------------
 # Poissonverteilung
 # ------------------------------------------------------------------------------------------------
 # Problem: Das Restaurant Fat’s Pizza führt Buch über die Anzahl an Gästen,
@@ -36,14 +44,10 @@ qbinom(0.9, size = 5, prob = 18/37, lower.tail = TRUE)
 
 lambda <- 12.1
 
-# Plot zum Verständnis
-# #CDF
-x <- seq(0, 25, 0.01)
-plot(x, ppois(x,lambda), type = "s", ylab = "F(x)", main = "Poisson(1) CDF")
-# 
-# #PDF
-x <- seq(0, 25, 0.01)
-plot(x, dpois(x,lambda), type = "s", ylab = "F(x)", main = "Poisson(1) PDF")
+# plot
+# data.frame(x = factor(0:25), y = dpois(0:25, lambda)) %>%
+#   ggplot(aes(x, y)) +
+#   stat_sum(geom = "bar")
 
 
 # Es sind genau 8 Gäste im Restaurant.
@@ -107,8 +111,8 @@ round(punif(20, min = min_zeit, max = max_zeit), 3)
 # Das Telefon klingelt. Wie gross ist die Wahrscheinlichkeit, dass
 # dieses Gespräch höchstens eine Minute dauert?
 rate <- 1/3
-p <- pexp(1, rate = rate)
-round(p, 3)
+round(pexp(1, rate = rate), 3)
+
 
 # Wie gross ist die Wahrscheinlichkeit, dass das Gespräch länger
 # als eine Minute dauert?
@@ -159,6 +163,8 @@ round(pnorm(205, mean = m, sd = sd, lower.tail = FALSE), 3)
 
 # Welches Gewicht wird von 95% der Tüten überschritten?
 round(qnorm(.95, mean = m, sd = sd, lower.tail = FALSE), 3)
+
+# wieso in den Onlinelösungen ohne lower.tail? Meiner Meinung nach falsch. 
 
 # ------------------------------------------------------------------------------------------------
 # Chi-Quadrat-Verteilung

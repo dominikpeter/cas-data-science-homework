@@ -1,8 +1,14 @@
+library(magrittr)
+library(ggplot2)
+
 # Eine Urne enthält 4 schwarze, 3 rote und 3 weisse Kugeln. Es wird 10-mal mit
 # Zurücklegen gezogen. Wie wahrscheinlich ist es, genau 5 schwarze Kugeln zu ziehen? 
-
-
 p <- 4 / (3+3+4)
+
+data.frame(x = factor(0:10), y = dbinom(0:10, 10, p)) %>% 
+  ggplot(aes(x = x, y = y)) +
+  stat_sum(geom = "bar")
+
 p
 
 dbinom(5, 10, p)
