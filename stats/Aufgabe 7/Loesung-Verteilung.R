@@ -33,7 +33,6 @@ round(pbinom(q = 2, size = 5, prob = 18/37, lower.tail = FALSE), 3)
 qbinom(0.9, size = 5, prob = 18/37, lower.tail = TRUE)
 
 
-
   # ------------------------------------------------------------------------------------------------
 # Poissonverteilung
 # ------------------------------------------------------------------------------------------------
@@ -48,7 +47,6 @@ lambda <- 12.1
 # data.frame(x = factor(0:25), y = dpois(0:25, lambda)) %>%
 #   ggplot(aes(x, y)) +
 #   stat_sum(geom = "bar")
-
 
 # Es sind genau 8 Gäste im Restaurant.
 round(dpois(8, lambda = lambda), 3)
@@ -154,7 +152,7 @@ sd <- 4
 tails <- pnorm(toleranz, mean = m, sd = sd)
 tails
 
-round(diff(tails), 3)
+rund(diff(tails), 3)
 
 # diff(pnorm(c(-1, 1))) # zum verständnis, sollte ~68% geben
 
@@ -164,9 +162,8 @@ round(pnorm(205, mean = m, sd = sd, lower.tail = FALSE), 3)
 # Welches Gewicht wird von 95% der Tüten überschritten?
 round(qnorm(.95, mean = m, sd = sd, lower.tail = FALSE), 3)
 
-# wieso in den Onlinelösungen ohne lower.tail? Meiner Meinung nach falsch. 
-
-# ------------------------------------------------------------------------------------------------
+#wieso in den Onlinelösungen ohne lower.tail? Meiner Meinung nach falsch. , das Gewicht, welches
+# von über 95 % überschritten wird muss kleiner als der Mittwerlwert sein# ------------------------------------------------------------------------------------------------
 # Chi-Quadrat-Verteilung
 # ------------------------------------------------------------------------------------------------
 # Problem: Mit welcher Wahrscheinlichkeit liegt der Wert einer χ2-Verteilung 
