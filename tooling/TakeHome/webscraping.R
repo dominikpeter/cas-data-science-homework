@@ -21,7 +21,7 @@ html_table <- url %>%
   read_html() %>%
   html_node(xpath = xpath) %>%
   html_table(fill = TRUE, header = FALSE) %>%
-  as.data.table()
+  as.data.table(.)
 
 
 # Table bereinigen
@@ -45,7 +45,7 @@ months <- colnames(df)[-1]
 # apply function
 df[, months] <- lapply(df[, months, with = FALSE], to_numeric)
 # remove NA's
-df <- df %>% na.omit()
+df <- df %>% na.omit(.)
 
 # tidy df
 # ------------------------------------------------------------------------------------------------

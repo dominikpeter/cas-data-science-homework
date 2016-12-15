@@ -48,6 +48,7 @@ df %>%
   theme(panel.background = element_rect(fill = "#F0F1F5"),
         panel.grid.major = element_line(color = "white", size = 1.1),
         panel.grid.minor = element_blank())
+# + coord_flip()
 
 # Bewertet anhand "Rule of Thumb", dass bei signifikanter Differenz die Notches nicht überlappen sollten.
 # Daher die Feststellung, dass kein signifikanter Unterschied zwischen den makellosen und
