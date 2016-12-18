@@ -13,7 +13,7 @@ library(ggplot2)
 library(stringr)
 library(broom)
 
-raw_df <- read.dta("http://www.farys.org/daten/ebay.dta") %>% as.data.table()
+raw_df <- read.dta("http://www.farys.org/daten/ebay.dta") %>% as.data.table(.)
 # sold: Ob das Mobiltelefon verkauft wurde
 # price: Der erzielte Verkauftspreis
 # sprice: Der Startpreis der Auktion

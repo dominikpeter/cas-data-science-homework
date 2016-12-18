@@ -40,65 +40,11 @@ Variablen
 sold: Ob das Mobiltelefon verkauft wurde price: Der erzielte Verkauftspreis sprice: Der Startpreis der Auktion sepos: Anzahl positiver Bewertungen des Verkäufers seneg: Anzahl negativer Bewertungen des Verkäufers subcat: Das Modell des Mobiltelefons listpic: Kategorialer Indikator, ob die Auktion ein Thumbnail, ein “has-picture-icon” oder kein Thumbnail hat. listbold: Dummy, ob die Auktion fettgedruckt gelistet ist sehasme: Dummy, ob der Verkäufer eine “Me-page” hat oder nicht
 
 ``` r
-raw_df[, rating := sepos/rowSums(.SD), .SDcols = c("sepos", "seneg")]
-```
-
-    ##       sold  price             subcat sprice                  listpic
-    ##    1:    1 221.00     Nokia 6230 (3)      1 auction-has-picture icon
-    ##    2:    1 211.00  Samsung E700 (12)      1                thumbnail
-    ##    3:    1 221.00 Motorola V600 (10)    200 auction-has-picture icon
-    ##    4:    1 251.51  Samsung E800 (11)      1                     none
-    ##    5:    1  76.00      Sony T610 (1)      1                     none
-    ##   ---                                                               
-    ## 5496:    1 106.66      Sony T610 (1)     95 auction-has-picture icon
-    ## 5497:    1 220.00     Nokia 6230 (3)      1                thumbnail
-    ## 5498:    1 227.00     Nokia 6230 (3)      1 auction-has-picture icon
-    ## 5499:    1 235.99     Nokia 6230 (3)      1 auction-has-picture icon
-    ## 5500:    1 230.99     Nokia 6230 (3)      1 auction-has-picture icon
-    ##       listbold sepos seneg sehasme    rating
-    ##    1:        0   372     5       0 0.9867374
-    ##    2:        0   153     0       0 1.0000000
-    ##    3:        0    20     0       0 1.0000000
-    ##    4:        0    11     0       0 1.0000000
-    ##    5:        0    16     0       0 1.0000000
-    ##   ---                                       
-    ## 5496:        0    28     3       0 0.9032258
-    ## 5497:        1   183     0       0 1.0000000
-    ## 5498:        0    16     0       0 1.0000000
-    ## 5499:        0    75     2       0 0.9740260
-    ## 5500:        0   129     1       0 0.9923077
-
-``` r
-raw_df[, `:=` (makellos = factor(rating > .98, levels = c(TRUE, FALSE), labels = c("Ja", "Nein")),
+# <- assigning just beacuse of markwond evaluation handling
+raw_df <- raw_df[, rating := sepos/rowSums(.SD), .SDcols = c("sepos", "seneg")]
+raw_df <- raw_df[, `:=` (makellos = factor(rating > .98, levels = c(TRUE, FALSE), labels = c("Ja", "Nein")),
                cat = str_replace(subcat, "\\ \\(\\d+\\)", ""))]
-```
 
-    ##       sold  price             subcat sprice                  listpic
-    ##    1:    1 221.00     Nokia 6230 (3)      1 auction-has-picture icon
-    ##    2:    1 211.00  Samsung E700 (12)      1                thumbnail
-    ##    3:    1 221.00 Motorola V600 (10)    200 auction-has-picture icon
-    ##    4:    1 251.51  Samsung E800 (11)      1                     none
-    ##    5:    1  76.00      Sony T610 (1)      1                     none
-    ##   ---                                                               
-    ## 5496:    1 106.66      Sony T610 (1)     95 auction-has-picture icon
-    ## 5497:    1 220.00     Nokia 6230 (3)      1                thumbnail
-    ## 5498:    1 227.00     Nokia 6230 (3)      1 auction-has-picture icon
-    ## 5499:    1 235.99     Nokia 6230 (3)      1 auction-has-picture icon
-    ## 5500:    1 230.99     Nokia 6230 (3)      1 auction-has-picture icon
-    ##       listbold sepos seneg sehasme    rating makellos           cat
-    ##    1:        0   372     5       0 0.9867374       Ja    Nokia 6230
-    ##    2:        0   153     0       0 1.0000000       Ja  Samsung E700
-    ##    3:        0    20     0       0 1.0000000       Ja Motorola V600
-    ##    4:        0    11     0       0 1.0000000       Ja  Samsung E800
-    ##    5:        0    16     0       0 1.0000000       Ja     Sony T610
-    ##   ---                                                              
-    ## 5496:        0    28     3       0 0.9032258     Nein     Sony T610
-    ## 5497:        1   183     0       0 1.0000000       Ja    Nokia 6230
-    ## 5498:        0    16     0       0 1.0000000       Ja    Nokia 6230
-    ## 5499:        0    75     2       0 0.9740260     Nein    Nokia 6230
-    ## 5500:        0   129     1       0 0.9923077       Ja    Nokia 6230
-
-``` r
 df <- raw_df[sepos > 11, !"subcat"]
 
 list(head(df), tail(df)) %>% rbindlist(.) %>% kable(.)
@@ -136,10 +82,4 @@ df %>%
 
     ## Warning: Removed 155 rows containing non-finite values (stat_boxplot).
 
-![](ebay_files/figure-markdown_github/plotting-1.png)
-
-``` r
-# + coord_flip()
-```
-
-Bewertet anhand "Rule of Thumb", dass bei signifikanter Differenz die Notches nicht überlappen sollten.Daher die Feststellung, dass kein signifikanter Unterschied zwischen den makellosen undnicht makellosen Ratings besteht <https://en.wikipedia.org/wiki/Box_plot#Variations>
+<img src="ebay_files/figure-markdown_github/plotting-1.png" style="display: block; margin: auto;" /> Bewertet anhand "Rule of Thumb", dass bei signifikanter Differenz die Notches nicht überlappen sollten.Daher die Feststellung, dass kein signifikanter Unterschied zwischen den makellosen undnicht makellosen Ratings besteht <https://en.wikipedia.org/wiki/Box_plot#Variations>

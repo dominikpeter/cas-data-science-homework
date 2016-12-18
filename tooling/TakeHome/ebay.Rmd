@@ -44,8 +44,9 @@ sehasme: Dummy, ob der Verkäufer eine “Me-page” hat oder nicht
 
 
 ```{r wrangling}
-raw_df[, rating := sepos/rowSums(.SD), .SDcols = c("sepos", "seneg")]
-raw_df[, `:=` (makellos = factor(rating > .98, levels = c(TRUE, FALSE), labels = c("Ja", "Nein")),
+# <- assigning just beacuse of markwond evaluation handling
+raw_df <- raw_df[, rating := sepos/rowSums(.SD), .SDcols = c("sepos", "seneg")]
+raw_df <- raw_df[, `:=` (makellos = factor(rating > .98, levels = c(TRUE, FALSE), labels = c("Ja", "Nein")),
                cat = str_replace(subcat, "\\ \\(\\d+\\)", ""))]
 
 df <- raw_df[sepos > 11, !"subcat"]
@@ -53,7 +54,7 @@ df <- raw_df[sepos > 11, !"subcat"]
 list(head(df), tail(df)) %>% rbindlist(.) %>% kable(.)
 
 ```
-```{r plotting, error=FALSE}
+```{r plotting, error=FALSE, fig.align='center', fig.width=9, fig.height=7}
 # Es gibt Preise mit NA (nicht verkauft), daher funktioniert der Reorder nicht ohne anonyme Funktion mit na.rm = TRUE
 # Absteigende Anordung mit -1
 df %>%
@@ -66,8 +67,6 @@ df %>%
   theme(panel.background = element_rect(fill = "#F0F1F5"),
         panel.grid.major = element_line(color = "white", size = 1.1),
         panel.grid.minor = element_blank())
-# + coord_flip()
-
 ```
 Bewertet anhand "Rule of Thumb", dass bei signifikanter Differenz die Notches nicht überlappen sollten.Daher die Feststellung, dass kein signifikanter Unterschied zwischen den makellosen undnicht makellosen Ratings besteht
 https://en.wikipedia.org/wiki/Box_plot#Variations
