@@ -1,0 +1,77 @@
+---
+title: "Untitled"
+output: github_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+## Take-Home: Ebay Daten
+
+
+
+```{r library}
+library(data.table)
+library(magrittr)
+library(foreign)
+library(ggplot2)
+library(stringr)
+library(broom)
+library(knitr)
+```
+
+```{r read}
+raw_df <- read.dta("http://www.farys.org/daten/ebay.dta") %>%
+  as.data.table(.)
+
+raw_df %>% head(10) %>% kable(.)
+
+```
+
+#Variablen
+
+sold: Ob das Mobiltelefon verkauft wurde
+price: Der erzielte Verkauftspreis
+sprice: Der Startpreis der Auktion
+sepos: Anzahl positiver Bewertungen des Verkäufers
+seneg: Anzahl negativer Bewertungen des Verkäufers
+subcat: Das Modell des Mobiltelefons
+listpic: Kategorialer Indikator, ob die Auktion ein Thumbnail, ein “has-picture-icon” oder kein Thumbnail hat.
+listbold: Dummy, ob die Auktion fettgedruckt gelistet ist
+sehasme: Dummy, ob der Verkäufer eine “Me-page” hat oder nicht
+
+
+
+```{r wrangling}
+raw_df[, rating := sepos/rowSums(.SD), .SDcols = c("sepos", "seneg")]
+raw_df[, `:=` (makellos = factor(rating > .98, levels = c(TRUE, FALSE), labels = c("Ja", "Nein")),
+               cat = str_replace(subcat, "\\ \\(\\d+\\)", ""))]
+
+df <- raw_df[sepos > 11, !"subcat"]
+
+list(head(df), tail(df)) %>% rbindlist(.) %>% kable(.)
+
+```
+```{r plotting, error=FALSE}
+# Es gibt Preise mit NA (nicht verkauft), daher funktioniert der Reorder nicht ohne anonyme Funktion mit na.rm = TRUE
+# Absteigende Anordung mit -1
+df %>%
+  ggplot(aes(x=reorder(factor(cat), price, function(x) mean(x, na.rm = TRUE)*-1), y = price)) +
+  geom_boxplot(aes(fill = makellos), notch = TRUE, position = position_dodge(.85)) +
+  scale_fill_manual(values = c("#66CC99", "#FC575E"), name = "Makellos") +
+  xlab("\nKategorie") +
+  ylab("Preis") +
+  ggtitle("Ebay Verkäufe nach Kategorie") +
+  theme(panel.background = element_rect(fill = "#F0F1F5"),
+        panel.grid.major = element_line(color = "white", size = 1.1),
+        panel.grid.minor = element_blank())
+# + coord_flip()
+
+```
+Bewertet anhand "Rule of Thumb", dass bei signifikanter Differenz die Notches nicht überlappen sollten.Daher die Feststellung, dass kein signifikanter Unterschied zwischen den makellosen undnicht makellosen Ratings besteht
+https://en.wikipedia.org/wiki/Box_plot#Variations
+
+
+
+
