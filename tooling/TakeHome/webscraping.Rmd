@@ -78,7 +78,7 @@ mean_temp <- mean(tidy_df$Mittelwert)
 tidy_df  %>% 
   ggplot(aes(x = Monat, y = Mittelwert)) +
   geom_point(size = 1.5, color = "#444B54") +
-  geom_hline(yintercept = mean_temp, color = "#2980B9", size = 1.5, alpha = 0.5) +
+  geom_hline(yintercept = mean_temp, color = "#2980B9", size = 1.5, alpha = 0.25) +
   geom_errorbar(aes(ymin = Min, ymax = Max), width = 0.3, color = "#444B54", size = 0.7) +
   ylab("\nTemperatur (°C)") +
   xlab("\nMonat") +
