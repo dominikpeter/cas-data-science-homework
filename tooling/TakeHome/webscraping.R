@@ -15,37 +15,28 @@ library(rvest)
 # ------------------------------------------------------------------------------------------------
 
 url <- 'https://de.wikipedia.org/wiki/Bern'
-xpath <- '//*[@id="mw-content-text"]/table[4]'
 
-html_table <- url %>%
-  read_html() %>%
-  html_node(xpath = xpath) %>%
-  html_table(fill = TRUE, header = FALSE) %>%
-  as.data.table(.)
+df <- url %>%
+  read_html(.) %>%
+  html_table(fill = TRUE, header = TRUE) %>% 
+  .[[6]] %>% 
+  na.omit(.) %>% 
+  as.data.table(.) %>% 
+  .[, 1:13]
 
+setnames(df, 1, "typ")
 
 # Table bereinigen
 # ------------------------------------------------------------------------------------------------
-# some indexing to get relevant data (with false because of data.table formatting)
-n <- 12
-df <- html_table[2:n, 1:(n+1), with = FALSE] # with=FALSE ist ab Version 1.10.0 nicht mehr nötig
-
-# make clean header
-header <- df[1, -1, with = FALSE] %>% as.character()
-setnames(df, names(df), c("typ", header))
-df <- df[-1, ]
-
 # convert value to numeric and eliminate NA columns
 to_numeric <- function(x) {
   x <- str_replace_all(x, ",", "\\.")
   as.numeric(x)
 }
-
 months <- colnames(df)[-1]
 # apply function
 df[, months] <- lapply(df[, months, with = FALSE], to_numeric)
-# remove NA's
-df <- df %>% na.omit(.)
+
 
 # tidy df
 # ------------------------------------------------------------------------------------------------
@@ -65,10 +56,13 @@ mean_temp <- mean(tidy_df$Mittelwert)
 tidy_df  %>% 
   ggplot(aes(x = Monat, y = Mittelwert)) +
   geom_point(size = 1.5, color = "#444B54") +
-  geom_hline(yintercept = mean_temp, color = "#2980B9", size = 1.5, alpha = 0.5) +
-  geom_errorbar(aes(ymin = Min, ymax = Max), width = 0.3, color = "#444B54", size = 0.7) +
+  geom_hline(yintercept = mean_temp, color = "#2980B9", size = 1.5, alpha = 0.2) +
+  geom_errorbar(aes(ymin = Min, ymax = Max), width = .4, color = "#444B54", size = 3.5) +
   ylab("\nTemperatur (°C)") +
   xlab("\nMonat") +
+  geom_text(aes(y=Min), label = scales::comma(tidy_df$Min), vjust = 1.6) +
+  geom_text(aes(y=Max), label = scales::comma(tidy_df$Max), vjust = -1.1) +
+  ylim(-8, 30) +
   ggtitle("Monatliche Durchschnittstemperaturen", subtitle = "für Bern 1981 – 2010") +
   theme(panel.background = element_rect(fill = "#F0F1F5"),
         panel.grid.major = element_line(color = "white", size = 0.8),
