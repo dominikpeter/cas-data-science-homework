@@ -22,7 +22,7 @@ df <- url %>%
   .[[6]] %>% 
   na.omit(.) %>% 
   as.data.table(.) %>% 
-  .[, 1:13]
+  .[, 1:13, with = FALSE]
 
 setnames(df, 1, "typ")
 
@@ -52,20 +52,22 @@ head(tidy_df)
 # plotting 
 # ------------------------------------------------------------------------------------------------
 mean_temp <- mean(tidy_df$Mittelwert)
+min <- scales::comma(tidy_df$Min)
+max <- scales::comma(tidy_df$Max)
 
 tidy_df  %>% 
   ggplot(aes(x = Monat, y = Mittelwert)) +
   geom_point(size = 1.5, color = "#444B54") +
-  geom_hline(yintercept = mean_temp, color = "#2980B9", size = 1.5, alpha = 0.2) +
+  geom_hline(yintercept = mean_temp, color = "#2980B9", size = 1.5, alpha = 0.2, linetype = 2) +
   geom_errorbar(aes(ymin = Min, ymax = Max), width = .4, color = "#444B54", size = 3.5) +
   ylab("\nTemperatur (°C)") +
   xlab("\nMonat") +
-  geom_text(aes(y=Min), label = scales::comma(tidy_df$Min), vjust = 1.6) +
-  geom_text(aes(y=Max), label = scales::comma(tidy_df$Max), vjust = -1.1) +
+  geom_text(aes(y=Min), label = min, vjust = 1.9) +
+  geom_text(aes(y=Max), label = max, vjust = -1.1) +
   ylim(-8, 30) +
   ggtitle("Monatliche Durchschnittstemperaturen", subtitle = "für Bern 1981 – 2010") +
-  theme(panel.background = element_rect(fill = "#F0F1F5"),
-        panel.grid.major = element_line(color = "white", size = 0.8),
+  theme(panel.background = element_blank(),
+        # panel.grid.major = element_line(color = "#F0F1F5", size = 0.2),
         panel.grid.minor = element_blank())
 
 
