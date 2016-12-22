@@ -11,7 +11,8 @@ library(magrittr)
 library(foreign)
 library(ggplot2)
 library(stringr)
-library(broom)
+library(pander)
+# library(broom)
 
 raw_df <- read.dta("http://www.farys.org/daten/ebay.dta") %>% as.data.table(.)
 # sold: Ob das Mobiltelefon verkauft wurde
@@ -64,11 +65,12 @@ df %>%
 # Haben das Rating und die Thumbnails einen Einfluss auf den Verkaufspreis?
 # Exportieren Sie eine Regressionstabelle, die beide Modelle beinhaltet.
 
-# df[rating > 0.95] %>%
-#   ggplot(aes(rating, price)) +
-#   geom_point(alpha = 2/4) +
-#   geom_smooth(method = "lm") +
-#   facet_grid(.~cat)
+df[rating > 0.95] %>%
+ ggplot(aes(rating, price)) +
+ geom_point(alpha = 2/4) +
+ geom_smooth(method = "loess") +
+ facet_grid(cat~.)
+
 
 # Linear Model 1
 model_1 <- lm(price ~ cat + rating, data = df)
@@ -81,7 +83,7 @@ summary(model_2)
 # Die Thumbnails haben mit einem P-Value ~ 7.7e-06 einen signifikanten Einfluss auf den Preis.
 # Mit einem Koeffizienten von 6.72 steigt der Preis durchschnittlich um diesen Wert, gegenüber dem Factor "none"
 
-pander::pander(summary(model_2))
+pander::pander(model_2)
 
 
 # analyse listpic
