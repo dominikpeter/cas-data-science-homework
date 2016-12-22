@@ -60,7 +60,7 @@ tidy_df  %>%
   ggplot(aes(x = Monat, y = Mittelwert)) +
   geom_point(size = 1.5, color = "#444B54") +
   geom_hline(yintercept = mean_temp, color = "#2980B9", size = 1.5, alpha = 0.2, linetype = 2) +
-  geom_errorbar(aes(ymin = Min, ymax = Max), width = .4, color = "#444B54", size = 3.5) +
+  geom_errorbar(aes(ymin = Min, ymax = Max), width = .2, color = "#444B54", size = 5) +
   ylab("\nTemperatur (°C)") +
   xlab("\nMonat") +
   geom_text(aes(y=Min), label = min, vjust = 1.9) +
