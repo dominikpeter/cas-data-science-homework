@@ -142,7 +142,7 @@ t_test$conf.int[1:2]
 
 # Der Mittelwert der Nullhypothese liegt innerhlab des Konfidenzintervalls
 # Die NULL Hypothese μ ≥ 10000 kann nicht verworfen werden
-te
+
 
 
 
