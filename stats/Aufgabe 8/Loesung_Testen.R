@@ -197,4 +197,17 @@ t_test
 # Lässt sich aufgrund dieser Stichprobe die Behauptung,
 # dass die Metzgerei mehrheitlich von Frauen besucht wird, bei einem Signifikanzniveau von 5% verwerfen?
 
+store <- read.csv("stats/Aufgabe 8/grocerystore.csv", sep = ";")
+
+frauen <- sum(store$gender == "F")
+n <- nrow(store)
+
+prop.test(frauen, n, alternative="less", correct=FALSE, conf.level = .95)
+
+# Die NULL Hypothese  
+
+
+
+
+
 
