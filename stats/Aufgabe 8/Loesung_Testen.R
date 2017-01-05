@@ -98,7 +98,7 @@ SE <- sigma/sqrt(n)
 
 z <- (xbar - mu0) / SE
 z
-p <- 2 * pnorm(z, lower.tail = ifelse(z > 0, FALSE, TRUE))
+p <- 2 * pnorm(abs(z), lower.tail =  FALSE)
 p
 confint <- qnorm(c(0.025, 0.975), mean = xbar, sd = SE)
 confint
@@ -168,7 +168,7 @@ t_test$conf.int[1:2]
 # ------------------------------------------------------------------------------------------------
 # Aufgabe: Zweiseitiger Test bei μ, σ unbekannt
 # ------------------------------------------------------------------------------------------------
-# Problem: Die Datei „penguins.txt“ enthält eine neue Zufallsstichprobe einer Pinguinkolonie.
+# Problem: Die Datei „penguins.txt“ ent hält eine neue Zufallsstichprobe einer Pinguinkolonie.
 # Laden Sie die Datei mit dem Befehl scan.
 # Lässt sich aufgrund dieser Stichprobe die Behauptung,
 # dass sich das Durchschnittsgewicht der Pinguine nicht verändert hat,
@@ -180,13 +180,13 @@ penguins    # noch in Speicher
 xbar <- mean(penguins)
 
 mu0 <- mean(c(12.4, 11.1)) # ich nehme wieder den recherchierten Mittelwert
-
 s <- sd(penguins)
 n <- length(penguins)
 SE <- s / sqrt(n)
 
 t <- (xbar - mu0) / SE
-p <- 2 * pt(t, df = n-1, lower.tail = ifelse(t > 0, FALSE, TRUE))
+p <- 2 * pt(abs(t), df = n-1, lower.tail = FALSE)
+p
 t_test <- t.test(penguins, mu = mu0, alternative = "two.sided", conf.level = 0.95)
 t_test
 
