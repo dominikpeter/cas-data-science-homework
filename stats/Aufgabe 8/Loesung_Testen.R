@@ -128,6 +128,7 @@ t_test
 t_test$conf.int[1:2]
 # Die NULL Hypothese, dass μ ≥ 10000 kann verworfen werden. p-value = 1.592e-05
 
+?t.test
 
 # ------------------------------------------------------------------------------------------------
 # Aufgabe: Rechtsseitiger Test bei μ, σ unbekannt

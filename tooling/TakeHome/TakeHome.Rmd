@@ -1,0 +1,195 @@
+---
+title: "TakeHome"
+author: "Dominik Peter"
+date: "5 1 2017"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+# Take Home Aufgaben
+
+## Ebay
+
+```{r library, message=FALSE}
+library(data.table)
+library(magrittr)
+library(stringr)
+library(ggplot2)
+library(rvest)
+library(pander)
+library(foreign)
+library(stringr)
+library(pander)
+library(stargazer)
+```
+
+```{r read_ebay}
+raw_df <- read.dta("http://www.farys.org/daten/ebay.dta") %>% as.data.table(.)
+```
+* sold: Ob das Mobiltelefon verkauft wurde
+* price: Der erzielte Verkauftspreis
+* sprice: Der Startpreis der Auktion
+* sepos: Anzahl positiver Bewertungen des Verkäufers
+* seneg: Anzahl negativer Bewertungen des Verkäufers
+* subcat: Das Modell des Mobiltelefons
+* listpic: Kategorialer Indikator, ob die Auktion ein Thumbnail, ein “has-picture-icon” oder kein Thumbnail hat.
+* listbold: Dummy, ob die Auktion fettgedruckt gelistet ist
+* sehasme: Dummy, ob der Verkäufer eine “Me-page” hat oder nicht
+
+```{r wrangling_ebay}
+# Data Wrangling
+raw_df <- raw_df[, rating := sepos/rowSums(.SD), .SDcols = c("sepos", "seneg")]
+raw_df <- raw_df[, `:=` (makellos = factor(rating > .98, levels = c(TRUE, FALSE), labels = c("Ja", "Nein")),
+                         cat = str_replace(subcat, "\\ \\(\\d+\\)", ""))]
+# variablen Zuteilung ist redundant, jedoch wird so die data.table Tabelle in Markdown nicht evaluiert
+
+df <- raw_df[sepos > 11, !"subcat"]
+
+
+pander(rbindlist(list(head(df, 2), tail(df, 2))), style = 'rmarkdown')
+```
+
+### Plotting
+
+```{r plotting, error=FALSE, fig.align='center', message=FALSE, warning=FALSE, fig.width=8, fig.height=6}
+# Es gibt Preise mit NA (nicht verkauft), daher funktioniert der Reorder nicht ohne anonyme Funktion mit na.rm = TRUE
+# Absteigende Anordung mit -1
+gplot <- df %>%
+  ggplot(aes(x=reorder(factor(cat), price, function(x) mean(x, na.rm = TRUE)*-1), y = price)) +
+  geom_boxplot(aes(fill = makellos), notch = TRUE, position = position_dodge(.85)) +
+  scale_fill_manual(values = c("#66CC99", "#FC575E"), name = "Makellos") +
+  xlab("\nKategorie") +
+  ylab("Preis") +
+  ggtitle("Ebay Verkäufe nach Kategorie") +
+  theme(panel.background = element_rect(fill = "#F0F1F5"),
+        panel.grid.major = element_line(color = "white", size = 1.1),
+        panel.grid.minor = element_blank())
+
+gplot
+```
+
+#### Exportieren
+
+```{r export, message=F, error=F, warning=F}
+ggsave("plot_export.pdf", plot = gplot, width = 8, height = 6)
+```
+
+
+Bewertet anhand "Rule of Thumb", dass bei signifikanter Differenz die Notches nicht überlappen sollten.Daher die   Feststellung, dass kein signifikanter Unterschied zwischen den makellosen undnicht makellosen Ratings besteht  
+https://en.wikipedia.org/wiki/Box_plot#Variations
+
+### Regression
+Rechnen Sie zwei kleine Regressionsmodelle für den Preis von verkauften Geräten.
+Modell 1 soll als Prädiktoren den Modelltyp und das Rating beinhalten.
+Modell 2 soll zusätzlich die Variable listpic beinhalten.
+Haben das Rating und die Thumbnails einen Einfluss auf den Verkaufspreis?
+Exportieren Sie eine Regressionstabelle, die beide Modelle beinhaltet.
+
+```{r regression}
+model_1 <- lm(price ~ cat + rating, data = df)
+summary(model_1)
+
+model_2 <- lm(price ~ cat + rating + listpic, data = df)
+summary(model_2)
+```
+
+Die Thumbnails haben mit einem P-Value ~ 7.7e-06 einen signifikanten Einfluss auf den Preis.  
+Mit einem Koeffizienten von 6.72 steigt der Preis, gegenüber dem Factor "none" um diesen Wert
+
+#### Exportieren
+
+```{r export_regression, results='asis'}
+stargazer(model_1, model_2, type = "html")
+```
+
+## Webscraping
+
+### Extrahieren der Tabelle aus Wikipedia
+```{r getdata}
+url <- 'https://de.wikipedia.org/wiki/Bern'
+
+df <- url %>%
+  read_html(.) %>%
+  html_table(fill = TRUE, header = TRUE) %>% 
+  .[[6]] %>% 
+  na.omit(.) %>% 
+  as.data.table(.) %>% 
+  .[, 1:13, with = FALSE]
+
+setnames(df, 1, "typ")
+```
+
+###Transformation und Bereinigung der Daten
+```{r bereinigen, fig.align='center'}
+# convert value to numeric and eliminate NA columns
+to_numeric <- function(x) {
+  x <- str_replace_all(x, ",", "\\.")
+  as.numeric(x)
+}
+months <- colnames(df)[-1]
+# apply function
+df[, months] <- lapply(df[, months, with = FALSE], to_numeric)
+
+tidy_df <- df[1:3] %>%
+  melt(id.vars = "typ", variable.name = "Monat") %>% 
+  dcast(Monat ~ typ)
+
+col_names <- colnames(tidy_df)
+setnames(tidy_df, col_names, c(col_names[1], c("Max", "Min", "Mittelwert")))
+```
+>
+>
+
+### Grafische Darstellung
+
+Just for Fun
+
+```{r plotting_temp, fig.align='center', fig.width=9, fig.height=5, error=FALSE, comment=FALSE}
+mean_temp <- mean(tidy_df$Mittelwert)
+min <- scales::comma(tidy_df$Min)
+max <- scales::comma(tidy_df$Max)
+
+tidy_df  %>% 
+  ggplot(aes(x = Monat, y = Mittelwert)) +
+  geom_point(size = 1.5, color = "#444B54") +
+  geom_hline(yintercept = mean_temp, color = "#2980B9", size = 1.5, alpha = 0.2, linetype = 2) +
+  geom_errorbar(aes(ymin = Min, ymax = Max), width = .5, color = "#444B54", size = 5) +
+  ylab("\nTemperatur (°C)") +
+  xlab("\nMonat") +
+  geom_text(aes(y=Min), label = min, vjust = 1.9) +
+  geom_text(aes(y=Max), label = max, vjust = -1.1) +
+  ylim(-8, 30) +
+  ggtitle("Monatliche Durchschnittstemperaturen", subtitle = "für Bern 1981 – 2010") +
+  theme(panel.background = element_blank(),
+        # panel.grid.major = element_line(color = "#F0F1F5", size = 0.2),
+        panel.grid.minor = element_blank()
+        )
+```
+
+
+### Exportieren
+
+```{r export_webscraping, fig.align='center'}
+
+output <- copy(tidy_df)
+
+output <- output[, `:=` (Max = format(round(Max, 3), nsmall = 3),
+                          Min = format(round(Min, 3), nsmall = 3))][, .(Monat, Max, Min)]
+
+
+pander(output, style = 'rmarkdown')  
+
+```
+ oder mit Stargazer
+ 
+ 
+```{r export_webscraping_stargazer, results='asis', fig.align='centre'}
+stargazer(output, type = "html", summary = FALSE)
+```
+ >
+  
+  
+

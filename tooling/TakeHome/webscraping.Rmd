@@ -12,18 +12,12 @@ library(pander)
 knitr::opts_chunk$set(echo = TRUE)
 ```
 
+>
+>
+
 ## Webscraping
 
-### Laden der Libraries
-```{r cars}
-library(data.table)
-library(magrittr)
-library(stringr)
-library(ggplot2)
-library(rvest, quietly = TRUE)
-```
-
-###Extrahieren der Tabelle aus Wikipedia
+### Extrahieren der Tabelle aus Wikipedia
 ```{r getdata}
 url <- 'https://de.wikipedia.org/wiki/Bern'
 
@@ -38,7 +32,7 @@ df <- url %>%
 setnames(df, 1, "typ")
 ```
 
-###Transformation und Bereinigung der Daten
+### Transformation und Bereinigung der Daten
 ```{r bereinigen, fig.align='center'}
 # convert value to numeric and eliminate NA columns
 to_numeric <- function(x) {
@@ -59,7 +53,10 @@ setnames(tidy_df, col_names, c(col_names[1], c("Max", "Min", "Mittelwert")))
 pander(tidy_df, style = "rmarkdown")
 ```
 
-###Grafische Darstellung
+### Grafische Darstellung
+
+Just for Fun
+
 ```{r plotting, fig.align='center', fig.width=10, fig.height=6, error=FALSE, comment=FALSE}
 mean_temp <- mean(tidy_df$Mittelwert)
 min <- scales::comma(tidy_df$Min)
@@ -81,4 +78,16 @@ tidy_df  %>%
         panel.grid.minor = element_blank()
         )
 ```
+
+### Exportieren
+
+```{r export_webscraping, fig.align='center'}
+panda(tidy_df[, .(Monat, Max, Min)], style = "rmarkdown")
+```
+stargazer(tidy_table, type = "html", summary = FALSE)
+
+
+
+
+
 
