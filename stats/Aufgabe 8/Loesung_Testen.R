@@ -196,7 +196,10 @@ t_test
 # ------------------------------------------------------------------------------------------------
 # Aufgabe: Linksseitiger Test des Populationsanteils p
 # ------------------------------------------------------------------------------------------------
-
-
+# Problem: Die Datei „grocerystore.csv“ enthält eine Zufallsstichprobe von Kunden einer Metzgerei.
+# Neben dem Geschlecht der Kunden wurde auch deren Verweilzeit im Laden notiert.
+# Importieren Sie die Datei mit dem Befehl read.csv.
+# Lässt sich aufgrund dieser Stichprobe die Behauptung,
+# dass die Metzgerei mehrheitlich von Frauen besucht wird, bei einem Signifikanzniveau von 5% verwerfen?
 
 
