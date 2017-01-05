@@ -6,7 +6,9 @@
 # ------------------------------------------------------------------------------------------------
 
 rm(list=ls())
+set.seed(2323)
 # library(magrittr)
+
 
 # ------------------------------------------------------------------------------------------------
 # Aufgabe: Linksseitiger Test bei μ, σ bekannt
@@ -24,7 +26,7 @@ xbar <- mean(lightbulb)   # sample mean
 mu0 <- 10000              # hypothesized value 
 sigma <- 120              # population standard deviation 
 n <- length(lightbulb)    # sample size 
-SE <- (sigma/sqrt(n))     # Standard Error
+SE <- sigma/sqrt(n)     # Standard Error
 z <- (xbar-mu0)/SE
 
 alpha <- .01
@@ -55,7 +57,7 @@ xbar <- mean(cookies)
 mu0 <- 2
 sigma <- 0.25
 n <- length(cookies)
-SE <- (sigma/sqrt(n))
+SE <- sigma/sqrt(n)
 z <- (xbar-mu0) / SE
 
 alpha <- 0.1
@@ -85,6 +87,24 @@ penguins
 xbar <- mean(penguins)
 # mu0 <- Mean der NULL Hypothese fehlt???
 
+# mu0 anhand Recherche
+# The mean body mass of adults from Marion Island was 12.4 kg (27 lb) for 70 males and 11.1 kg (24 lb) for 71 females
+# https://en.wikipedia.org/wiki/King_penguin
+mu0 <- mean(c(12.4, 11.1))
+mu0
+n <- length(penguins)
+sigma <- 2.5
+SE <- sigma/sqrt(n)
+
+z <- (xbar - mu0) / SE
+z
+p <- 2 * pnorm(z, lower.tail = ifelse(z > 0, FALSE, TRUE))
+p
+confint <- qnorm(c(0.025, 0.975), mean = xbar, sd = SE)
+confint
+# TeachingDemos::z.test(penguins, mu = mu0,stdev = 2.5, alternative = "two.sided", conf.level = 0.95)
+# mit einem p-value von 8.211e-13 kann die Null Hypothese bei einem Signifikanzniveau von 5% verworfen werden.
+ 
 
 
 # ------------------------------------------------------------------------------------------------
@@ -142,6 +162,34 @@ t_test$conf.int[1:2]
 
 # Der Mittelwert der Nullhypothese liegt innerhlab des Konfidenzintervalls
 # Die NULL Hypothese μ ≥ 10000 kann nicht verworfen werden
+
+
+
+# ------------------------------------------------------------------------------------------------
+# Aufgabe: Zweiseitiger Test bei μ, σ unbekannt
+# ------------------------------------------------------------------------------------------------
+# Problem: Die Datei „penguins.txt“ enthält eine neue Zufallsstichprobe einer Pinguinkolonie.
+# Laden Sie die Datei mit dem Befehl scan.
+# Lässt sich aufgrund dieser Stichprobe die Behauptung,
+# dass sich das Durchschnittsgewicht der Pinguine nicht verändert hat,
+# bei einem Signifikanzniveau von 5% verwerfen?
+
+penguins    # noch in Speicher
+# mu0 fehlt wieder
+
+xbar <- mean(penguins)
+
+mu0 <- mean(c(12.4, 11.1)) # ich nehme wieder den recherchierten Mittelwert
+
+s <- sd(penguins)
+n <- length(penguins)
+SE <- s / sqrt(n)
+
+t <- (xbar - mu0) / SE
+
+
+
+
 
 
 
