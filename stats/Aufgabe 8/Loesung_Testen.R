@@ -86,11 +86,7 @@ penguins
 
 xbar <- mean(penguins)
 # mu0 <- Mean der NULL Hypothese fehlt???
-
-# mu0 anhand Recherche
-# The mean body mass of adults from Marion Island was 12.4 kg (27 lb) for 70 males and 11.1 kg (24 lb) for 71 females
-# https://en.wikipedia.org/wiki/King_penguin
-mu0 <- mean(c(12.4, 11.1))
+mu0 <- 15.4 #aus Übungsfolien
 mu0
 n <- length(penguins)
 sigma <- 2.5
@@ -103,9 +99,8 @@ p
 confint <- qnorm(c(0.025, 0.975), mean = xbar, sd = SE)
 confint
 # TeachingDemos::z.test(penguins, mu = mu0,stdev = 2.5, alternative = "two.sided", conf.level = 0.95)
-# mit einem p-value von 8.211e-13 kann die Null Hypothese bei einem Signifikanzniveau von 5% verworfen werden.
+# mit einem p-value = 0.1389 kann die Null Hypothese bei einem Signifikanzniveau von 5% *nicht* verworfen werden.
  
-
 
 # ------------------------------------------------------------------------------------------------
 # Aufgabe: Linksseitiger Test bei μ, σ unbekannt
@@ -179,7 +174,7 @@ penguins    # noch in Speicher
 
 xbar <- mean(penguins)
 
-mu0 <- mean(c(12.4, 11.1)) # ich nehme wieder den recherchierten Mittelwert
+mu0 <- 
 s <- sd(penguins)
 n <- length(penguins)
 SE <- s / sqrt(n)
