@@ -186,12 +186,16 @@ n <- length(penguins)
 SE <- s / sqrt(n)
 
 t <- (xbar - mu0) / SE
+p <- 2 * pt(t, df = n-1, lower.tail = ifelse(t > 0, FALSE, TRUE))
+t_test <- t.test(penguins, mu = mu0, alternative = "two.sided", conf.level = 0.95)
+t_test
+
+# mit einem p-value = 9.478e-08 kann die Null Hypothese bei einem Signifikanzniveau von 5% verworfen werden
 
 
-
-
-
-
+# ------------------------------------------------------------------------------------------------
+# Aufgabe: Linksseitiger Test des Populationsanteils p
+# ------------------------------------------------------------------------------------------------
 
 
 
