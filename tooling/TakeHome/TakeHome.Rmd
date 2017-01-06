@@ -1,5 +1,5 @@
 ---
-title: "TakeHome"
+title: "Take Home"
 author: "Dominik Peter"
 date: "5 1 2017"
 output: html_document
@@ -9,7 +9,7 @@ output: html_document
 knitr::opts_chunk$set(echo = TRUE)
 ```
 
-# Take Home Aufgaben
+# Lösung zu Take Home Aufgaben
 
 ## Ebay
 
@@ -27,7 +27,8 @@ library(stargazer)
 ```
 
 ```{r read_ebay}
-raw_df <- read.dta("http://www.farys.org/daten/ebay.dta") %>% as.data.table(.)
+df_ebay <- read.dta("http://www.farys.org/daten/ebay.dta") %>%
+  as.data.table(.)
 ```
 * sold: Ob das Mobiltelefon verkauft wurde
 * price: Der erzielte Verkauftspreis
@@ -39,46 +40,55 @@ raw_df <- read.dta("http://www.farys.org/daten/ebay.dta") %>% as.data.table(.)
 * listbold: Dummy, ob die Auktion fettgedruckt gelistet ist
 * sehasme: Dummy, ob der Verkäufer eine “Me-page” hat oder nicht
 
-```{r wrangling_ebay}
+```{r wrangling_ebay, fig.align='center'}
 # Data Wrangling
-raw_df <- raw_df[, rating := sepos/rowSums(.SD), .SDcols = c("sepos", "seneg")]
-raw_df <- raw_df[, `:=` (makellos = factor(rating > .98, levels = c(TRUE, FALSE), labels = c("Ja", "Nein")),
-                         cat = str_replace(subcat, "\\ \\(\\d+\\)", ""))]
-# variablen Zuteilung ist redundant, jedoch wird so die data.table Tabelle in Markdown nicht evaluiert
+df_ebay <- df_ebay[, rating := sepos/rowSums(.SD), .SDcols = c("sepos", "seneg")]
+df_ebay <- df_ebay[, `:=` (makellos = factor(rating > .98, levels = c(TRUE, FALSE),
+                                             labels = c("Ja", "Nein")),
+                           cat = str_replace(subcat, "\\ \\(\\d+\\)", ""))]
+# Variablenzuteilung ist redundant, jedoch wird so die data.table Tabelle in Markdown nicht evaluiert
 
-df <- raw_df[sepos > 11, !"subcat"]
+df_ebay_final <- df_ebay[sepos > 11, !"subcat"]
 
+set.seed(2323) #wegen Sampling
 
-pander(rbindlist(list(head(df, 2), tail(df, 2))), style = 'rmarkdown')
+df_ebay_final %>%
+  sample(replace = FALSE) %>%
+  head(3) %>%
+  pander(.)
 ```
 
 ### Plotting
 
-```{r plotting, error=FALSE, fig.align='center', message=FALSE, warning=FALSE, fig.width=8, fig.height=6}
-# Es gibt Preise mit NA (nicht verkauft), daher funktioniert der Reorder nicht ohne anonyme Funktion mit na.rm = TRUE
+```{r plotting, error=FALSE, fig.align='center', message=FALSE, warning=FALSE, fig.width=10, fig.height=6}
+# Es gibt Preise mit NA (nicht verkauft), daher funktioniert der Reorder nicht
+# ohne anonyme Funktion mit na.rm = TRUE möglich
 # Absteigende Anordung mit -1
-gplot <- df %>%
+gplot <- df_ebay_final %>%
   ggplot(aes(x=reorder(factor(cat), price, function(x) mean(x, na.rm = TRUE)*-1), y = price)) +
   geom_boxplot(aes(fill = makellos), notch = TRUE, position = position_dodge(.85)) +
-  scale_fill_manual(values = c("#66CC99", "#FC575E"), name = "Makellos") +
+  scale_fill_manual(values = c("#66CC99", "#FC575E"), name = "Positive Bewertung > 98 %") +
   xlab("\nKategorie") +
-  ylab("Preis") +
-  ggtitle("Ebay Verkäufe nach Kategorie") +
-  theme(panel.background = element_rect(fill = "#F0F1F5"),
+  ylab("Preis\n") +
+  ggtitle("Verkaufspreise von Mobiltelefonen auf Ebay",
+          subtitle = "Verkaufspreis nach Gerätetyp und Bewertungen") +
+  theme(panel.background = element_blank(),#element_rect(fill = "#F0F1F5"),
         panel.grid.major = element_line(color = "white", size = 1.1),
-        panel.grid.minor = element_blank())
+        panel.grid.minor = element_blank(),
+        legend.position = c(.9, .9))
 
 gplot
 ```
 
 #### Exportieren
 
+Exportieren mit der ggplot2 Funktion ggsave()
 ```{r export, message=F, error=F, warning=F}
-ggsave("plot_export.pdf", plot = gplot, width = 8, height = 6)
+ggsave("plot_export.pdf", plot = gplot, width = 10, height = 6)
 ```
 
-
-Bewertet anhand "Rule of Thumb", dass bei signifikanter Differenz die Notches nicht überlappen sollten.Daher die   Feststellung, dass kein signifikanter Unterschied zwischen den makellosen undnicht makellosen Ratings besteht  
+Bewertet anhand "Rule of Thumb", dass bei signifikanter Differenz die Notches nicht überlappen sollten.  
+Daher die Feststellung, dass kein signifikanter Unterschied zwischen den makellosen und nicht makellosen Ratings besteht.  
 https://en.wikipedia.org/wiki/Box_plot#Variations
 
 ### Regression
@@ -88,22 +98,30 @@ Modell 2 soll zusätzlich die Variable listpic beinhalten.
 Haben das Rating und die Thumbnails einen Einfluss auf den Verkaufspreis?
 Exportieren Sie eine Regressionstabelle, die beide Modelle beinhaltet.
 
-```{r regression}
-model_1 <- lm(price ~ cat + rating, data = df)
+```{r regression, fig.align='center'}
+model_1 <- lm(price ~ cat + rating, data = df_ebay_final)
 summary(model_1)
 
-model_2 <- lm(price ~ cat + rating + listpic, data = df)
+model_2 <- lm(price ~ cat + rating + listpic, data = df_ebay_final)
 summary(model_2)
 ```
 
+##### Interpretation
 Die Thumbnails haben mit einem P-Value ~ 7.7e-06 einen signifikanten Einfluss auf den Preis.  
-Mit einem Koeffizienten von 6.72 steigt der Preis, gegenüber dem Factor "none" um diesen Wert
+Mit einem Koeffizienten von 6.72 steigt der Preis, gegenüber dem Factor "none" um diesen Wert.
 
 #### Exportieren
 
-```{r export_regression, results='asis'}
-stargazer(model_1, model_2, type = "html")
+Exportieren des Regressionsmodells mit Hilfe von Stargazer
+```{r export_regression, results='asis', message=F, warning=F, fig.align='center'}
+stargazer(model_1, model_2,
+          type = "html",
+          covariate.labels = c("Nokia 6230","Nokia 6310i", "Samsung E700", "Samsung E800", 
+                               "Sony T610", "Sony T630", "rating", "auction-has-picture", 
+                               "auction-has-thumbnail"))
 ```
+
+***
 
 ## Webscraping
 
@@ -111,7 +129,8 @@ stargazer(model_1, model_2, type = "html")
 ```{r getdata}
 url <- 'https://de.wikipedia.org/wiki/Bern'
 
-df <- url %>%
+#laden une bereinigen
+df_web <- url %>%
   read_html(.) %>%
   html_table(fill = TRUE, header = TRUE) %>% 
   .[[6]] %>% 
@@ -119,40 +138,66 @@ df <- url %>%
   as.data.table(.) %>% 
   .[, 1:13, with = FALSE]
 
-setnames(df, 1, "typ")
+setnames(df_web, 1, "typ")
 ```
 
-###Transformation und Bereinigung der Daten
+### Transformation und Bereinigung der Daten
 ```{r bereinigen, fig.align='center'}
 # convert value to numeric and eliminate NA columns
 to_numeric <- function(x) {
   x <- str_replace_all(x, ",", "\\.")
   as.numeric(x)
 }
-months <- colnames(df)[-1]
-# apply function
-df[, months] <- lapply(df[, months, with = FALSE], to_numeric)
 
-tidy_df <- df[1:3] %>%
+months <-  colnames(df_web)[-1]
+# apply function
+df_web[, months] <- lapply(df_web[, months, with = FALSE], to_numeric)
+
+df_web_tidy <- df_web[1:3] %>%
   melt(id.vars = "typ", variable.name = "Monat") %>% 
   dcast(Monat ~ typ)
 
-col_names <- colnames(tidy_df)
-setnames(tidy_df, col_names, c(col_names[1], c("Max", "Min", "Mittelwert")))
+col_names <- colnames(df_web_tidy)
+setnames(df_web_tidy, col_names, c(col_names[1], c("Max", "Min", "Mittelwert")))
 ```
->
->
 
+### Exportieren
+
+Exportieren als Pandoc Objekt
+
+```{r export_webscraping, fig.align='center'}
+
+df_web_output <- copy(df_web_tidy) #Kopieren, da ich die Zahlen in Strings umwandle
+
+df_web_output <- df_web_output[, `:=` (Max = format(round(Max, 3), nsmall = 3),
+                                       Min = format(round(Min, 3), nsmall = 3))][, .(Monat, Max, Min)]
+df_web_output %>% pander()  
+
+```
+ 
+Die Ausgabe des Objekts mit Stargazer
+
+```{r export_webscraping_stargazer, results='asis'}
+stargazer(df_web_output, type = "html", summary = FALSE)
+```
+  
+###    
+Im Aufgabenbeispiel haben alle Werte 3 Dezimalstellen, bis auf die 3 im April -dies wäre sicherlich umsetzbar.
+Ich habe mich jedoch dagegen entschieden, da so jetzt alle Werte 3 Dezimalstellen aufweisen.
+
+***
+  
 ### Grafische Darstellung
+#### Nicht Teil der Aufgabenstellung
 
 Just for Fun
 
-```{r plotting_temp, fig.align='center', fig.width=9, fig.height=5, error=FALSE, comment=FALSE}
-mean_temp <- mean(tidy_df$Mittelwert)
-min <- scales::comma(tidy_df$Min)
-max <- scales::comma(tidy_df$Max)
+```{r plotting_temp, fig.align='center', fig.width=10, fig.height=6, error=FALSE, comment=FALSE}
+mean_temp <- mean(df_web_tidy$Mittelwert)
+min <- scales::comma(df_web_tidy$Min)
+max <- scales::comma(df_web_tidy$Max)
 
-tidy_df  %>% 
+df_web_tidy  %>% 
   ggplot(aes(x = Monat, y = Mittelwert)) +
   geom_point(size = 1.5, color = "#444B54") +
   geom_hline(yintercept = mean_temp, color = "#2980B9", size = 1.5, alpha = 0.2, linetype = 2) +
@@ -170,26 +215,4 @@ tidy_df  %>%
 ```
 
 
-### Exportieren
-
-```{r export_webscraping, fig.align='center'}
-
-output <- copy(tidy_df)
-
-output <- output[, `:=` (Max = format(round(Max, 3), nsmall = 3),
-                          Min = format(round(Min, 3), nsmall = 3))][, .(Monat, Max, Min)]
-
-
-pander(output, style = 'rmarkdown')  
-
-```
- oder mit Stargazer
- 
- 
-```{r export_webscraping_stargazer, results='asis', fig.align='centre'}
-stargazer(output, type = "html", summary = FALSE)
-```
- >
-  
-  
-
+***
