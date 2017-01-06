@@ -127,16 +127,6 @@ $(document).ready(function () {
 <h1>Lösung zu Take Home Aufgaben</h1>
 <div id="ebay" class="section level2">
 <h2>Ebay</h2>
-<pre class="r"><code>library(data.table)
-library(magrittr)
-library(stringr)
-library(ggplot2)
-library(rvest)
-library(pander)
-library(foreign)
-library(stringr)
-library(pander)
-library(stargazer)</code></pre>
 <pre class="r"><code>df_ebay &lt;- read.dta(&quot;http://www.farys.org/daten/ebay.dta&quot;) %&gt;%
   as.data.table(.)</code></pre>
 <ul>
