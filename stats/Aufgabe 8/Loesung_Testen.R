@@ -1,6 +1,6 @@
 
 # ------------------------------------------------------------------------------------------------
-# Title:  Testen
+# Title:  Lösung zu Aufgaben Testen
 # Autor:  Dominik Peter
 # Date:   2017-01-05
 # ------------------------------------------------------------------------------------------------
@@ -8,7 +8,6 @@
 rm(list=ls())
 set.seed(2323)
 # library(magrittr)
-
 
 # ------------------------------------------------------------------------------------------------
 # Aufgabe: Linksseitiger Test bei μ, σ bekannt
@@ -86,16 +85,14 @@ penguins
 
 xbar <- mean(penguins)
 # mu0 <- Mean der NULL Hypothese fehlt???
-mu0 <- 15.4 #aus Übungsfolien
+mu0 <- 15.4 # entnommen aus Übungsfolien
 mu0
 n <- length(penguins)
 sigma <- 2.5
 SE <- sigma/sqrt(n)
 
-z <- (xbar - mu0) / SE
-z
-p <- 2 * pnorm(abs(z), lower.tail =  FALSE)
-p
+z <- (xbar - mu0) / SE; z
+p <- 2 * pnorm(abs(z), lower.tail =  FALSE); p
 confint <- qnorm(c(0.025, 0.975), mean = xbar, sd = SE)
 confint
 # TeachingDemos::z.test(penguins, mu = mu0,stdev = 2.5, alternative = "two.sided", conf.level = 0.95)
@@ -199,16 +196,45 @@ t_test
 # dass die Metzgerei mehrheitlich von Frauen besucht wird, bei einem Signifikanzniveau von 5% verwerfen?
 
 store <- read.csv("stats/Aufgabe 8/grocerystore.csv", sep = ";")
-
 frauen <- sum(store$gender == "F")
 n <- nrow(store)
 
-prop.test(frauen, n, alternative="less", correct=FALSE, conf.level = .95)
+prop.test(frauen, n, alternative="less", correct=FALSE, conf.level = .95, correct = FALSE)
 
-# Die NULL Hypothese  
-
-
+# Die NULL Hypothese, kann nicht verworfen werden.
 
 
+# ------------------------------------------------------------------------------------------------
+# Aufgabe: Rechtsseitiger Test des Populationsanteils p
+# ------------------------------------------------------------------------------------------------
+# Problem: Um nicht in Schwierigkeiten zu geraten,
+# darf der Anteil geplatzter Kredite einer Bank den Anteil von 12% nicht überschreiten.
+# Die Datei „creditcards.csv“ enthält die Ergebnisse einer Untersuchung unter 1000 Kunden der Bank.
+# Importieren Sie die Datei mit dem Befehl read.csv.
+# Kann die Bank, bei einem Signifikanzniveau von 5%, aufgrund dieser Stichprobe sicher sein,
+# dass die geplatzten Kredite den Anteil von 12% nicht übersteigen?
+
+credit <- read.csv("stats/Aufgabe 8/creditcards.csv", sep = ";")
+bounced <- sum(credit$bounced == "Yes")
+n <- nrow(credit)
+prop.test(bounced, n, p = .12, alternative = "greater", conf.level = .95, correct = FALSE)
+
+# Die Null Hypothese, dass die Anteil nicht über 12 % ist, wird verworfen und die
+# es wird die Alternativhypothse akzepieter, dass der Anteil über 12 % ist
+
+
+# ------------------------------------------------------------------------------------------------
+# Lösung: Zweiseitiger Test des Populationsanteils p
+# ------------------------------------------------------------------------------------------------
+# Problem: Der Anteil der Rechtshänder unter den Studierenden von survey wird auf 90% geschätzt.
+# Lässt sich diese Behauptung bei einem Signifikanzniveau von 1% verwerfen?
+
+library(MASS)
+rechts <- sum(survey$W.Hnd == "Right", na.rm = TRUE)
+n <- sum(!is.na(survey$W.Hnd))
+
+prop.test(rechts, n, p = .9, conf.level = 0.99, correct = FALSE, alternative = "two.sided")
+
+# Die Null Hypothese, dass der Anteil = 0.9 kann nicht verworfen werden.
 
 
