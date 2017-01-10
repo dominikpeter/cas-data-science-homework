@@ -16,6 +16,8 @@ rm(list=ls())
 # dass die Glühbirnen eine Mindestlebensdauer von 10′000 Stunden besitzen, bei einem Signifikanzniveau von 1% verwerfen?
 # Die Standardabweichung beträgt 120 Stunden.
 
+# H0: µ > 100000 Stunden, Ha: µ < 100000 Stunden
+
 lightbulb <- scan("stats/Aufgabe 8/lightbulbs.txt")
 
 lightbulb
