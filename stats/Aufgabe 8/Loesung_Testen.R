@@ -16,7 +16,7 @@ rm(list=ls())
 # dass die Glühbirnen eine Mindestlebensdauer von 10′000 Stunden besitzen, bei einem Signifikanzniveau von 1% verwerfen?
 # Die Standardabweichung beträgt 120 Stunden.
 
-# H0: µ > 100000 Stunden, Ha: µ < 100000 Stunden
+# H0: µ ≥ 10'000 Stunden, Ha: µ < 10'000 Stunden
 
 lightbulb <- scan("stats/Aufgabe 8/lightbulbs.txt")
 
@@ -26,7 +26,7 @@ xbar <- mean(lightbulb)   # sample mean
 mu0 <- 10000              # hypothesized value 
 sigma <- 120              # population standard deviation 
 n <- length(lightbulb)    # sample size 
-SE <- sigma/sqrt(n)     # Standard Error
+SE <- sigma/sqrt(n)       # Standard Error
 z <- (xbar-mu0)/SE
 
 alpha <- .01
@@ -35,7 +35,7 @@ p <- pnorm(z); p
 confint <- qnorm(1-alpha, mean = xbar, sd = SE)
 c(Inf, confint)
 # Das obere 99% Quantile der Stichprobendaten ist mit 9963.201 kleiner als die vom Hersteller angegebenen 10'000
-# Die NULL Hypothese, dass μ ≥ 10000 wird verworfen.
+# Die NULL Hypothese, dass μ ≥ 10'000 wird verworfen. Es wird die Alternativhypothese akzeptiert.
 
 # TeachingDemos::z.test(lightbulb, mu0, stdev = 120, alternative = "less", conf.level = 0.99)
 
@@ -48,6 +48,8 @@ c(Inf, confint)
 # Lässt sich aufgrund dieser Stichprobe die Behauptung des Herstellers,
 # dass die Kekse einen maximalen Anteil von 2 g enthalten, bei einem Signifikanzniveau von 10% verwerfen?
 # Die Standardabweichung beträgt 0.25 g.
+
+# H0: µ ≤ 2 g, Ha: µ > 2 g
 
 cookies <- scan("stats/Aufgabe 8/cookies.txt")
 cookies
@@ -69,7 +71,7 @@ c(confint, Inf)
 
 # TeachingDemos::z.test(cookies, mu0, stdev = 0.25, alternative = "greater", conf.level = 0.9)
 
-# Hinsichtlich der vorliegenden Stichprobe kann die NULL Hypothese, dass μ ≤ 2 *nicht* verworfen werden
+# Hinsichtlich der vorliegenden Stichprobe kann die NULL Hypothese, dass μ ≤ 2 g *nicht* verworfen werden
 
 
 
@@ -80,6 +82,8 @@ c(confint, Inf)
 # Laden Sie die Datei mit dem Befehl scan.
 # Lässt sich aufgrund dieser Stichprobe die Behauptung, dass sich das Durchschnittsgewicht der Pinguine
 # nicht verändert hat, bei einem Signifikanzniveau von 5% verwerfen? Die Standardabweichung beträgt 2.5 kg.
+
+# H0: µ = 15.4 kg, Ha: µ ≠ 15.4 g
 
 penguins <- scan("stats/Aufgabe 8/penguins.txt")
 penguins
@@ -97,7 +101,8 @@ p <- 2 * pnorm(abs(z), lower.tail =  FALSE); p
 confint <- qnorm(c(0.025, 0.975), mean = xbar, sd = SE)
 confint
 # TeachingDemos::z.test(penguins, mu = mu0, stdev = 2.5, alternative = "two.sided", conf.level = 0.95)
-# mit einem p-value = 0.1389 kann die Null Hypothese bei einem Signifikanzniveau von 5% *nicht* verworfen werden.
+
+# mit einem P-Value = 0.1389 kann die Null Hypothese bei einem Signifikanzniveau von 5% *nicht* verworfen werden.
  
 
 # ------------------------------------------------------------------------------------------------
@@ -107,6 +112,8 @@ confint
 # Laden Sie die Datei mit dem Befehl scan. Lässt sich aufgrund dieser Stichprobe die Behauptung des Herstellers,
 # dass die Glühbirnen eine Mindestlebensdauer von 10′000 Stunden besitzen,
 # bei einem Signifikanzniveau von 1% verwerfen?
+
+# H0: µ ≥ 10'000 Stunden, Ha: µ < 10'000 Stunden
 
 lightbulb # noch im Speicher
   
@@ -133,6 +140,8 @@ t_test$conf.int[1:2]
 # Laden Sie die Datei mit dem Befehl scan.
 # Lässt sich aufgrund dieser Stichprobe die Behauptung des Herstellers,
 # dass die Kekse einen maximalen Anteil von 2 g enthalten, bei einem Signifikanzniveau von 10% verwerfen?
+
+# H0: µ ≤ 2 g, Ha: µ > 2 g
 
 cookies # noch im Speicher
 
@@ -165,6 +174,8 @@ t_test$conf.int[1:2]
 # dass sich das Durchschnittsgewicht der Pinguine nicht verändert hat,
 # bei einem Signifikanzniveau von 5% verwerfen?
 
+# H0: µ = 15.4 kg, Ha: µ ≠ 15.4 g
+
 penguins    # noch in Speicher
 # mu0 fehlt wieder
 
@@ -193,6 +204,8 @@ t_test
 # Lässt sich aufgrund dieser Stichprobe die Behauptung,
 # dass die Metzgerei mehrheitlich von Frauen besucht wird, bei einem Signifikanzniveau von 5% verwerfen?
 
+# H0: p ≥ 60%, Ha: p < 60%
+
 store <- read.csv("stats/Aufgabe 8/grocerystore.csv", sep = ";")
 frauen <- sum(store$gender == "F")
 n <- nrow(store)
@@ -212,6 +225,8 @@ prop.test(frauen, n, alternative="less", conf.level = .95, correct = FALSE)
 # Kann die Bank, bei einem Signifikanzniveau von 5%, aufgrund dieser Stichprobe sicher sein,
 # dass die geplatzten Kredite den Anteil von 12% nicht übersteigen?
 
+# H0: p ≤ 12%, Ha: p > 12%
+
 credit <- read.csv("stats/Aufgabe 8/creditcards.csv", sep = ";")
 bounced <- sum(credit$bounced == "Yes")
 n <- nrow(credit)
@@ -226,6 +241,8 @@ prop.test(bounced, n, p = .12, alternative = "greater", conf.level = .95, correc
 # ------------------------------------------------------------------------------------------------
 # Problem: Der Anteil der Rechtshänder unter den Studierenden von survey wird auf 90% geschätzt.
 # Lässt sich diese Behauptung bei einem Signifikanzniveau von 1% verwerfen?
+
+# H0: p = 90%, Ha: p ≠ 90%
 
 library(MASS)
 rechts <- sum(survey$W.Hnd == "Right", na.rm = TRUE)
