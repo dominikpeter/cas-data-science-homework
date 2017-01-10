@@ -6,8 +6,7 @@
 # ------------------------------------------------------------------------------------------------
 
 rm(list=ls())
-set.seed(2323)
-# library(magrittr)
+
 
 # ------------------------------------------------------------------------------------------------
 # Aufgabe: Linksseitiger Test bei μ, σ bekannt
@@ -29,13 +28,13 @@ SE <- sigma/sqrt(n)     # Standard Error
 z <- (xbar-mu0)/SE
 
 alpha <- .01
-p <- pnorm(z)
-p > alpha
+p <- pnorm(z); p
 
 confint <- qnorm(1-alpha, mean = xbar, sd = SE)
-c(Inf, xbar, confint)
-# Das obere 99% Quantile ist mit 9963.201 kleiner als die vom Hersteller angegebenen 10'000
-# Die NULL Hypothese, dass μ ≥ 10000 kann verworfen werden. 
+c(Inf, confint)
+# Das obere 99% Quantile der Stichprobendaten ist mit 9963.201 kleiner als die vom Hersteller angegebenen 10'000
+# Die NULL Hypothese, dass μ ≥ 10000 wird verworfen.
+
 # TeachingDemos::z.test(lightbulb, mu0, stdev = 120, alternative = "less", conf.level = 0.99)
 
 
@@ -47,7 +46,6 @@ c(Inf, xbar, confint)
 # Lässt sich aufgrund dieser Stichprobe die Behauptung des Herstellers,
 # dass die Kekse einen maximalen Anteil von 2 g enthalten, bei einem Signifikanzniveau von 10% verwerfen?
 # Die Standardabweichung beträgt 0.25 g.
-
 
 cookies <- scan("stats/Aufgabe 8/cookies.txt")
 cookies
@@ -61,15 +59,16 @@ z <- (xbar-mu0) / SE
 
 alpha <- 0.1
 
-p <- pnorm(z, lower.tail = FALSE)
-p > alpha
-xbar
+p <- pnorm(z, lower.tail = FALSE); p
+
 
 confint <- qnorm(alpha, mean = xbar, sd = SE)
-c(confint, xbar, Inf)
+c(confint, Inf)
 
-# Mit der vorligenden Stichprobe kann die NULL Hypothese, dass μ ≤ 2 *nicht* verworfen werden
 # TeachingDemos::z.test(cookies, mu0, stdev = 0.25, alternative = "greater", conf.level = 0.9)
+
+# Hinsichtlich der vorliegenden Stichprobe kann die NULL Hypothese, dass μ ≤ 2 *nicht* verworfen werden
+
 
 
 # ------------------------------------------------------------------------------------------------
@@ -95,7 +94,7 @@ z <- (xbar - mu0) / SE; z
 p <- 2 * pnorm(abs(z), lower.tail =  FALSE); p
 confint <- qnorm(c(0.025, 0.975), mean = xbar, sd = SE)
 confint
-# TeachingDemos::z.test(penguins, mu = mu0,stdev = 2.5, alternative = "two.sided", conf.level = 0.95)
+# TeachingDemos::z.test(penguins, mu = mu0, stdev = 2.5, alternative = "two.sided", conf.level = 0.95)
 # mit einem p-value = 0.1389 kann die Null Hypothese bei einem Signifikanzniveau von 5% *nicht* verworfen werden.
  
 
@@ -117,15 +116,13 @@ SE <- s/sqrt(n)
 t <- (xbar - mu0) / SE
 
 alpha <- 0.01
-p <- pt(t, df = n-1)
-p > alpha
+p <- pt(t, df = n-1); p
 
 t_test <- t.test(lightbulb, mu = mu0, alternative = "less", conf.level = 0.99)
 t_test
 t_test$conf.int[1:2]
-# Die NULL Hypothese, dass μ ≥ 10000 kann verworfen werden. p-value = 1.592e-05
+# Die NULL Hypothese, dass μ ≥ 10000 kann verworfen werden. P-Value = 1.592e-05
 
-?t.test
 
 # ------------------------------------------------------------------------------------------------
 # Aufgabe: Rechtsseitiger Test bei μ, σ unbekannt
@@ -143,18 +140,17 @@ n <- length(cookies)
 s <- sd(cookies)
 SE <- s/sqrt(n)
 t <- (xbar - mu0) / SE
-t
 
 alpha <- 0.1
-p <- pt(t, df = n-1, lower.tail = FALSE)
-p > alpha
+p <- pt(t, df = n-1, lower.tail = FALSE); p
+
 
 t_test <- t.test(cookies, mu = mu0, alternative = "greater", conf.level = 0.9)
 t_test
 t_test$conf.int[1:2]
 
-# Der Mittelwert der Nullhypothese liegt innerhlab des Konfidenzintervalls
-# Die NULL Hypothese μ ≥ 10000 kann nicht verworfen werden
+# Der Mittelwert der Nullhypothese liegt innerhalb des Konfidenzintervalls
+# Die NULL Hypothese μ ≥ 2 kann nicht verworfen werden
 
 
 
@@ -172,7 +168,7 @@ penguins    # noch in Speicher
 
 xbar <- mean(penguins)
 
-mu0 <- 
+mu0 <- 15.4 # entnommen aus Übungsfolien
 s <- sd(penguins)
 n <- length(penguins)
 SE <- s / sqrt(n)
@@ -183,7 +179,7 @@ p
 t_test <- t.test(penguins, mu = mu0, alternative = "two.sided", conf.level = 0.95)
 t_test
 
-# mit einem p-value = 9.478e-08 kann die Null Hypothese bei einem Signifikanzniveau von 5% verworfen werden
+# mit einem p-value = 0.1723 kann die Null Hypothese bei einem Signifikanzniveau von 5% **nicht** verworfen werden
 
 
 # ------------------------------------------------------------------------------------------------
@@ -199,9 +195,9 @@ store <- read.csv("stats/Aufgabe 8/grocerystore.csv", sep = ";")
 frauen <- sum(store$gender == "F")
 n <- nrow(store)
 
-prop.test(frauen, n, alternative="less", correct=FALSE, conf.level = .95, correct = FALSE)
+prop.test(frauen, n, alternative="less", conf.level = .95, correct = FALSE)
 
-# Die NULL Hypothese, kann nicht verworfen werden.
+# Die NULL Hypothese dass die Metzgerei mehrheitlich von Frauen besucht wird, kann **nicht** verworfen werden.
 
 
 # ------------------------------------------------------------------------------------------------
@@ -219,8 +215,8 @@ bounced <- sum(credit$bounced == "Yes")
 n <- nrow(credit)
 prop.test(bounced, n, p = .12, alternative = "greater", conf.level = .95, correct = FALSE)
 
-# Die Null Hypothese, dass die Anteil nicht über 12 % ist, wird verworfen und die
-# es wird die Alternativhypothse akzepieter, dass der Anteil über 12 % ist
+# Die Null Hypothese, dass die Anteil nicht über 12 % ist, wird verworfen und
+# es wird die Alternativhypothese akzeptiert, dass der Anteil über 12 % ist
 
 
 # ------------------------------------------------------------------------------------------------
@@ -235,6 +231,6 @@ n <- sum(!is.na(survey$W.Hnd))
 
 prop.test(rechts, n, p = .9, conf.level = 0.99, correct = FALSE, alternative = "two.sided")
 
-# Die Null Hypothese, dass der Anteil = 0.9 kann nicht verworfen werden.
+# Die Null Hypothese, dass der Anteil = 0.9 **kann** nicht verworfen werden.
 
 
