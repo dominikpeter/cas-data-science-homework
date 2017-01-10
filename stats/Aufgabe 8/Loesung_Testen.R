@@ -27,7 +27,7 @@ mu0 <- 10000              # hypothesized value
 sigma <- 120              # population standard deviation 
 n <- length(lightbulb)    # sample size 
 SE <- sigma/sqrt(n)       # Standard Error
-z <- (xbar-mu0)/SE
+z <- (xbar-mu0)/SE        
 
 alpha <- .01
 p <- pnorm(z); p
