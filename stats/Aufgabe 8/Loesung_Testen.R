@@ -34,7 +34,7 @@ p <- pnorm(z); p
 confint <- qnorm(1-alpha, mean = xbar, sd = SE)
 c(Inf, confint)
 
-# Das obere 99% Quantile der Stichprobendaten ist mit 9963.201 kleiner als die vom Hersteller angegebenen 10'000
+# Das 99% Quantil der Stichprobendaten ist mit 9963.201 kleiner als die vom Hersteller angegebenen 10'000
 # Die NULL Hypothese, dass μ ≥ 10'000 wird verworfen. Es wird die Alternativhypothese akzeptiert.
 
 # TeachingDemos::z.test(lightbulb, mu0, stdev = 120, alternative = "less", conf.level = 0.99)
@@ -159,7 +159,7 @@ t_test
 t_test$conf.int[1:2]
 
 # Der Mittelwert der Null Hypothese liegt innerhalb des Konfidenzintervalls
-# Die NULL Hypothese μ ≥ 2 kann **nicht** verworfen werden
+# Die NULL Hypothese μ ≥ 2 kann *nicht* verworfen werden
 
 
 
@@ -189,7 +189,7 @@ p <- 2 * pt(abs(t), df = n-1, lower.tail = FALSE); p
 t_test <- t.test(penguins, mu = mu0, alternative = "two.sided", conf.level = 0.95)
 t_test
 
-# mit einem P-Value = 0.1723 kann die Null Hypothese bei einem Signifikanzniveau von 5% **nicht** verworfen werden
+# mit einem P-Value = 0.1723 kann die Null Hypothese bei einem Signifikanzniveau von 5% *nicht* verworfen werden
 
 
 # ------------------------------------------------------------------------------------------------
