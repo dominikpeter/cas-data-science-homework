@@ -20,20 +20,20 @@ rm(list=ls())
 
 lightbulb <- scan("stats/Aufgabe 8/lightbulbs.txt")
 
-lightbulb
-
 xbar <- mean(lightbulb)   # sample mean 
 mu0 <- 10000              # hypothesized value 
-sigma <- 120              # population standard deviation 
+sigma <- 120              # population standard deviation   
 n <- length(lightbulb)    # sample size 
 SE <- sigma/sqrt(n)       # Standard Error
 z <- (xbar-mu0)/SE        
 
 alpha <- .01
 p <- pnorm(z); p
+# P-Value < Alpha
 
 confint <- qnorm(1-alpha, mean = xbar, sd = SE)
 c(Inf, confint)
+
 # Das obere 99% Quantile der Stichprobendaten ist mit 9963.201 kleiner als die vom Hersteller angegebenen 10'000
 # Die NULL Hypothese, dass μ ≥ 10'000 wird verworfen. Es wird die Alternativhypothese akzeptiert.
 
@@ -52,7 +52,6 @@ c(Inf, confint)
 # H0: µ ≤ 2 g, Ha: µ > 2 g
 
 cookies <- scan("stats/Aufgabe 8/cookies.txt")
-cookies
 
 xbar <- mean(cookies)
 mu0 <- 2
@@ -64,7 +63,7 @@ z <- (xbar-mu0) / SE
 alpha <- 0.1
 
 p <- pnorm(z, lower.tail = FALSE); p
-
+# P-Value > Alpha
 
 confint <- qnorm(alpha, mean = xbar, sd = SE)
 c(confint, Inf)
@@ -72,7 +71,6 @@ c(confint, Inf)
 # TeachingDemos::z.test(cookies, mu0, stdev = 0.25, alternative = "greater", conf.level = 0.9)
 
 # Hinsichtlich der vorliegenden Stichprobe kann die NULL Hypothese, dass μ ≤ 2 g *nicht* verworfen werden
-
 
 
 # ------------------------------------------------------------------------------------------------
@@ -83,21 +81,20 @@ c(confint, Inf)
 # Lässt sich aufgrund dieser Stichprobe die Behauptung, dass sich das Durchschnittsgewicht der Pinguine
 # nicht verändert hat, bei einem Signifikanzniveau von 5% verwerfen? Die Standardabweichung beträgt 2.5 kg.
 
-# H0: µ = 15.4 kg, Ha: µ ≠ 15.4 g
+# H0: µ = 15.4 kg, Ha: µ ≠ 15.4 kg
 
 penguins <- scan("stats/Aufgabe 8/penguins.txt")
-penguins
 
 xbar <- mean(penguins)
 # mu0 <- Mean der NULL Hypothese fehlt???
 mu0 <- 15.4 # entnommen aus Übungsfolien
-mu0
 n <- length(penguins)
 sigma <- 2.5
 SE <- sigma/sqrt(n)
 
-z <- (xbar - mu0) / SE; z
+z <- (xbar - mu0) / SE
 p <- 2 * pnorm(abs(z), lower.tail =  FALSE); p
+
 confint <- qnorm(c(0.025, 0.975), mean = xbar, sd = SE)
 confint
 # TeachingDemos::z.test(penguins, mu = mu0, stdev = 2.5, alternative = "two.sided", conf.level = 0.95)
@@ -130,7 +127,8 @@ p <- pt(t, df = n-1); p
 t_test <- t.test(lightbulb, mu = mu0, alternative = "less", conf.level = 0.99)
 t_test
 t_test$conf.int[1:2]
-# Die NULL Hypothese, dass μ ≥ 10000 kann verworfen werden. P-Value = 1.592e-05
+
+# Mit P-Value = 1.592e-05 wird die NULL Hypothese verworfen. Es wird die Alternativhypothese aktzeptiert.
 
 
 # ------------------------------------------------------------------------------------------------
@@ -160,8 +158,8 @@ t_test <- t.test(cookies, mu = mu0, alternative = "greater", conf.level = 0.9)
 t_test
 t_test$conf.int[1:2]
 
-# Der Mittelwert der Nullhypothese liegt innerhalb des Konfidenzintervalls
-# Die NULL Hypothese μ ≥ 2 kann nicht verworfen werden
+# Der Mittelwert der Null Hypothese liegt innerhalb des Konfidenzintervalls
+# Die NULL Hypothese μ ≥ 2 kann **nicht** verworfen werden
 
 
 
@@ -174,7 +172,7 @@ t_test$conf.int[1:2]
 # dass sich das Durchschnittsgewicht der Pinguine nicht verändert hat,
 # bei einem Signifikanzniveau von 5% verwerfen?
 
-# H0: µ = 15.4 kg, Ha: µ ≠ 15.4 g
+# H0: µ = 15.4 kg, Ha: µ ≠ 15.4 kg
 
 penguins    # noch in Speicher
 # mu0 fehlt wieder
@@ -187,12 +185,11 @@ n <- length(penguins)
 SE <- s / sqrt(n)
 
 t <- (xbar - mu0) / SE
-p <- 2 * pt(abs(t), df = n-1, lower.tail = FALSE)
-p
+p <- 2 * pt(abs(t), df = n-1, lower.tail = FALSE); p
 t_test <- t.test(penguins, mu = mu0, alternative = "two.sided", conf.level = 0.95)
 t_test
 
-# mit einem p-value = 0.1723 kann die Null Hypothese bei einem Signifikanzniveau von 5% **nicht** verworfen werden
+# mit einem P-Value = 0.1723 kann die Null Hypothese bei einem Signifikanzniveau von 5% **nicht** verworfen werden
 
 
 # ------------------------------------------------------------------------------------------------
@@ -204,7 +201,7 @@ t_test
 # Lässt sich aufgrund dieser Stichprobe die Behauptung,
 # dass die Metzgerei mehrheitlich von Frauen besucht wird, bei einem Signifikanzniveau von 5% verwerfen?
 
-# H0: p ≥ 60%, Ha: p < 60%
+# H0: p ≥ 50%, Ha: p < 50%
 
 store <- read.csv("stats/Aufgabe 8/grocerystore.csv", sep = ";")
 frauen <- sum(store$gender == "F")
@@ -213,6 +210,7 @@ n <- nrow(store)
 prop.test(frauen, n, alternative="less", conf.level = .95, correct = FALSE)
 
 # Die NULL Hypothese dass die Metzgerei mehrheitlich von Frauen besucht wird, kann **nicht** verworfen werden.
+# Der P-Value liegt mit 0.9938 über dem Signifikanzniveau von 5 %
 
 
 # ------------------------------------------------------------------------------------------------
@@ -233,7 +231,7 @@ n <- nrow(credit)
 prop.test(bounced, n, p = .12, alternative = "greater", conf.level = .95, correct = FALSE)
 
 # Die Null Hypothese, dass die Anteil nicht über 12 % ist, wird verworfen und
-# es wird die Alternativhypothese akzeptiert, dass der Anteil über 12 % ist
+# es wird die Alternativhypothese akzeptiert, dass der Anteil über 12 % ist, P-Value = 0.02581
 
 
 # ------------------------------------------------------------------------------------------------
@@ -251,5 +249,6 @@ n <- sum(!is.na(survey$W.Hnd))
 prop.test(rechts, n, p = .9, conf.level = 0.99, correct = FALSE, alternative = "two.sided")
 
 # Die Null Hypothese, dass der Anteil = 0.9 **kann** nicht verworfen werden.
+# P-Value = 0.2243
 
 
