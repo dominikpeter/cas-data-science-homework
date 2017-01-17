@@ -23,7 +23,7 @@ library(MASS)
 # Ha: die beobachteten und die erwarteten Häufigkeiten sind verschieden.
 
 
-o <- as.numeric(table(survey$Smoke))
+o <- table(survey$Smoke)
 n <- length(na.omit(survey$Smoke))
 e <- c(0.045, 0.795, 0.085, 0.075) * n
 
