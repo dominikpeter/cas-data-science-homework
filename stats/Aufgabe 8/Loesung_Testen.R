@@ -128,8 +128,8 @@ t_test <- t.test(lightbulb, mu = mu0, alternative = "less", conf.level = 0.99)
 t_test
 t_test$conf.int[1:2]
 
-# Mit P-Value = 1.592e-05 wird die NULL Hypothese verworfen. Es wird die Alternativhypothese aktzeptiert.
-
+# Mit P-Value = 1.592e-05 wird die NULL Hypothese verworfen. Es wird die Alternativhypothese akzeptiert.
+  
 
 # ------------------------------------------------------------------------------------------------
 # Aufgabe: Rechtsseitiger Test bei μ, σ unbekannt

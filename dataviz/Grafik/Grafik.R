@@ -11,6 +11,7 @@ library(scales)
 library(RcppRoll)
 
 
+
 # ------------------------------------------------------------------------------------
 # Connect to Database and Load Data
 # ------------------------------------------------------------------------------------
@@ -222,10 +223,13 @@ df_analyse <- df %>%
   left_join(aktiv_vor_promo, by = c("BU", "idItemOrigin")) %>% 
   tidyr::replace_na(list(VorPromo = "Nein")) %>% 
   filter(Thema %in% thema$Thema, VorPromo == "Ja") %>% 
-  filter(as.numeric(Week) > 14, Year > 2015)
+  filter(between(as.numeric(Week), 25, 51), Year > 2015)
 
 
-df_total <- bind_rows(list(df_analyse, df_analyse %>% mutate(BU = "Total")))
+df_total <- bind_rows(list(df_analyse, df_analyse %>% mutate(BU = "Total"))) %>% 
+  mutate(BU = factor(BU, levels = c("F-CH", "D-CH", "Total"),
+                                    labels = c("Westschweiz", "Deutschschweiz", "Total")))
+
 
 # mutate(Roll_Mean = Sales %>% roll_mean(12, fill = NA)) %>% 
 
@@ -235,48 +239,95 @@ Mittelwert <- df_total %>%
   group_by(BU) %>% 
   summarise(Mittelwert = mean(SummeWoche))
 
-
 # Mittelwert <- df_analyse %>%
 #   group_by(Week) %>%
 #   summarise(SummeWoche = sum(Sales)) %>% 
 #   summarise(Mittelwert = mean(SummeWoche))
 
-
-gplot <- df_total %>%
+df_total %>%
   filter(Sales > 0, BU != 'Total') %>%
+  group_by(BU, Week, PromoWoche) %>% 
+  summarise(Sales = sum(Sales)) %>% 
   ggplot(aes(x = Week, y = Sales, fill = PromoWoche, group = 1)) +
   geom_bar(stat = "identity", position = "stack") +
   # geom_line(aes(y = Roll_Mean, x = Week), linetype = 1) +
   scale_y_continuous(labels = scales::comma) +
-  scale_fill_manual(values = c("grey90","grey")) +
+  scale_fill_manual(values = c("black","grey"), name = "Promotion") +
   theme(panel.background = element_blank(),
         legend.position = c(0.9, 0.95)) +
   xlab("\nKalenderwoche") +
   ggtitle("Verkaufsentwicklung vor und nach der Promotion 2016") + 
   facet_grid(BU~.)
 
-gplot
+
+df_total %>%
+  filter(Sales > 0, BU != 'Total') %>%
+  group_by(BU, Week, PromoWoche) %>% 
+  summarise(Sales = sum(Sales)) %>% 
+  ggplot(aes(x = Week, y = Sales, fill = PromoWoche, group = 1)) +
+  geom_bar(stat = "identity", position = "stack") +
+  geom_smooth() +
+  scale_y_continuous(labels = scales::comma) +
+  scale_fill_manual(values = c("black","grey"), name = "Promotion") +
+  theme(panel.background = element_blank(),
+        legend.position = c(0.9, 0.95)) +
+  xlab("\nKalenderwoche") +
+  ggtitle("Verkaufsentwicklung vor und nach der Promotion 2016") + 
+  facet_grid(~.)
 
 
-library(ReporteRs)
-mydoc <- pptx()
-mydoc <- addSlide( mydoc, "Two Content" )
-# add into mydoc first 10 lines of iris
-mydoc <- addTitle( mydoc, "First 10 lines of iris" )
-mydoc <- addFlexTable( mydoc, vanilla.table(iris[1:10,] ) )
-
-# add text into mydoc (and an empty line just before). Paragraph 
-# properties will be those of the shape of the used layout.
-mydoc <- addParagraph( mydoc, value = c("", "Hello World!") )
-
-mydoc <- addSlide( mydoc, "Title and Content" )
-# add a plot into mydoc 
-mydoc <- addPlot( mydoc, fun = print, x = gplot )
 
 
+test <- df_total %>% 
+  filter(Sales > 0, BU != 'Total') %>% 
+  group_by(BU, Week, PromoWoche) %>% 
+  summarise(Sales = sum(Sales))
 
-filename <- "dataviz/Grafik/base_example2.pptx" # the document to produce
-# write mydoc 
-writeDoc(mydoc, filename)
+t.test(Sales~PromoWoche, data = test %>% filter(BU == "Deutschschweiz"))
+t.test(Sales~PromoWoche, data = test %>% filter(BU == "Westschweiz"))
 
 
+df_total %>%
+  filter(Sales > 0, BU != 'Total') %>%
+  group_by(Thema, Week, PromoWoche) %>% 
+  summarise(Sales = sum(Sales)) %>% 
+  ggplot(aes(y = Sales, x = PromoWoche)) +
+  geom_boxplot(alpha = 0.7) +
+  facet_grid(Thema~.)
+
+
+
+# 
+# ggsave("dataviz/Grafik/plot.png", plot = gplot)
+# 
+# library(ReporteRs)
+# mydoc <- pptx()
+# mydoc <- addSlide( mydoc, "Two Content" )
+# # add into mydoc first 10 lines of iris
+# mydoc <- addTitle( mydoc, "First 10 lines of iris" )
+# mydoc <- addFlexTable( mydoc, vanilla.table(iris[1:10,] ) )
+# 
+# # add text into mydoc (and an empty line just before). Paragraph 
+# # properties will be those of the shape of the used layout.
+# mydoc <- addParagraph( mydoc, value = c("", "Hello World!") )
+# 
+# mydoc <- addSlide( mydoc, "Title and Content" )
+# # add a plot into mydoc 
+# mydoc <- addPlot( mydoc, fun = print, x = gplot )
+# 
+
+# filename <- "dataviz/Grafik/base_example2.pptx" # the document to produce
+# # write mydoc 
+# writeDoc(mydoc, filename)
+
+df_total %>%
+  filter(Margin > 0, BU != 'Total') %>%
+  group_by(BU, Thema, Date, PromoWoche) %>% 
+  summarise(Sales = sum(Sales)) %>% 
+  ggplot(aes(y = Sales, x = Thema, fill = PromoWoche)) +
+  geom_boxplot() +
+  scale_fill_manual(values = c("#d8b365", "#5ab4ac")) +
+  theme(panel.background = element_blank(),
+        legend.position = c(0.9, 0.95)) +
+  xlab("\nKalenderwoche") +
+  facet_grid(BU~Thema, scales = "free") 
