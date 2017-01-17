@@ -19,6 +19,10 @@ library(MASS)
 # Prüfen Sie, ob die Stichprobe aus survey sich mit dieser Behauptung verträgt.
 # Bestimmen Sie den p-Wert, ohne auf die Funktion chisq.test zurückzugreifen.
 
+# H0: die beobachteten und die erwarteten Häufigkeiten sind gleich
+# Ha: die beobachteten und die erwarteten Häufigkeiten sind verschieden.
+
+
 o <- as.numeric(table(survey$Smoke))
 n <- length(na.omit(survey$Smoke))
 e <- c(0.045, 0.795, 0.085, 0.075) * n
@@ -26,5 +30,29 @@ e <- c(0.045, 0.795, 0.085, 0.075) * n
 chi <- sum((o-e)^2/e)
 dof <- length(table(survey$Smoke))-1
 pchisq(chi, df = dof, lower.tail = FALSE)
+
+# chisq.test(table(survey$Smoke), p=c(0.045, 0.795, 0.085, 0.075))
+
+# Die Null-Hypothese kann nicht verworfen werden
+
+# ------------------------------------------------------------------------------------------------
+# Aufgabe: Unabhängigkeitstests
+# ------------------------------------------------------------------------------------------------
+# Problem: Die Datei RauchenGeschlecht.xlsx zeigt die Geschlecht des Neugeborenen
+# mit dem Rauchverhalten der Eltern in den ersten Monaten der Schwangerschaft.
+# Sind diese beiden Variablen unabhängig?
+# Arbeiten Sie mit α = 0.05.
+
+library(readxl)
+
+df <- read_excel("stats/Aufgabe 9/RauchenGeschlecht.xlsx")
+tbl <- table(df)
+
+chisq.test(tbl)
+
+# P-Value 0.2287 > Signifikanzniveau. Nullypothese wird beibehalten
+
+
+
 
 
