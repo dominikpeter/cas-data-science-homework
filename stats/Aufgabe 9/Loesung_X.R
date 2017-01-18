@@ -1,9 +1,9 @@
 
 
 # ------------------------------------------------------------------------------------------------
-# Title:  Lösung zu Aufgaben Testen
+# Title:  Lösung zu Aufgaben X2
 # Autor:  Dominik Peter
-# Date:   2017-01-05
+# Date:   2017-01-18
 # ------------------------------------------------------------------------------------------------
 
 rm(list=ls())
@@ -24,7 +24,7 @@ library(MASS)
 
 
 o <- table(survey$Smoke)
-n <- length(na.omit(survey$Smoke))
+n <- sum(o)
 e <- c(0.045, 0.795, 0.085, 0.075) * n
 
 chi <- sum((o-e)^2/e)
@@ -33,7 +33,7 @@ pchisq(chi, df = dof, lower.tail = FALSE)
 
 # chisq.test(table(survey$Smoke), p=c(0.045, 0.795, 0.085, 0.075))
 
-# Die Null-Hypothese kann nicht verworfen werden
+# P-Value = 0.9909295; Die Null-Hypothese kann nicht verworfen werden
 
 # ------------------------------------------------------------------------------------------------
 # Aufgabe: Unabhängigkeitstests

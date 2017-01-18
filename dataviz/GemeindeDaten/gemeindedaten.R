@@ -35,6 +35,7 @@ df %>%
   geom_segment(aes(xend = kantone, yend = 0), lineend = 1) +
   coord_flip()
 
+
 # 6. Betrachten Sie die Einwohnerzahlen der Gemeinden gruppiert nach Sprachregionen. Wie
 # heissen die jeweils grössten Gemeinden?
 
@@ -48,16 +49,63 @@ df %>%
 
 # 7. Betrachten Sie die Veränderung der Einwohnerzahl von 2010 bis 2014 nach Sprachregionen. In
 # welcher Sprachregionen sind die Gemeinden am stärksten gewachsen? In welcher am wenigsten oder gibt es Sprachregionen, in welcher die Einwohnerentwicklung in der Tendenz sogar eher rückläufig ist? Analysieren sie zusätzlich graphisch, ob die Unterscheidung von städtischen und ländlichen Gemeinden dabei eine Rolle spielt?
-# 
-# 
-# 
-# 
+
+df %>% 
+  ggplot(aes(x = sprachregionen, y = bev_1014)) +
+  geom_boxplot(notch = TRUE)
+
 # 8. Untersuchen Sie die Zusammenhangsstruktur folgender Variablen:
 #   bev_dichte, bev_ausl, alter_0_19, alter_20_64, alter_65.,bevbew_geburt, sozsich_sh, strafen_stgb
-# Gibt es Korrelationen? Falls ja, lassen Sie sich erklären oder sind sie eher unerwartet? Suchen Sie sich einen Ihnen interessant erscheinenden Zusammenhang und schauen Sie sich diesen in einem eigenen Scatterplot an
-# 9. Visualisieren Sie eine Kontingenztabelle mit den Variablen Stadt_Land und Sprachregionen. Welcher Gemeindetyp überwiegt bei deutschsprachigen Gemeinden, welcher bei italienischsprachigen Gemeinden. Gibt es in jeder Sprachregion isolierte Städte?
-# 10. Erstellen Sie ein politisches Profil nach Sprachregionen mit der Hilfe der Variablen zu den Wähleranteilen.
-# 
+# Gibt es Korrelationen?
+# Falls ja, lassen Sie sich erklären oder sind sie eher unerwartet?
+# Suchen Sie sich einen Ihnen interessant erscheinenden Zusammenhang und schauen Sie sich diesen in einem eigenen Scatterplot an
+
+df_cor <- df %>%
+  select(bev_dichte, bev_ausl,
+         alter_0_19, alter_20_64,
+         `alter_65+`, bevbew_geburt,
+         sozsich_sh, strafen_stgb)
+
+library(GGally)
+
+ggcorr(df_cor, label = TRUE)
+
+df_cor %>%
+  ggplot(aes(x = strafen_stgb, y = bev_ausl)) + 
+  geom_point()
+
+# 9. Visualisieren Sie eine Kontingenztabelle mit den Variablen Stadt_Land und Sprachregionen.
+# Welcher Gemeindetyp überwiegt bei deutschsprachigen Gemeinden, welcher bei italienischsprachigen Gemeinden.
+# Gibt es in jeder Sprachregion isolierte Städte?
+
+library(vcd)
+
+df %>%
+  select(stadt_land, sprachregionen) %>% 
+  table() %>% 
+  mosaic()
+
+
+# 10. Erstellen Sie ein politisches Profil nach Sprachregionen mit der Hilfe
+# der Variablen zu den Wähleranteilen.
+
+library(reshape2)
+
+col <- grep("polit", colnames(df))
+df_pol <- df %>% select(sprachregionen, col) %>% 
+  melt(id.vars = "sprachregionen") %>% 
+  transmute(sprachregionen = sprachregionen,
+            polit = variable,
+            value = value %>% as.numeric) %>% 
+  na.omit()
+
+
+df_pol %>% 
+  group_by(sprachregionen, polit) %>% 
+  summarise(median = median(value)) %>% 
+  ggplot(aes(x = sprachregionen, y = median, fill = polit)) +
+  geom_bar(position = "fill", stat = "identity") +
+  scale_fill_brewer(palette = "Paired")
 
 
 
