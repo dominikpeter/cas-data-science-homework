@@ -1,8 +1,7 @@
 
 rm(list=ls())
 
-# data.table version
-# -----------------------------------------------------
+
 library(dplyr)
 library(readr)
 
