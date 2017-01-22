@@ -98,7 +98,7 @@ w1_analysis <- w1 %>%
 
 w1_analysis %>% 
   ggplot(aes(x = factor(year), y = Range)) +
-  geom_tile(aes(fill = Sales), color = "white", size = .5) +
+  geom_tile(aes(fill = N), color = "white", size = .5) +
   scale_fill_gradient(low = "#ece7f2", high = "#2b8cbe") +
   theme(panel.background = element_blank(),
         panel.grid = element_blank())
@@ -133,7 +133,7 @@ w2_analysis <- w2 %>%
 
 w2_analysis %>% 
   ggplot(aes(x = factor(year), y = Range)) +
-  geom_tile(aes(fill = Sales), color = "white", size = .5) +
+  geom_tile(aes(fill = N), color = "white", size = .5) +
   scale_fill_gradient(low = "#ece7f2", high = "#2b8cbe") +
   scale_x_discrete(position = "top") +
   theme(panel.background = element_blank(),
