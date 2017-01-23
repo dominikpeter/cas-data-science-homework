@@ -143,11 +143,11 @@ w1 %>%
 
 w2 <- waschtisch %>%
   filter(Cat_3 == "Doppelwaschtische Keramik") %>% 
-  filter(NetPrice > NetPrice %>% quantile(0.025),
-         NetPrice < NetPrice %>% quantile(0.975))
+  filter(NetPrice > NetPrice %>% quantile(0.01),
+         NetPrice < NetPrice %>% quantile(0.99))
 
 w2_breaks <- w2$NetPrice %>%
-  pretty(nclass.scott(w2$NetPrice))
+  pretty(nclass.Sturges(w2$NetPrice))
 
 w2_analysis <- w2 %>% 
   mutate(Range = NetPrice %>% cut(w2_breaks)) %>% 
@@ -162,20 +162,20 @@ w2_analysis %>%
   # scale_fill_brewer()+
   scale_fill_viridis(alpha = 0.2, option = "A", begin = 0.1, end = 1, direction = -1) +
   # scale_fill_gradient2(low = "#edf8b1",mid = "#7fcdbb", high = "#2c7fb8", midpoint = 100000) +
-  scale_x_discrete(position = "top") +
+  scale_x_discrete()+
   theme(panel.background = element_blank(),
         panel.grid = element_blank(),
         axis.title = element_blank()) +
   ggtitle("Doppelwaschtische Keramik") +
   xlab("") +
   ylab("") +
-  geom_vline(xintercept = 7, size = 2, color = "white") -> w2_plot;w2_plot
+  geom_vline(xintercept = 6.5, size = 2, color = "white", ) -> w2_plot;w2_plot
 
 
 w2 %>%
   # filter(year > 2011) %>% 
   ggplot(aes(x = NetPrice, fill = factor(ST))) +
-  geom_density(alpha = 0.6) +
+  geom_density(alpha = 0.8) +
   # scale_fill_brewer(palette = "Set1") +
   # scale_fill_manual(values = c("#33of66", "#bf3875")) +
   scale_fill_viridis(discrete = TRUE, option = "A",
@@ -192,7 +192,7 @@ w2 %>%
   
 grid.arrange(w1_plot, w2_plot)
 
-grid.arrange(w1_density, w2_density)
+
 grid.arrange(w2_plot, w2_density)
 
 
