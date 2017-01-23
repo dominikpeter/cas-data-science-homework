@@ -11,7 +11,6 @@ rm(list=ls())
 library(tidyverse)
 library(lubridate)
 library(viridis)
-library(gridExtra)
 
 
 # dch <- data.table::fread("/Users/dominikpeter/Desktop/Export/export_dch2\ Kopie.csv",
@@ -41,8 +40,6 @@ rm(list=ls())
 # raw_data <- read_delim("/Users/dominikpeter/Google/R/datasets/pricing.txt", delim = "|")
 raw_data <- read_delim("C:/Users/peterd/Downloads/pricing.txt", delim = "|")
 
-
-
 lookup_brand <- tibble(Key = raw_data$OwnBrand %>% unique) %>% 
   mutate(PrivateLabel = grepl("casa", tolower(Key)))
 
@@ -51,10 +48,18 @@ cats <- tribble(~cats,
                 "Waschtische",
                 "Garnituren-Programme")
 
+cats
+
 units <- tribble(~QuantityUnit, "PCE", "STK")
+
+raw_data %>% select(QuantityUnit, Hierarchy_Level_2) %>%
+  filter(Hierarchy_Level_2 == 'Sanitär-Armaturen') %>% head()
 
 # features
 df <- raw_data %>% 
+  filter(Hierarchy_Level_2 == 'Sanitär-Armaturen') %>%
+  inner_join(units) %>% 
+  left_join(lookup_brand, by = c("OwnBrand" = "Key")) %>% 
   mutate(GrossPrice = GrossSales / Quantity,
          NetPrice   = Sales / Quantity,
          `Margin %` = Margin / Sales,
@@ -71,148 +76,78 @@ df <- raw_data %>%
          Margin > 0,
          NetPrice > 0,
          !is.infinite(NetPrice)) %>% 
-  inner_join(cats, by = c("Cat_2" = "cats")) %>%
-  inner_join(units) %>% 
-  left_join(lookup_brand, by = c("OwnBrand" = "Key")) %>% 
   na.omit()
-  
+
+
 raw_data <- NULL
 
 
-waschtisch <- df %>% 
-  filter(Cat_2 == "Waschtische") %>% 
-  filter(NetPrice < NetPrice %>% quantile(0.99),
+
+armaturen <- df %>% 
+  filter(Cat_2 == "Sanitär-Armaturen") %>% 
+  filter(NetPrice < NetPrice %>% quantile(0.90),
          NetPrice > NetPrice %>% quantile(0.01)) %>% 
-  inner_join(tribble(~Cat_3,
-                     "Waschtische Keramik",
-                     "Doppelwaschtische Keramik")) %>% 
   na.omit()
 
-# Waschtisch Normal
+
+
+# Armaturen
 # -----------------------------------------------
-w1 <- waschtisch %>%
-  filter(Cat_3 == "Waschtische Keramik") %>% 
-  filter(NetPrice > NetPrice %>% quantile(0.01),
-         NetPrice < NetPrice %>% quantile(0.90))
 
-w1_breaks <- w1$NetPrice %>% pretty(nclass.Sturges(w1$NetPrice))
 
-w1_analysis <- w1 %>% 
-  mutate(Range = NetPrice %>% cut(w1_breaks)) %>% 
-  group_by(year, Range, PrivateLabel) %>% 
-  summarise(Sales = sum(Sales),
-            N = n())
-
-w1_analysis %>% 
-  ggplot(aes(x = factor(year), y = Range)) +
-  geom_tile(aes(fill = Sales), color = "white") +
-  # scale_fill_gradient(low = "#ece7f2", high = "#2b8cbe") +
-  scale_x_discrete(position = "top") +
-  scale_fill_viridis(alpha = 0.8, option = "C") +
-  theme(panel.background = element_blank(),
-        panel.grid = element_blank()) +
-  ggtitle("Waschtische Keramik") +
-  xlab("") +
-  ylab("") -> w1_plot
-                                                                
-w1 %>%
-  # filter(year > 2011) %>% 
+armaturen %>% 
   ggplot(aes(x = NetPrice, fill = factor(year))) +
-  geom_density(alpha = 0.9) +
-  scale_fill_viridis(discrete = TRUE, guide = guide_legend(title = "Year")) +
+  geom_density(alpha = 0.7) +
+  scale_fill_viridis(discrete = TRUE,
+                     option = "C",
+                     guide = guide_legend(title = "Year")) +
   # scale_fill_brewer(palette = "Paired") +
-  # scale_x_discrete(position = "top") +
   scale_y_continuous(labels = scales::percent) +
   theme(panel.background = element_blank(),
         panel.grid = element_blank()) +
-  ylab("") +
-  xlab("") +
-  ggtitle("Waschtische Keramik") +
-  facet_grid(PrivateLabel~.) -> w1_density
+  ylab("Density") +
+  xlab("Price") +
+  facet_grid(year~.)
+        
 
 
-# Doppel - Waschtisch
-# -----------------------------------------------
+armaturen_breaks <- armaturen$NetPrice %>%
+  pretty(nclass.Sturges(armaturen$NetPrice))
 
-w2 <- waschtisch %>%
-  filter(Cat_3 == "Doppelwaschtische Keramik") %>% 
-  filter(NetPrice > NetPrice %>% quantile(0.01),
-         NetPrice < NetPrice %>% quantile(0.99))
-
-w2_breaks <- w2$NetPrice %>% pretty(nclass.Sturges(w2$NetPrice))
-
-w2_analysis <- w2 %>% 
-  mutate(Range = NetPrice %>% cut(w2_breaks)) %>% 
-  group_by(year, Range, PrivateLabel) %>% 
+armaturen_analysis <- armaturen %>% 
+  filter(NetPrice < NetPrice %>% quantile(0.99)) %>% 
+  filter(NetPrice > NetPrice %>% quantile(0.1)) %>% 
+  mutate(Range = NetPrice %>% cut(armaturen_breaks)) %>% 
+  group_by(year, Range) %>% 
   summarise(Sales = sum(Sales),
             N = n())
 
-
-w2_analysis %>% 
+armaturen_analysis %>% 
   ggplot(aes(x = factor(year), y = Range)) +
   geom_tile(aes(fill = Sales), color = "white") +
   # scale_color_gradient() +
-  scale_fill_viridis(alpha = 0.2, option = "C") +
+  scale_fill_viridis(alpha = 0.2, option = "D") +
   # scale_fill_gradient(low = "#ece7f2", high = "#2b8cbe") +
   scale_x_discrete(position = "top") +
   theme(panel.background = element_blank(),
         panel.grid = element_blank(),
         axis.title = element_blank()) +
-  ggtitle("Doppelwaschtische Keramik") +
   xlab("") +
-  ylab("") -> w2_plot
+  ylab("")
 
 
-w2 %>%
-  # filter(year > 2011) %>% 
+
+armaturen %>% 
   ggplot(aes(x = NetPrice, fill = factor(year))) +
-  geom_density(alpha = 0.9) +
-  scale_fill_brewer(palette = "Paired") +
-  # scale_fill_viridis(discrete = TRUE, option = "C", guide = guide_legend(title = "Year")) +
+  geom_density(alpha = 0.6) +
+  scale_fill_viridis(discrete = TRUE,
+                     option = "D",
+                     guide = guide_legend(title = "Year")) +
+  # scale_fill_brewer(palette = "Paired") +
   scale_y_continuous(labels = scales::percent) +
   theme(panel.background = element_blank(),
         panel.grid = element_blank()) +
-  ylab("") +
-  xlab("") +
-  ggtitle("Doppelwaschtische Keramik") -> w2_density
-  
-  
-
-
-grid.arrange(w1_plot, w2_plot)
-
-grid.arrange(w1_density, w2_density)
-# grid.arrange(w1_plot, w1_density)
-
-
-# Barcharts
-# ------------------------------------------------------
-
-w1_analysis %>%
-  # filter(year > 2011) %>% 
-  ggplot(aes(x = factor(year), y = Sales, fill = Range)) +
-  geom_bar(stat = "identity") +
-  scale_fill_viridis(discrete = TRUE) +
-  scale_y_continuous(labels = scales::comma) +
-  theme(panel.background = element_blank(),
-        panel.grid = element_blank())
-
-
-
-w2_analysis %>%
-  # filter(year > 2011) %>% 
-  ggplot(aes(x = factor(year), y = Sales, fill = Range)) +
-  scale_fill_viridis(discrete = TRUE) +
-  geom_bar(stat = "identity") +
-  theme(panel.background = element_blank(),
-        panel.grid = element_blank())
-
-
-
-
-
-
-
-
-  
-  
+  ylab("Density") +
+  xlab("Price") +
+  ggtitle("Sanitär-Armaturen")
+        
