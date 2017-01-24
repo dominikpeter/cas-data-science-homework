@@ -132,7 +132,7 @@ w2_analysis %>%
   ggtitle("Doppelwaschtische Keramik") +
   xlab("") +
   ylab("") +
-  geom_vline(xintercept = 12.5, size = 2, color = "white") -> w2_plot;w2_plot
+  geom_vline(xintercept = 12.5, size = 2, color = "black") -> w2_plot;w2_plot
 
 
 w2 %>%
