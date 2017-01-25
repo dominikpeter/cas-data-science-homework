@@ -13,8 +13,9 @@ library(lubridate)
 library(viridis)
 library(gridExtra)
 library(zoo)
+library(extrafont)
 
-
+font_import("Helvetica")
 
 # dch <- data.table::fread("/Users/dominikpeter/Desktop/Export/export_dch2\ Kopie.csv",
 #                          sep = "|", encoding = "Latin-1", integer64 = "character")
@@ -38,10 +39,10 @@ library(zoo)
 # pricing <- bind_rows(fch, dch)
 # pricing %>% write_delim("/Users/dominikpeter/Google/R/datasets/pricing.txt", delim = "|")
 
-rm(list=ls())
 
-# raw_data <- read_delim("/Users/dominikpeter/Google/R/datasets/pricing.txt", delim = "|")
-raw_data <- read_delim("C:/Users/peterd/Downloads/pricing.txt", delim = "|")
+
+raw_data <- read_delim("/Users/dominikpeter/Google/R/datasets/pricing.txt", delim = "|")
+# raw_data <- read_delim("C:/Users/peterd/Downloads/pricing.txt", delim = "|")
 
 
 lookup_brand <- tibble(Key = raw_data$OwnBrand %>% unique) %>% 
@@ -69,7 +70,8 @@ df <- df %>%
          year       = year(date),
          month      = month(date),
          quarter    = quarter(date),
-         qy         = paste(as.character(year), as.character(quarter), sep = "-"),
+         qy         = paste(as.character(year), paste0("Q", as.character(quarter)),
+                            sep = "\n") %>% as.factor,
          yearqtr    = as.yearqtr(date),
          yearmon    = as.yearmon(date),
          qtr_int    = year*10 + quarter,
@@ -113,26 +115,34 @@ w2_breaks <- w2$NetPrice %>%
   pretty(nclass.Sturges(w2$NetPrice))
 
 w2_analysis <- w2 %>% 
+  filter(NetPrice > NetPrice %>% quantile(0.005)) %>% 
   mutate(Range = NetPrice %>% cut(w2_breaks)) %>% 
   group_by(qy, Range, ST) %>% 
   summarise(Sales = sum(Sales),
             N = n())
 
 
-w2_analysis %>% 
+w2_analysis %>%
   ggplot(aes(x = factor(qy), y = Range)) +
-  geom_tile(aes(fill = Sales), color = "white") +
+  geom_tile(aes(fill = Sales), color = "white", width=.99, height=.99) +
+  geom_segment(x=12.5, xend=12.5, y=0, yend=14.5, size=.9, lineend = "round") +
   # scale_color_gradient() +
-  # scale_fill_brewer()+
-  scale_fill_viridis(alpha = 0.2, option = "A", begin = 0, end = 1, direction = -1) +
-  # scale_fill_gradient2(low = "#edf8b1",mid = "#7fcdbb", high = "#2c7fb8", midpoint = 100000) +
-  theme(panel.background = element_blank(),
+  # scale_fill_brewer() +
+  scale_fill_viridis(alpha = 0.2, option = "A", begin = 0, end = 1, direction = -1,
+                     # guide=guide_colourbar(ticks=5,
+                     #                       barheight=.3,
+                     #                       barwidth=20)
+                     breaks = seq(0,200000, by= 20000)
+                     )+
+  labs(x="", y="", fill="") +
+  theme(
+    # legend.position="left",
+        panel.background = element_blank(),
         panel.grid = element_blank(),
-        axis.title = element_blank()) +
-  ggtitle("Doppelwaschtische Keramik") +
-  xlab("") +
-  ylab("") +
-  geom_vline(xintercept = 12.5, size = 2, color = "black") -> w2_plot;w2_plot
+        axis.title = element_blank(),
+        title=element_text(hjust=-1.2, face="bold", vjust=2, family="Helvetica"))+
+  ggtitle("Doppelwaschtische Keramik")  -> w2_plot; w2_plot
+
 
 
 w2 %>%
