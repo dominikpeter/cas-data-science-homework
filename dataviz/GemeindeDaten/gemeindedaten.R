@@ -7,6 +7,7 @@ library(readr)
 
 df <- read_csv("dataviz/GemeindeDaten/gemeindedaten.csv")
 
+
 # Beantworten Sie folgende Fragen:
 # Wie viele Gemeinden gab es in der Schweiz im Jahr 2014?
 nrow(df)
@@ -32,7 +33,8 @@ df %>%
   ggplot(aes(x = reorder(kantone, N), y = N)) +
   geom_point(size = 3) +
   geom_segment(aes(xend = kantone, yend = 0), lineend = 1) +
-  coord_flip()
+  coord_flip() +
+  theme(panel.background = element_blank())
 
 
 # 6. Betrachten Sie die Einwohnerzahlen der Gemeinden gruppiert nach Sprachregionen. Wie

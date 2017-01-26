@@ -134,35 +134,35 @@ w2_analysis %>%
                      #                       barwidth=20)
                      breaks = seq(0,200000, by= 20000)
                      )+
+  # ggtitle("Doppelwaschtische Keramik") + 
   labs(x="", y="", fill="") +
   theme(
     # legend.position="left",
         panel.background = element_blank(),
         panel.grid = element_blank(),
         axis.title = element_blank(),
-        title=element_text(hjust=-1.2, face="bold", vjust=2, family="Helvetica"))+
-  ggtitle("Doppelwaschtische Keramik")  -> w2_plot; w2_plot
+        title=element_text(hjust=-1.2, face="bold", vjust=2, family="Helvetica")) 
+# +
+  # coord_polar() -> w2_plot; w2_plot
 
 
 
 w2 %>%
   # filter(year > 2011) %>% 
-  ggplot(aes(x = NetPrice, fill = factor(ST))) +
+  ggplot(aes(x = NetPrice, fill = factor(year))) +
   geom_density(alpha = 0.6, color = "white") +
   # scale_fill_brewer(palette = "Set1") +
   # scale_fill_manual(values = c("#33of66", "#bf3875")) +
-#   scale_fill_viridis(discrete = TRUE, option = "B",
-#                      guide = guide_legend(title = "Preiskampf"),
-#                      begin = 0.9) +
-  scale_y_continuous(labels = scales::percent) +
+  scale_fill_viridis(discrete = TRUE, option = "A",
+                     guide = guide_legend(title = "Preiskampf"),
+                     scale_y_continuous(labels = scales::percent)) +
   theme(panel.background = element_blank(),
-        panel.grid = element_blank(),
-        theme(text=element_text(size=16, family="Helvetica"))) +
+        panel.grid = element_blank()) +
+  # ggtitle("Doppelwaschtische Keramik") +
   ylab("") +
-  xlab("") +
-  ggtitle("Doppelwaschtische Keramik") -> w2_density;w2_density
+  xlab("") -> w2_density;w2_density
 
-w2_plot
+
 
 
 
