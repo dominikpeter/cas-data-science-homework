@@ -163,6 +163,5 @@ w2 %>%
   xlab("") -> w2_density;w2_density
 
 
-
-
-
+combn(1:5)
+combn(1:5, 2)
