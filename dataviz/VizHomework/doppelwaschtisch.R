@@ -94,8 +94,8 @@ df <- df %>%
 
 waschtisch <- df %>% 
   filter(Cat_2 == "Waschtische") %>% 
-  filter(NetPrice < NetPrice %>% quantile(0.99),
-         NetPrice > NetPrice %>% quantile(0.01)) %>% 
+  filter(NetPrice < NetPrice %>% quantile(0.999),
+         NetPrice > NetPrice %>% quantile(0.001)) %>%
   inner_join(tribble(~Cat_3,
                      "Waschtische Keramik",
                      "Doppelwaschtische Keramik")) %>% 
@@ -115,7 +115,7 @@ w2_breaks <- w2$NetPrice %>%
   pretty(nclass.Sturges(w2$NetPrice))
 
 w2_analysis <- w2 %>% 
-  filter(NetPrice > NetPrice %>% quantile(0.005)) %>% 
+  # filter(NetPrice > NetPrice %>% quantile(0.005)) %>% 
   mutate(Range = NetPrice %>% cut(w2_breaks)) %>% 
   group_by(qy, Range, ST) %>% 
   summarise(Sales = sum(Sales),
@@ -125,7 +125,7 @@ w2_analysis <- w2 %>%
 w2_analysis %>%
   ggplot(aes(x = factor(qy), y = Range)) +
   geom_tile(aes(fill = Sales), color = "white", width=.99, height=.99) +
-  geom_segment(x=12.5, xend=12.5, y=0, yend=14.5, size=.9, lineend = "round") +
+  # geom_segment(x=12.5, xend=12.5, y=0, yend=14.5, size=.9, lineend = "round") +
   # scale_color_gradient() +
   # scale_fill_brewer() +
   scale_fill_viridis(alpha = 0.2, option = "A", begin = 0, end = 1, direction = -1,
@@ -144,18 +144,18 @@ w2_analysis %>%
         title=element_text(hjust=-1.2, face="bold", vjust=2, family="Helvetica")) 
 # +
   # coord_polar() -> w2_plot; w2_plot
-
+require(svglite)
+ggsave("newplot.svg")
 
 
 w2 %>%
   # filter(year > 2011) %>% 
   ggplot(aes(x = NetPrice, fill = factor(year))) +
-  geom_density(alpha = 0.6, color = "white") +
+  geom_density(alpha = 0.9, color = "white") +
   # scale_fill_brewer(palette = "Set1") +
   # scale_fill_manual(values = c("#33of66", "#bf3875")) +
-  scale_fill_viridis(discrete = TRUE, option = "A",
-                     guide = guide_legend(title = "Preiskampf"),
-                     scale_y_continuous(labels = scales::percent)) +
+  scale_fill_viridis(discrete = TRUE, option = "A") +
+  scale_y_continuous(labels = scales::percent) +
   theme(panel.background = element_blank(),
         panel.grid = element_blank()) +
   # ggtitle("Doppelwaschtische Keramik") +
