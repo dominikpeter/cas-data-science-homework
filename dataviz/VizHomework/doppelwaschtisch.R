@@ -122,19 +122,22 @@ w2_analysis <- w2 %>%
             N = n())
 
 
+colors <- c('#ffffcc','#a1dab4','#41b6c4','#2c7fb8','#253494')
+
 w2_analysis %>%
   ggplot(aes(x = factor(qy), y = Range)) +
-  geom_tile(aes(fill = Sales), color = "white", width=.99, height=.99) +
+  geom_tile(aes(fill = Sales)) +
   # geom_segment(x=12.5, xend=12.5, y=0, yend=14.5, size=.9, lineend = "round") +
   # scale_color_gradient() +
   # scale_fill_brewer() +
-  scale_fill_viridis(alpha = 0.2, option = "A", begin = 0, end = 1, direction = -1,
-                     # guide=guide_colourbar(ticks=5,
-                     #                       barheight=.3,
-                     #                       barwidth=20)
-                     breaks = seq(0,200000, by= 20000)
-                     )+
-  # ggtitle("Doppelwaschtische Keramik") + 
+  scale_fill_gradientn(colours = colors) +
+  # scale_fill_viridis(alpha = 0.2, option = "A", begin = 0, end = 1, direction = -1,
+  #                    # guide=guide_colourbar(ticks=5,
+  #                    #                       barheight=.3,
+  #                    #                       barwidth=20)
+  #                    breaks = seq(0,200000, by= 20000)
+  #                    )+
+  # # ggtitle("Doppelwaschtische Keramik") + 
   labs(x="", y="", fill="") +
   theme(
     # legend.position="left",
@@ -142,7 +145,7 @@ w2_analysis %>%
         panel.grid = element_blank(),
         axis.title = element_blank(),
         title=element_text(hjust=-1.2, face="bold", vjust=2, family="Helvetica")) 
-# +
+
   # coord_polar() -> w2_plot; w2_plot
 require(svglite)
 ggsave("newplot.svg")
