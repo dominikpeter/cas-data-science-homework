@@ -693,8 +693,166 @@ TeachingDemos::z.test(7.1, mu = mean(schlaf), sd = 1.5, alternative = "greater",
 # Testergebnis = signifikant
 
 
+# Ü78
+# ----------------------------------------------------------------------------------------------------------------------
+# Für die Lebensdauer von Taschenrechnerbatterien soll überprüft werden,
+# ob sich die diesbezüglichen Mittelwerte zweier Hersteller in den Grundgesamtheiten unterscheiden.
+# Eine Stichprobevom Umfang 125 der einen Marke liefert einen Mittelwert von 5.996,5 Stunden und eine Standardabweichung von s = 65,3 h.
+# Eine Stichprobe von 122 Batterien der anderen Marke ergibt diesbezüglich die Werte:x = 6.125,6 und s = 57,0. 
+# Formulieren Sie geeignete Hypothesen und entscheiden Sie sich auf einem Signifikanzniveauα= 0,05 für eine der beiden.
+
+# H0: Diff = 0
+# H1: Diff <> 0
+
+d0 <- qnorm(0.975) * sqrt((65.3^2/125) + (57^2 / 122))
+d1 <- d0*-1
+
+5996.5 - 6125.6
+
+# nicht in d0 <-> d1 daher H0 verwerfen
 
 
+# Ü79
+# ----------------------------------------------------------------------------------------------------------------------
+# In Ü11 wurde das Ergebnis einer Befragung unter 794 Personen zum Thema Geschlecht und Einstellung zur Euro-Währung präsentiert.
+# In Ü28 wurde mit Hilfe einer Excel-Lerndatei der statistische Zusammenhang dieser beiden Merkmale gemessen.
+# Verwenden Sie nun diese Ergebnisse,um zu überprüfen, ob die beiden Merkmale auch in der Grundgesamtheit aller Wahlberechtigtenzusammenhängen.
+# a) Formulieren Sie für dieses Problem geeignete statistische Hypothesen.
+# b) Entscheiden Sie sich anhand der Ergebnisse von Ü28 auf einem Signifikanzniveau von α= 0,05 für eine der Hypothesen.
+# c) Verwenden Sie die Excel-Funktion CHIVERT: Wie groß ist der zur Teststatistik gehörende p-Wert?
+
+
+library(readxl)
+library(magrittr)
+u79 <- read_excel("~/Google/R/homework/homework/testprep/Lerndatei (Kapitel 1) für EXCEL ab 2007.xlsx", 
+                                                    sheet = "Ü28", skip = 2) %>% as.data.frame()
+
+
+u79 <- u79[,-1]
+u79 <- u79[1:2, 1:4]
+rownames(u79) <- u79[,1]
+u79 <- u79[,-1]
+u79[] <- lapply(u79, as.numeric)
+m <- as.matrix(u79)
+
+# h0: x2 = 0
+# h1: x2 > 0
+
+chisq.test(m)
+
+# test signifikant h0 wird verworfen
+
+
+# Ü80
+# ----------------------------------------------------------------------------------------------------------------------
+# In einer Zufallsstichprobe unter 350 Abonnenten einer Zeitung wurde erhoben,
+# ob diese dieZeitung jeden Tag lesen und wie ihre Einstellung zu einer bestimmten Frage ist:
+
+m <- matrix(c(10, 20, 120, 100, 60, 40), ncol = 3, byrow = TRUE)
+m
+#                 positiv neutral negativ
+# täglich            10      20     120
+# nicht täglich     100      60      40
+
+colnames(m) <- c("positiv", "neutral", "negativ")
+rownames(m) <- c("täglich", "nicht täglich")
+
+# a) Formulieren Sie für die Überprüfung des Zusammenhangs von Leseverhalten und Einstellung unter 
+# den gesamten Abonnenten der Zeitung geeignete statistische Hypothesen und testen Sie diese anhand der Daten auf einem Signifikanzniveau α= 0,05.
+# b) Wie groß ist der zur errechneten Teststatistik gehörende p-Wert (Excel)?
+
+# a)
+# H0: X2 = 0
+# H1: X2 > 0
+
+chisq.test(m)
+
+# H0 wird verworfen. Test ist signifikant
+
+
+# Ü81
+# In einer Studie wird der Einfluss von Strategietraining bei n = 235 zufällig
+# ausgewählten Managern auf den Unternehmenserfolg untersucht:Prüfen Sie auf einem Signifikanzniveau α= 0,05,
+# ob ein statistischer Zusammenhang besteht.Wie groß ist der zur Teststatistik gehörende p-Wert (Excel)?
+
+m <- matrix(c(40, 75, 30, 90), ncol = 2, byrow = TRUE)
+rownames(m) <- c("nein","ja")
+colnames(m) <- c("nein", "ja")
+m
+#       nein ja
+# nein   40 75
+# ja     30 90
+
+# H0: X2 = 0
+# H1: X2 > 0
+chisq.test(m, correct = FALSE)
+
+# nicht signifikant. H0 wird beibehalten
+
+
+# Ü82
+# ----------------------------------------------------------------------------------------------------------------------
+# Zur Untersuchung der Wirksamkeit von Vorsorgeimpfungen gegen Grippe wurde eine uneingeschränkte Zufallsstichprobe aus der Bevölkerung
+# vom Umfang n = 1.000 gezogen. Die Überprü-fung des Zusammenhangs der beiden Merkmale Impfschutz (ja/nein)
+# und Erkrankung (ja/nein) in einem Chiquadrattest ergab einen p-Wert von 0,0943.
+# Schließen Sie mit dieser Informationen über den Ausgang des statistischen Tests auf dem Signifikanzniveau α= 0,05,
+# ob die Merkmale Impfschutz und Erkrankung in der Bevölkerung eine nstatistischen Zusammenhang aufweisen.
+
+
+# Nein P-Vert grösser als Signifikanzniveau
+
+
+
+
+# Ü83
+# ----------------------------------------------------------------------------------------------------------------------
+# Bei n = 400 zufällig ausgewählten Automobilen eines 1986 erstmals zugelassenen Typs wurde 
+# für ein elektronisches Bauteil das Merkmal Lebensdauer (in 1.000 km) erhoben:
+# Lebensdauer    pi 
+# unter 40       0,140
+# 40 – 60        0,350
+# 60 – 80        0,370
+# über 80        0,140
+# Überprüfen Sie auf einem Signifikanzniveau α= 0,05, ob die Lebensdauer dieser Bauteile nichtnormalverteilt ist.
+# In der Stichprobe errechnete sich ein Mittelwert von 60.000 km und eine Stichprobenstandardabweichung von 20.000 km.
+# Wie groß ist außerdem der zum errechneten Chiquadrat gehörende p-Wert (Excel)?
+
+norm <- c(pnorm(40, mean = 60, sd = 20),
+          pnorm(60, 60, 20) - pnorm(40, 60, 20),
+          pnorm(80, 60, 20) - pnorm(60, 60, 20),
+          pnorm(80, 60, 20, lower.tail = FALSE))
+
+# norm <- c(0.159, 0.341, 0.341, 0.159) # ich habe genauere Werte
+obser <- c(0.14, 0.35, 0.37, 0.14)
+x2 <- chisq.test(400*obser, p = norm, correct = FALSE)$statistic
+
+pchisq(x2, df = 1, lower.tail = FALSE)
+
+# df = classes - 3
+# classes = observationen in dem Beispiel sind es 4
+
+# Nicht signifikant, H0 beibehalten
+
+
+# Ü84
+# ----------------------------------------------------------------------------------------------------------------------
+# Verwenden Sie die Daten aus Ü83 und überprüfen Sie abermals, 
+# ob die Lebensdauer dieser Bauteile nicht normalverteilt ist.
+# In der Stichprobe ergab sich diesmal ein Mittelwert von 80.000 km und eine Standardabweichung von 20.000 km bei
+# gleicher Häufigkeitsverteilung auf die Intervalle. Wie groß ist der zum errechneten Chiquadrat gehörende p-Wert (Excel)?
+# 
+# h0: x2 = 0
+# h1: x2 > 0
+
+norm <- c(pnorm(40, mean = 80, sd = 20),
+          pnorm(60, 80, 20) - pnorm(40, 80, 20),
+          pnorm(80, 80, 20) - pnorm(60, 80, 20),
+          pnorm(80, 80, 20, lower.tail = FALSE))
+
+x2 <- chisq.test(obser*400, correct = FALSE, p = norm)$statistic %>% unname()
+
+pchisq(x2, df = 1, lower.tail = FALSE)
+# extrem klein. p-value wird verworen
 
 
 
