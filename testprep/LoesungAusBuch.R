@@ -390,20 +390,21 @@ u61 <- read_excel("~/Google/R/homework/homework/testprep/Lerndatei (Kapitel 3) a
 
 u61$Einstellung <- factor(u61$Einstellung, levels = c(1,2), labels = c("dafür", "dagegen"))
 
-table(u61$Einstellung)
+prop.table(table(u61$Einstellung))
 
 # a)
 # H0 = relative Häufigkeit = 66.6%
 # H1 = relative Häufigkeit <> 66.6%
 
 # b)
-prop.test(table(u61$Einstellung), n = 800, p = 2/3)
+prop.test(table(u61$Einstellung), n = 800, p = 2/3,correct = FALSE)
 # H0 verwerfen
 
 # manuelle Berechnung des Konfintervalls um das Ergebnis aus der Grundgesamtheit
-
 0.666 + qnorm(0.975) * sqrt((0.666*(1-0.666))/800)
 0.666 - qnorm(0.975) * sqrt((0.666*(1-0.666))/800)
+
+# oder
 
 # H0 verwerfen
 
@@ -443,9 +444,257 @@ prop.test(1200*0.08, n = 1200, p = 0.1, alternative = "less")
 
 # Ü63
 # ----------------------------------------------------------------------------------------------------------------------
-# In einer Zufallsstichprobe vom Umfang n = 350 aus der wahlberechtigten Bevölkerung stellteman Ende des Jahres 2010 fest,
-# dass 192 der Befragten einem EU-Beitritt der Türkei skeptischgegenüberstanden.Konnte man aus dem Stichprobenergebnis auf dem 
-# Signifikanzniveau α= 0,05 folgern, dasseine Mehrheit der Gesamtbevölkerung in dieser Frage skeptisch eingestellt war?
+# In einer Zufallsstichprobe vom Umfang n = 350 aus der wahlberechtigten Bevölkerung stellte man Ende des Jahres 2010 fest,
+# dass 192 der Befragten einem EU-Beitritt der Türkei skeptisch gegenüberstanden.
+# Konnte man aus dem Stichprobenergebnis auf dem 
+# Signifikanzniveau α= 0,05 folgern, dass eine Mehrheit der Gesamtbevölkerung in dieser Frage skeptisch eingestellt war?
+# 
+
+# p = Anteil an skeptischer Bevölkerung
+# H0: Relative Häufigkeit <= 0.5
+# H1: Relative Häufigkeit > 0.5
+
+prop.test(192, n = 350, p = 0.5, alternative = "greater")
+# Test ist signifikanz. H0 wird verworfen
+
+# Ü64
+# ----------------------------------------------------------------------------------------------------------------------
+# Von Werkstücken, die ein Jahr lang gelagert wurden, sind 40 Prozent unbrauchbar.
+# Nach einer Änderung der Lagerbedingungen wird überprüft, ob sich die relative Häufigkeit an unbrauchbaren Werkstücken verringert hat.
+# a) Formulieren Sie für dieses Problem geeignete statistische Hypothesen.
+# b) Entscheiden Sie sich auf dem Signifikanzniveau α= 0,05 für eine der beiden Hypothesen, wenn unter 100 zufällig ausgewählten Stücken nunmehr 36 Prozent unbrauchbar waren.
+
+# p = unbrauchbare Werkstücke
+# H0: p => 40%
+# H1: p < 40%
+
+
+prop.test(100*0.36, 100, p = 0.4, correct = FALSE, alternative = "less")
+# Test nicht signifikant. H0 wird beibehalten
+
+
+# Abstecher Vergleich chisq.test zu prop.test
+# ----------------------------------------------------------------------------------------------------------------------
+
+# H0: p = 40%
+# H1: p <> 40%
+
+prop_test <- prop.test(100*0.36, 100, p = 0.4, correct = FALSE); prop_test
+# Test ist nicht signifikanz, H0 wir beibehalten
+
+
+test <- c(1:100)
+test[1:36] <- 1
+test[37:100] <- 2
+test <- factor(test, levels = c(1,2), labels = c("brauchbar", "unbrauchbar"))
+prop.table(table(test))
+
+# geht wohl auch oder?
+chisq_test <- chisq.test(table(test), p = c(0.4, 0.6)); chisq_test
+
+
+
+prop_test$p.value
+chisq_test$p.value
+
+
+prop_test$statistic
+chisq_test$statistic
+
+# das gleiche wenn less oder greater, dann P-Value / 2
+# ----------------------------------------------------------------------------------------------------------------------
+
+
+# Ü66
+# ----------------------------------------------------------------------------------------------------------------------
+# Zur Erprobung der Wirksamkeit eines Schlafmittels wurde zuerst an 264 zufällig ausgewählten
+# Testpersonen das Merkmal Schlafdauer gemessen. Die Messergebnisse finden sich in einer
+# Excel-Datei im Internet.Berechnen Sie das Konfidenzintervall zur Sicherheit 1−α= 0,95 für die mittlere Schlafdauer in der Grundgesamtheit.
+
+library(readxl)
+u66 <- read_excel("~/Google/R/homework/homework/testprep/Lerndatei (Kapitel 3) ab EXCEL 2007.xlsx", 
+                                                sheet = "Ü66")
+schlafdauer <- u66$Schlafdauer %>% na.omit
+
+mu <- mean(schlafdauer)
+error <- sd(schlafdauer)/sqrt(length(schlafdauer))
+qnorm(0.975, mean = mu, sd = error)
+qnorm(0.025, mean = mu, sd = error)
+  
+# Ü67
+# ----------------------------------------------------------------------------------------------------------------------
+# Bei der Abfüllung von Mineralwasser in Literflaschen wird der Magnesiumgehalt je Liter gemessen. n = 116
+# Kontrollmessungen ergaben folgende Werte für den Gehalt an Magnesium (in mg/l):x = 25,452, s2= 0,850.
+# Berechnen Sie das Konfidenzintervall zur Sicherheit 1−α= 0,95 für den mittleren Magnesiumgehalt in der Gesamtproduktion.
+
+qnorm(0.975, mean = 25.452, sd = sqrt(0.850/116))
+qnorm(0.025, mean = 25.452, sd = sqrt(0.850/116))
+
+
+
+# Ü68
+# ----------------------------------------------------------------------------------------------------------------------
+# Eine Zufallsstichprobe vom Umfang n = 836 ergab hinsichtlich eines Merkmals x einen Mittelwert x = 22,5 bei einer Standardabweichung
+# von s = 3,2. Bestimmen Sie das Konfidenzintervall zur Sicherheit 1−α= 0,95 für den wahren Mittelwert von x.
+
+mu <- 22.5
+error = 3.2/sqrt(836)
+
+qnorm(0.975, mean = mu, sd = error)
+qnorm(0.025, mean = mu, sd = error)
+
+
+# Ü69
+# ----------------------------------------------------------------------------------------------------------------------
+# Eine Zufallsstichprobe vom Umfang n = 86 ergab hinsichtlich eines normalverteilten Merkmals x Messergebnisse,
+# die einer im Internet bereitgestellten Excel-Datei zu finden sind. Testen Sie zum Signifikanzniveau α= 0,05 folgende Hypothesen:
+# a) H0: μ = 4500 gegen H1: μ ≠4500.
+# b) H0: μ ≥ 4500 gegen H1: μ< 4500.
+
+u69 <- read_excel("~/Google/R/homework/homework/testprep/Lerndatei (Kapitel 3) ab EXCEL 2007.xlsx", 
+                                                sheet = "Ü69")
+
+x <- u69$`Merkmal x` %>% na.omit()
+
+# a)
+# Eigentlich muss ich die Standardaweichung aus der Stichprobe nehmen, daher t.test. Aber das Buch macht wohl kein T.test?
+t.test(x, alternative = "two.sided", paired = FALSE, mu = 4500)
+# H0 wird verworfen, Test ist signifikant
+
+# b)
+t.test(x, alternative = "less", paired = FALSE, mu = 4500)
+# H0 wird verworfen. Test ist signifikant
+
+# nein wie gedacht Buch nimmt das 0.975 Quartil von der Normalverteilung <- also Z-Test
+
+
+
+# Ü70
+# ----------------------------------------------------------------------------------------------------------------------
+# Die (stetige) Punktezahl bei einem Aufnahmetest sei annähernd normalverteilt mit μ= 75.
+# Nach Einführung verpflichtender vorbereitender Kurse soll überprüft werden, ob sich der Mittelwert der Punktezahlen erhöht hat.
+# a) Formulieren Sie für dieses Problem geeignete statistische Hypothesen.
+# b) Testen Sie diese Hypothesen auf einem Signifikanzniveau von α= 0,05,
+# wenn in einer Zufallsstichprobe vom Umfang n = 120 nach Einführung der Kurse ein Mittelwert von 78,4 Punkten
+# erzielt wird und in dieser Stichprobe eine Standardabweichung von s = 6 gemessen wird.
+
+H0: u <= 75
+H1: u > 75
+
+# rein theoretisch wieder t.test
+TeachingDemos::z.test(78.4, mu = 75, alternative = "greater", sd = 6, n = 120)
+# Test signifikanz H0 wird verworfen
+
+
+# Ü71
+# ----------------------------------------------------------------------------------------------------------------------
+# Die Psychologen Stanford, Binet und Wechsler haben festgestellt, dass der Intelligenzquotient inder Bevölkerung normalverteilt ist.
+# In der Bevölkerung besitzt der IQ einen Mittelwert von 100. Überprüfen Sie auf einem Signifikanzniveau von α= 0,05, ob dieser Mittelwert
+# unter Studierenden höher ist. Dazu steht eine Zufallsstichprobe vom Umfang n = 100 zur Verfügung, in der ein durchschnittlicher IQ von 108
+# bei einer Standardabweichung von s = 19 gemessen wurde.
+
+H0: IQ <= 100
+H1: IQ > 100
+
+TeachingDemos::z.test(108, mu = 100, sd = 19, n=100)
+# Test ist signifikanz. H0 wird verworfen
+
+
+# Ü73
+# ----------------------------------------------------------------------------------------------------------------------
+# Zwei im Abstand zweier Monate gezogene unabhängige Stichproben von je 700 Wahlberechtigten erhoben für den Spitzenkandidaten
+# einer Partei seine Sympathisanten. Sie finden die Datenin einer im Internet bereitgestellten Excel-Datei. Die Schlagzeile in
+# einer Zeitung lautete: „Kandidat legt zu!“ Überprüfen Sie diese Behauptung auf einem Signifikanzniveau von α= 0,05,
+# nachdem Sie geeignete Hypothesen für diesen Test aufgestellt haben.
+
+# H0: Differenz >= 0
+# H1: Differenz < 0
+library(readxl)
+u73 <- read_excel("~/Google/R/homework/homework/testprep/Lerndatei (Kapitel 3) ab EXCEL 2007.xlsx", 
+                                                sheet = "Ü73")
+
+u73 <- u73[,1:2]
+u73[] <- lapply(u73, as.factor)
+
+u73 <- tidyr::gather(u73)
+u73$value <- as.factor(u73$value)
+u73$key <- as.factor(u73$key)
+
+t(table(u73$key, u73$value))
+
+prop.test(table(u73$key, u73$value), alternative = "less", correct = FALSE)
+# Test ist signifikant. H0 wird verworfen
+
+# prop.table(table(quine$Eth, quine$Sex), margin = 1)
+# so wie ich das verstehe ich der Test etwas arbitrage, jenach dem wo sich die erhebung aufhaltet. es muss auch jenachdem etwas datawrangling
+# gemacht werden. 
+
+# geht irgendwie nicht so
+
+# Ü74
+# ----------------------------------------------------------------------------------------------------------------------
+# Verwenden Sie die Daten aus Ü73:
+# Die Partei will nun überprüfen, ob sich die relative Häufigkeitan Sympathisanten für
+# ihren Spitzenkandidaten innerhalb der zwei Monate auf einem Signifikanzniveau von α= 0,05 verändert hat.
+
+prop.test(table(u73$key, u73$value), alternative = "two.sided", correct = FALSE)
+
+# nicht im bereich von 0
+
+
+# Ü75
+# ----------------------------------------------------------------------------------------------------------------------
+# Es soll die positive Wirkung eines konzentrationssteigernden Mittels auf die Lernleistung getestet werden.
+# Dazu werden unabhängig voneinander eine Gruppe von 200 Versuchspersonenohne Einnahme des Mittels und eine gleich große nach Einnahme des Mittels geprüft.
+# Es bestehen 41,5 Prozent der ersten und 44,0 Prozent der zweiten Gruppe.
+# Formulieren Sie geeignete Hypothesen und testen Sie diese auf einem Signifikanzniveau von α= 0,05.
+
+# H0: 
+# H1: 
+  
+prop.test(x = 200*0.44, p = 0.415, n = 200, alternative = "greater", correct = FALSE)  
+
+# test ist nicht signifikanz, h0 verworfen
+
+
+
+# Ü76
+# ----------------------------------------------------------------------------------------------------------------------
+# Eine Stichprobe vom Umfang n = 350 lieferte vor einem Jahr eine relative Häufigkeit von
+# 65,1 Prozent an Zustimmung zur Regierungsarbeit. Es soll nun auf einem Signifikanzniveau vonα= 0,05 überprüft werden,
+# ob sich dieser Anteil im Jahresabstand verändert hat. Dazu wirdeine neue Stichprobe vom Umfang n = 420 gezogen.
+# In dieser ergibt sich ein diesbezüglicherAnteil von 62,1 Prozent. Formulieren Sie die diesbezüglichen Hypothesen
+# und führen Sie den Test auf dem Signifikanzniveau α= 0,05 durch.
+
+# H0 =
+# H1 nicht gleich
+
+prop.test(420*0.621, n = 420, p = 0.651)
+
+# nicht gleich
+# aber wahrscheinlich müssen dieste Test alle von hand gerechnet werden, R ist nicht ausgelegt auf solche Fragen
+
+
+
+# Ü77
+# ----------------------------------------------------------------------------------------------------------------------
+# In Ü66 wurde an 264 zufällig ausgewählten Personen das Merkmal Schlafdauer gemessen.
+# Nu nwird eine zweite, von der ersten unabhängige Stichprobe vom Umfang 200 gezogen und abermals das Merkmal Schlafdauer gemessen,
+# nachdem diesen neuen 200 Personen jedoch Schlafmittel verabreicht wurden. Als Kennzahlen dieser neuen Stichprobe ergeben sich: x=7.1,
+# s = 1,5. 
+# Überprüfen Sie auf einem Signifikanzniveau von α= 0,05, ob sich die Einnahme des Schlafmittels positiv auf die Schlafdauer auswirkt.
+
+library(readxl)
+u77 <- read_excel("~/Google/R/homework/homework/testprep/Lerndatei (Kapitel 3) ab EXCEL 2007.xlsx", 
+                                                sheet = "Ü66")
+schlaf <- u77$Schlafdauer %>% na.omit()
+
+TeachingDemos::z.test(7.1, mu = mean(schlaf), sd = 1.5, alternative = "greater", n = 200)
+# Testergebnis = signifikant
+
+
+
+
 
 
 
