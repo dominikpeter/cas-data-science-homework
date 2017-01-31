@@ -16,9 +16,10 @@ rm(list=ls())
 # Welches durchschnittliche Gewicht wird für ein Auto geschätzt,
 # dessen Motor eine Leistung von 200 PS aufweist?
 
-model <- lm(wt~hp, data = mtcars)
-
+model <- lm(wt ~ hp, data = mtcars)
 predict(model, data.frame(hp = 200))
+
+# Gewicht von 3.718439 
 
 # ------------------------------------------------------------------------------------------------
 # Aufgabe: Bestimmtheitsmass
@@ -34,10 +35,14 @@ r2
 # Untersuchen Sie, ob zwischen den Grössen wt und hp aus
 # mtcars ein signifikanter Zusammenhang besteht.
 
+# H0 :β1 = 0
+# H1 :β1 ≠ 0
+
 model_summary <- summary(model)
 coefficients(model_summary)
 
-# Mit P-Value = 4.145827e-05 liegt ein signifikanter Zusammenhang vor
+# Mit P-Value = 4.145827e-05 liegt ein signifikanter Zusammenhang vor.
+# Es wird die H1 Hypothese akzeptiert
 
 # ------------------------------------------------------------------------------------------------
 # Aufgabe: Konfidenzintervalle für y
@@ -62,6 +67,11 @@ predict(model, data.frame(hp = 200), interval = "predict", level = 0.95)
 # ------------------------------------------------------------------------------------------------
 # Stellen Sie die Residuen des linearen Modells zwischen dem
 # Gewicht und der Leistung aus mtcars grafisch dar.
+
+plot(mtcars$hp, residuals(model), ylab="Residuen", xlab="HP", main="Residuen-Plot")
+abline(0,0)
+
+# oder
 
 plot(model, which = 1)
 

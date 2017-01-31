@@ -122,19 +122,22 @@ w2_analysis <- w2 %>%
             N = n())
 
 
+colors <- c('#ffffcc','#a1dab4','#41b6c4','#2c7fb8','#253494')
+
 w2_analysis %>%
-  ggplot(aes(x = factor(qy), y = Range)) +
-  geom_tile(aes(fill = Sales), color = "white", width=.99, height=.99) +
+  ggplot(aes(x = factor(year), y = Range)) +
+  geom_tile(aes(fill = Sales)) +
   # geom_segment(x=12.5, xend=12.5, y=0, yend=14.5, size=.9, lineend = "round") +
   # scale_color_gradient() +
   # scale_fill_brewer() +
-  scale_fill_viridis(alpha = 0.2, option = "A", begin = 0, end = 1, direction = -1,
+  # scale_fill_gradientn(colours = colors) +
+  scale_fill_viridis(option = "D", begin = 0, end = 1, direction = 1,
                      # guide=guide_colourbar(ticks=5,
                      #                       barheight=.3,
                      #                       barwidth=20)
                      breaks = seq(0,200000, by= 20000)
-                     )+
-  # ggtitle("Doppelwaschtische Keramik") + 
+                     ) +
+  # # ggtitle("Doppelwaschtische Keramik") + 
   labs(x="", y="", fill="") +
   theme(
     # legend.position="left",
@@ -142,20 +145,29 @@ w2_analysis %>%
         panel.grid = element_blank(),
         axis.title = element_blank(),
         title=element_text(hjust=-1.2, face="bold", vjust=2, family="Helvetica")) 
-# +
+
   # coord_polar() -> w2_plot; w2_plot
 require(svglite)
 ggsave("newplot.svg")
 
 
+w2 %>% 
+  # filter(NetPrice > NetPrice %>% quantile(0.005)) %>% 
+  mutate(Range = NetPrice %>% cut(w2_breaks)) %>% 
+  group_by(qy, Range, ST) %>% 
+  summarise(Sales = sum(Sales),
+            N = n())
+
+
+
 w2 %>%
   # filter(year > 2011) %>% 
-  ggplot(aes(x = NetPrice, fill = factor(year))) +
-  geom_density(alpha = 0.9, color = "white") +
-  # scale_fill_brewer(palette = "Set1") +
+  ggplot(aes(y = NetPrice, x = factor(qy))) +
+  geom_boxplot(alpha = 0.8) +
+  scale_fill_brewer(palette = "Set2") +
   # scale_fill_manual(values = c("#33of66", "#bf3875")) +
-  scale_fill_viridis(discrete = TRUE, option = "A") +
-  scale_y_continuous(labels = scales::percent) +
+  # scale_fill_viridis(discrete = TRUE, option = "A") +
+  # scale_y_continuous(labels = scales::percent) +
   theme(panel.background = element_blank(),
         panel.grid = element_blank()) +
   # ggtitle("Doppelwaschtische Keramik") +
@@ -163,5 +175,18 @@ w2 %>%
   xlab("") -> w2_density;w2_density
 
 
-combn(1:5)
-combn(1:5, 2)
+
+w2_analysis %>%
+  # filter(year > 2011) %>% 
+  ggplot(aes(y = Range, x = factor(qy), size = Sales)) +
+  geom_point(alpha = 0.8, color = "black") +
+  scale_fill_brewer(palette = "Set2") +
+  # scale_fill_manual(values = c("#33of66", "#bf3875")) +
+  # scale_fill_viridis(discrete = TRUE, option = "A") +
+  # scale_y_continuous(labels = scales::comma) +
+  theme(panel.background = element_blank(),
+        panel.grid = element_blank()) +
+  # ggtitle("Doppelwaschtische Keramik") +
+  ylab("") +
+  xlab("") -> w2_density;w2_density
+
