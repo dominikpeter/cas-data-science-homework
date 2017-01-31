@@ -125,13 +125,13 @@ w2_analysis <- w2 %>%
 colors <- c('#ffffcc','#a1dab4','#41b6c4','#2c7fb8','#253494')
 
 w2_analysis %>%
-  ggplot(aes(x = factor(year), y = Range)) +
+  ggplot(aes(x = factor(qy), y = Range)) +
   geom_tile(aes(fill = Sales)) +
   # geom_segment(x=12.5, xend=12.5, y=0, yend=14.5, size=.9, lineend = "round") +
   # scale_color_gradient() +
   # scale_fill_brewer() +
   # scale_fill_gradientn(colours = colors) +
-  scale_fill_viridis(option = "D", begin = 0, end = 1, direction = 1,
+  scale_fill_viridis(option = "A", begin = 0, end = 1, direction = -1,
                      # guide=guide_colourbar(ticks=5,
                      #                       barheight=.3,
                      #                       barwidth=20)
