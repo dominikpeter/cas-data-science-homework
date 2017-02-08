@@ -631,9 +631,9 @@
      borderopacity="1.0"
      inkscape:pageopacity="0.0"
      inkscape:pageshadow="2"
-     inkscape:zoom="1.1707916"
-     inkscape:cx="273.78323"
-     inkscape:cy="465.70488"
+     inkscape:zoom="0.32"
+     inkscape:cx="502.95176"
+     inkscape:cy="-52.039355"
      inkscape:document-units="px"
      inkscape:current-layer="layer1"
      showgrid="false"
@@ -652,7 +652,7 @@
         <dc:format>image/svg+xml</dc:format>
         <dc:type
            rdf:resource="http://purl.org/dc/dcmitype/StillImage" />
-        <dc:title />
+        <dc:title></dc:title>
       </cc:Work>
     </rdf:RDF>
   </metadata>
@@ -810,13 +810,13 @@
     <text
        sodipodi:linespacing="125%"
        id="text10603"
-       y="949.24982"
+       y="949.83911"
        x="21.432507"
        style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-size:25.39227295px;line-height:125%;font-family:'Open Sans';-inkscape-font-specification:'Open Sans';letter-spacing:0px;word-spacing:0px;fill:#000000;fill-opacity:1;stroke:none;stroke-width:1px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1"
        xml:space="preserve"
        transform="scale(0.94384384,1.0594973)"><tspan
          style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-size:12.34819221px;font-family:'Open Sans';-inkscape-font-specification:'Open Sans'"
-         y="949.24982"
+         y="949.83911"
          x="21.432507"
          id="tspan10605"
          sodipodi:role="line">Stand: 16. Januar 2017</tspan></text>
@@ -4434,5 +4434,18 @@
        d="m 36.832163,751.28099 3.971402,0"
        style="fill:none;stroke:#ffffff;stroke-width:0.45643166;stroke-linecap:butt;stroke-linejoin:round;stroke-miterlimit:10;stroke-opacity:1"
        inkscape:connector-curvature="0" />
+    <text
+       transform="scale(0.94384384,1.0594973)"
+       xml:space="preserve"
+       style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-size:25.39227295px;line-height:125%;font-family:'Open Sans';-inkscape-font-specification:'Open Sans';letter-spacing:0px;word-spacing:0px;fill:#000000;fill-opacity:1;stroke:none;stroke-width:1px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1"
+       x="21.432507"
+       y="934.14825"
+       id="text4198"
+       sodipodi:linespacing="125%"><tspan
+         sodipodi:role="line"
+         id="tspan4200"
+         x="21.432507"
+         y="934.14825"
+         style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-size:12.34819221px;font-family:'Open Sans';-inkscape-font-specification:'Open Sans'">Autor: Dominik Peter</tspan></text>
   </g>
 </svg>
