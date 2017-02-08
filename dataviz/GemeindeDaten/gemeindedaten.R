@@ -110,3 +110,15 @@ df_pol %>%
 
 
 
+25*0.35
+55*0.25
+str(df)
+
+df %>% 
+  ggplot(aes(x = bev_ausl, y= sozsich_sh)) +
+  geom_point(aes(size = bev_total), pch = 21, fill = "blue", color = "black") +
+  stat_smooth(color = "red", se = FALSE, Ity=2)+
+  scale_size_area(max_size = 15, label = scales::comma) +
+  theme_grey()+
+  facet_wrap(~stadt_land)
+

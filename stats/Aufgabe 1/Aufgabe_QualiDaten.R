@@ -99,6 +99,6 @@ paste0("Relative Anzahl Maler >= 14: ", round(mean.ColorCheck * 100, 2), "%")
 # **20 Maler** haben Colour >= 14. Das sind **37.04 %** aller Maler in den Beispieldaten
 
 
-
+mean(painters$Colour >= 14)
 
 

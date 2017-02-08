@@ -87,7 +87,7 @@ phyper(2, m = 8, n = 12, k = 5, lower.tail = FALSE)
 # -----------------------------------------------------------------------------------------------------------------------
 # Beim statischen Testen von Hypothesen (siehe Kapitel III) wird in den Sozial- und Wirtschaftswissenschaften die
 # Wahrscheinlichkeit für einen α-Fehler, den man genau dann macht, wenn mansich irrtümlich für die Einshypothese statt
-# für die Nullhypothese entscheidet, üblicherweise mitα = 0,05 festgelegt. Wie wahrscheinlich ist es demnach, dass bei
+# für die Nullhypothese entscheidet, üblicherweise mit α = 0,05 festgelegt. Wie wahrscheinlich ist es demnach, dass bei
 # 10 unabhängigen Durchführungen solcher Tests
 # a) kein einziges Mal
 # b) einmal,
@@ -170,7 +170,7 @@ pnorm(-1.96)
 # Ü44
 # -----------------------------------------------------------------------------------------------------------------------
 # Die Länge von Schrauben einer Produktion ist normalverteilt mit Erwartungswert μ= 6 cm und
-# theoretische Varianzσ 2= 0,01 (cm2). Wie wahrscheinlich ist es, dass eine Schraube
+# theoretische Varianz σ 2= 0,01 (cm2). Wie wahrscheinlich ist es, dass eine Schraube
 # a) höchstens 6,15 cm,
 # b) höchstens 6,196 cm lang ist?
 # c) mindestens 5,85 cm,
@@ -253,7 +253,9 @@ qnorm(c(0.25, 0.75), 100, 15)
 # Personen ausgewählt hätte?
 
 # a)
-prop.test(x = 100*2/3, n=100, p=2/3)
+prop.test(x = 100*2/3, n=100, p=0.6666667, correct = FALSE)
+
+prop.test
 
 # b)
 prop.test(x = 400*2/3, n=400, p=2/3)
@@ -265,6 +267,10 @@ prop.test(x = 800*2/3, n=800, p=2/3)
 # a)
 0.666 + qnorm(0.975) * sqrt(0.666*(1-0.666) / 100)
 0.666 - qnorm(0.975) * sqrt(0.666*(1-0.666) / 100)
+
+
+
+
 
 
 # Ü56
@@ -360,6 +366,9 @@ ceiling( qnorm(0.975)^2/0.03^2 * 0.5 * (1-0.5) )
 # Annahme von E 0.02
 ceiling( qnorm(0.975)^2/0.02^2 * 0.5 * (1-0.5) )
 
+
+
+
 # Ü60
 # ----------------------------------------------------------------------------------------------------------------------
 # In einer Mitarbeiterbefragung soll mittels einer Zufallsstichprobe erhoben werden,
@@ -424,23 +433,18 @@ prop.test(800*0.636, n = 800, p = 2/3)
 # von allen Haushalten mit TV-Anschluss) einer TV-Show unter 10 Prozent gefallen ist. 
 # a) Formulieren Sie für dieses Problem geeignete statistische Hypothesen. In einer Stichprobe unter n = 1.200 Haushalten hatten sich 102 Haushalte zugeschaltet.
 # b) Entscheiden Sie sich auf Basis dieses Stichprobenergebnisses auf einem Signifikanzniveau α= 0,05 für eine der beiden Hypothesen.
-# c) Wie würde Ihre Entscheidung bei p = 0,09 lauten?d) Wie würde Ihre Entscheidung bei p = 0,08 lauten?
+# c) Wie würde Ihre Entscheidung bei p = 0,09 lauten?
+# d) Wie würde Ihre Entscheidung bei p = 0,08 lauten?
 
 # a)
 # H0: relative Häufkeit => 10%
 # H1: relative Häufigkeit < 10%
 
 # b)
-prop.test(102, n = 1200, p = 0.1, alternative = "less")
+prop.test(102, n = 1200, p = 0.1, alternative = "less", correct = FALSE)
 # Test signifikant. H1 wir akzeptiert
 
-# c)
-# p = 0.09
-prop.test(1200*0.09, n = 1200, p = 0.1, alternative = "less")
-# Test nicht signifikant. H0 wir beibehalten
 
-prop.test(1200*0.08, n = 1200, p = 0.1, alternative = "less")
-# Test signifikant. H1 wir akzeptiert
 
 # Ü63
 # ----------------------------------------------------------------------------------------------------------------------
