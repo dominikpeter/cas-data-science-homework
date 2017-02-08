@@ -629,9 +629,6 @@ t(table(u73$key, u73$value))
 prop.test(table(u73$key, u73$value), alternative = "less", correct = FALSE)
 # Test ist signifikant. H0 wird verworfen
 
-# prop.table(table(quine$Eth, quine$Sex), margin = 1)
-# so wie ich das verstehe ich der Test etwas arbitrage, jenach dem wo sich die erhebung aufhaltet. es muss auch jenachdem etwas datawrangling
-# gemacht werden. 
 
 # geht irgendwie nicht so
 

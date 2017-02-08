@@ -41,8 +41,8 @@ font_import("Helvetica")
 
 
 
-raw_data <- read_delim("/Users/dominikpeter/Google/R/datasets/pricing.txt", delim = "|")
-# raw_data <- read_delim("C:/Users/peterd/Downloads/pricing.txt", delim = "|")
+# raw_data <- read_delim("/Users/dominikpeter/Google/R/datasets/pricing.txt", delim = "|")
+raw_data <- read_delim("C:/Users/peterd/Downloads/pricing.txt", delim = "|")
 
 
 lookup_brand <- tibble(Key = raw_data$OwnBrand %>% unique) %>% 
