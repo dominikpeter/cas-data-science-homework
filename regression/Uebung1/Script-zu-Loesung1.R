@@ -21,6 +21,6 @@ psych::describe(df)
 df %>% ggplot(aes(x = Preis)) + geom_histogram(bins = 8, color = "white") 
 
 
-
+GGally::ggcorr(df[,2:4], digits = TRUE, label = TRUE)
 
 
