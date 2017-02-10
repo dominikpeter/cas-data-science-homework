@@ -77,7 +77,7 @@ k <- kmeans(m_scaled, centers = 5, algorithm = "MacQueen", iter.max = 10000)
 df_anomalie <- df_anomalie %>% mutate(cluster = k$cluster)
 
 
-df_anomalie %>% ggplot(aes(hour, departmentid, color = cluster)) + geom_point()
+df_anomalie %>% ggplot(aes(hour, departmentid, color = factor(cluster))) + geom_point()
 
 
 
