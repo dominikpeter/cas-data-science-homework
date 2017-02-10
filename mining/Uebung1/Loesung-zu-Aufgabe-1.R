@@ -24,7 +24,8 @@ library(readr)
 library(dplyr)
 library(stringr)
 library(lubridate)
-
+library(reshape2)
+library(ggplot2)
 
 
 # Data Wrangling
@@ -34,8 +35,7 @@ raw_file <- read_log("https://raw.githubusercontent.com/romeokienzler/developerW
 
 df <- raw_file[seq(2, nrow(raw_file),by = 2 ), ]
 
-split <- reshape2::colsplit(df$X6, ",", names = c(1, 2, 3))
-
+split <- colsplit(df$X6, ",", names = c(1, 2, 3))
 df <- bind_cols(df, split)
 names(df) <- 1:ncol(df)
 
@@ -70,20 +70,14 @@ df_anomalie <- df_anomalie %>% select(-X1)
 m_scaled <- scale(df_anomalie)
 
 # ch <- chisq.plot(m_scaled)
+df_anomalie <- df_anomalie %>% mutate(outlier = outl$wfinal01)
+
+k <- kmeans(m_scaled, centers = 5, algorithm = "MacQueen", iter.max = 10000)
+
+df_anomalie <- df_anomalie %>% mutate(cluster = k$cluster)
 
 
-
-
-
-
-
-
-
-
-
-
-
-
+df_anomalie %>% ggplot(aes(hour, departmentid, color = cluster)) + geom_point()
 
 
 
