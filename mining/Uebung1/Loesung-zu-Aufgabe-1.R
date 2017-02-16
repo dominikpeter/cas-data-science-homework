@@ -56,28 +56,114 @@ result_with_time <- df %>%
   select(-LogID)
 
 
-final_result <- result_with_time %>% select(hour, employeeid, departmentid)
-
+final_result <- result_with_time %>% select(hour, employeeid, departmentid, clientid)
+final_result
 
 # Anomalie Detection
 
-library(mvoutlier)
-library(scales)
+df_anomalie <- read_csv("https://raw.githubusercontent.com/romeokienzler/developerWorks/master/testdata.csv") %>%
+  select(-X1)
+df_anomalie
 
-df_anomalie <- read_csv("https://raw.githubusercontent.com/romeokienzler/developerWorks/master/testdata.csv")
-df_anomalie <- df_anomalie %>% select(-X1)
 
-m_scaled <- scale(df_anomalie)
+df_anomalie %>% 
+  reshape2::melt(value.name = "value", variable.name = "id") %>% 
+  ggplot(aes(x = factor(value))) +
+  geom_bar() +
+  theme_minimal() +
+  theme(panel.background = element_blank(),
+        panel.grid = element_blank()) +
+  facet_wrap(~id, scales = "free")
 
-# ch <- chisq.plot(m_scaled)
-df_anomalie <- df_anomalie %>% mutate(outlier = outl$wfinal01)
+# df_anomalie %>% 
+#   ggplot(aes(x = hour, y = departmentid)) +
+#   geom_point()
+# 
+# df_anomalie %>% 
+#   ggplot(aes(x = hour, y = clientid)) +
+#   geom_point()
 
-k <- kmeans(m_scaled, centers = 5, algorithm = "MacQueen", iter.max = 10000)
+#employeeid nahezu uniform verteilt, keine zusatzinfo 
+
+df_anomalie
+
+# m_scaled <- scale(df_anomalie %>% select(-employeeid, -clientid), center = TRUE, scale = TRUE)
+
+
+
+k <- kmeans(df_anomalie %>% select(departmentid), centers = 3)
+
+# k <- kmeans(m_scaled, centers = 3, algorithm = "Lloyd", iter.max = 10000)
 
 df_anomalie <- df_anomalie %>% mutate(cluster = k$cluster)
 
+centers <- k$centers[k$cluster, ]
+distances <- sqrt(rowSums((m_scaled - centers)^2))
+m <- tapply(distances, k$cluster, mean)
+d <- distances/(m[k$cluster])
 
-df_anomalie %>% ggplot(aes(hour, departmentid, color = factor(cluster))) + geom_point() + theme_light()
+df_anomalie <-
+  df_anomalie %>%
+  mutate(distance = d)
+
+df_anomalie %>%
+  ggplot(aes(hour, departmentid, color = factor(cluster))) +
+  geom_point() +
+  theme_light()
+
+
+
+# ---------------departmentid
+df2 <- df_anomalie %>%
+  group_by(departmentid, hour) %>%
+  summarise(n = n())
+
+
+k2 <- kmeans(df2 %>% select(departmentid, hour, n), 2)
+df2 <- df2 %>% ungroup() %>%  mutate(cluster = k2$cluster)
+
+df2 %>%
+  ggplot(aes(hour, departmentid, color = factor(cluster), size = n)) +
+  geom_point() +
+  theme_light() +
+  theme(panel.background = element_blank(),
+        panel.grid = element_blank())
+
+df2 %>% filter(departmentid == 23) %>% View()
+
+
+
+# ---------------departmentid
+
+df2 <- df_anomalie %>%
+  group_by(departmentid, hour) %>%
+  summarise(n = n())
+
+
+k2 <- kmeans(df2 %>% select(departmentid, hour, n), 2)
+df2 <- df2 %>% ungroup() %>%  mutate(cluster = k2$cluster)
+
+df2 %>%
+  ggplot() +
+  geom_point(aes(hour, departmentid, color = factor(cluster), size = n)) +
+  geom_text(aes(1.5, 27), label = "outlier", size = 4, color = "black") +
+  theme_light() +
+  theme(panel.background = element_blank(),
+        panel.grid = element_blank()) +
+  scale_color_manual(values = c("#ef8a62", "#67a9cf"))
+
+
+df_anomalie %>%
+  filter(departmentid == 23) %>%
+  ggplot(aes(factor(hour), fill = factor(employeeid))) +
+  geom_bar() +
+  scale_fill_brewer(palette = "Paired") +
+  theme(panel.background = element_blank(),
+        panel.grid = element_blank())
+
+
+
+# outlier detected!!!
 
 
 

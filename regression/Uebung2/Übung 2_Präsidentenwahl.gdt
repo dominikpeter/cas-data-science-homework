@@ -1,0 +1,48 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE gretldata SYSTEM "gretldata.dtd">
+
+<gretldata version="1.3" name="unknown" frequency="1" startobs="1" endobs="25" type="cross-section">
+<description>Daten aus Excel-Datei 'Presidentenwahl_Fair Data.xlsx' importiert, 2017-02-06 19:03:
+</description>
+<variables count="6">
+<variable name="year"
+/>
+<variable name="VD"
+/>
+<variable name="V"
+/>
+<variable name="G"
+/>
+<variable name="P"
+/>
+<variable name="GOODNEWS"
+/>
+</variables>
+<observations count="25" labels="true">
+<obs label="1">1916 51.682 51.682000000000002 2.229 4.252 3 </obs>
+<obs label="2">1920 36.148 36.148000000000003 -11.463 0 0 </obs>
+<obs label="3">1924 41.737 58.2439994812012 -3.872 5.161 10 </obs>
+<obs label="4">1928 41.244 58.819999694824197 4.623 0.183 7 </obs>
+<obs label="5">1932 59.149 40.840999603271499 -14.35 6.928 4 </obs>
+<obs label="6">1936 62.226 62.225999999999999 11.682 2.498 9 </obs>
+<obs label="7">1940 54.983 54.982999999999997 3.913 0.051 8 </obs>
+<obs label="8">1944 53.778 53.777999999999999 4.122 0 0 </obs>
+<obs label="9">1948 52.319 52.319000000000003 3.214 0 0 </obs>
+<obs label="10">1952 44.71 44.710000000000001 0.997 2.353 7 </obs>
+<obs label="11">1956 42.906 57.763999938964801 -1.252 1.907 5 </obs>
+<obs label="12">1960 50.087 49.912998199462898 0.674 1.98 5 </obs>
+<obs label="13">1964 61.203 61.203000000000003 5.03 1.241 9 </obs>
+<obs label="14">1968 49.425 49.424999999999997 5.045 3.086 7 </obs>
+<obs label="15">1972 38.209 61.7890014648438 5.834 4.813 4 </obs>
+<obs label="16">1976 51.049 48.948001861572301 3.817 7.463 5 </obs>
+<obs label="17">1980 44.842 44.841999999999999 -3.583 7.795 5 </obs>
+<obs label="18">1984 40.877 59.169998168945298 5.55 5.21 8 </obs>
+<obs label="19">1988 46.168 53.902000427246101 2.403 2.871 5 </obs>
+<obs label="20">1992 53.621 46.544998168945298 3.035 3.193 3 </obs>
+<obs label="21">1996 54.737 54.737000000000002 3.315 2.031 4 </obs>
+<obs label="22">2000 50.262 50.264999389648402 2.031 1.683 7 </obs>
+<obs label="23">2004 48.767 51.233001708984403 2.086 2.141 2 </obs>
+<obs label="24">2008 53.689 46.599998474121101 -1.787 2.745 2 </obs>
+<obs label="25">2012 52.01 52.009999999999998 1.422 1.47 1 </obs>
+</observations>
+</gretldata>
