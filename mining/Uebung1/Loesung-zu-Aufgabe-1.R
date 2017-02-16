@@ -30,8 +30,7 @@ library(ggplot2)
 
 # Data Wrangling
 
-raw_file <- read_log("https://raw.githubusercontent.com/romeokienzler/developerWorks/master/log") %>%
-  as_data_frame()
+raw_file <- read_log("https://raw.githubusercontent.com/romeokienzler/developerWorks/master/log")
 
 df <- raw_file[seq(2, nrow(raw_file),by = 2 ), ]
 
@@ -74,13 +73,6 @@ df_anomalie %>%
         panel.grid = element_blank()) +
   facet_wrap(~id, scales = "free")
 
-
-# Verteilungen
-df_anomalie %>%
-  ggplot(aes(hour, departmentid, color = factor(cluster))) +
-  geom_point() +
-  theme_light()
-
 # employeeid und clientid sehen eher gleichverteilt aus. hour sieht sehr künstlich aus mit
 # der perfekt symetrischen verteilung
 
@@ -93,6 +85,8 @@ df_grouped <- df_anomalie %>%
   summarise(n = n())
 
 cluster <- kmeans(df_grouped, 2, iter.max = 10000)
+# cluster <- dbscan::dbscan(df_grouped, eps = 2)
+
 
 df_grouped <- df_grouped %>%
   ungroup() %>%
@@ -100,19 +94,19 @@ df_grouped <- df_grouped %>%
 
 df_grouped %>%
   ggplot() +
-  geom_point(aes(hour, departmentid, color = factor(cluster), size = n)) +
-  geom_segment(aes(3, 26, xend = 0.4, yend = 23), color = "black", size = 1.05,
-               arrow = arrow(length = unit(0.02, "npc"))) +
-  # geom_text(aes(3.3, 29, label = "outlier"), size = 4) +
+  geom_point(aes(hour, departmentid, color = factor(cluster), size = n), alpha = .95) +
+  geom_segment(aes(3.5, 26, xend = .6, yend = 23), color = "black", size = 1.05,
+               arrow = arrow(length = unit(.015, "npc"))) +
   theme_light() +
   theme(panel.background = element_blank(),
         panel.grid = element_blank()) +
   scale_color_manual(values = c("#ef8a62", "#67a9cf"))
 
-# search outlier
-df_grouped %>% filter(hour == 0, cluster == 1)
+# suchen des Outliers anhand der visuellen Betrachtung
+df_grouped %>% filter(hour == 0, cluster == 2)
 
 # Verteilung der departmentid 23
+library(viridis)
 df_anomalie %>%
   filter(departmentid == 23) %>%
   ggplot(aes(factor(hour), fill = factor(employeeid))) +
