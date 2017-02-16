@@ -47,24 +47,23 @@ result <- df %>% select(employeeid, departmentid, clientid)
 # Time
 result_with_time <- df %>% 
   mutate(time      = str_extract(LogID, '.+\\ ') %>% dmy_hms,
-         hour      = hour(time),
-         minutes   = minute(time),
-         seconds   = second(time),
-         day       = day(time),
-         month     = month(time),
-         year      = year(time)) %>% 
+         hour      = hour(time)) %>% 
   select(-LogID)
 
 
-final_result <- result_with_time %>% select(hour, employeeid, departmentid, clientid)
+final_result <- result_with_time %>%
+  select(hour, employeeid, departmentid, clientid)
+
 final_result
 
+
 # Anomalie Detection
+# --------------------------------------------------------------------------------------------------
+url <- "https://raw.githubusercontent.com/romeokienzler/developerWorks/master/testdata.csv"
 
-df_anomalie <- read_csv("https://raw.githubusercontent.com/romeokienzler/developerWorks/master/testdata.csv") %>%
+df_anomalie <- url %>%
+  read_csv() %>%
   select(-X1)
-df_anomalie
-
 
 df_anomalie %>% 
   reshape2::melt(value.name = "value", variable.name = "id") %>% 
@@ -75,95 +74,56 @@ df_anomalie %>%
         panel.grid = element_blank()) +
   facet_wrap(~id, scales = "free")
 
-# df_anomalie %>% 
-#   ggplot(aes(x = hour, y = departmentid)) +
-#   geom_point()
-# 
-# df_anomalie %>% 
-#   ggplot(aes(x = hour, y = clientid)) +
-#   geom_point()
 
-#employeeid nahezu uniform verteilt, keine zusatzinfo 
-
-df_anomalie
-
-# m_scaled <- scale(df_anomalie %>% select(-employeeid, -clientid), center = TRUE, scale = TRUE)
-
-
-
-k <- kmeans(df_anomalie %>% select(departmentid), centers = 3)
-
-# k <- kmeans(m_scaled, centers = 3, algorithm = "Lloyd", iter.max = 10000)
-
-df_anomalie <- df_anomalie %>% mutate(cluster = k$cluster)
-
-centers <- k$centers[k$cluster, ]
-distances <- sqrt(rowSums((m_scaled - centers)^2))
-m <- tapply(distances, k$cluster, mean)
-d <- distances/(m[k$cluster])
-
-df_anomalie <-
-  df_anomalie %>%
-  mutate(distance = d)
-
+# Verteilungen
 df_anomalie %>%
   ggplot(aes(hour, departmentid, color = factor(cluster))) +
   geom_point() +
   theme_light()
 
+# employeeid und clientid sehen eher gleichverteilt aus. hour sieht sehr künstlich aus mit
+# der perfekt symetrischen verteilung
 
-
-# ---------------departmentid
-df2 <- df_anomalie %>%
-  group_by(departmentid, hour) %>%
-  summarise(n = n())
-
-
-k2 <- kmeans(df2 %>% select(departmentid, hour, n), 2)
-df2 <- df2 %>% ungroup() %>%  mutate(cluster = k2$cluster)
-
-df2 %>%
-  ggplot(aes(hour, departmentid, color = factor(cluster), size = n)) +
-  geom_point() +
-  theme_light() +
-  theme(panel.background = element_blank(),
-        panel.grid = element_blank())
-
-df2 %>% filter(departmentid == 23) %>% View()
-
-
+# Fokus auf hour und departmentid
 
 # ---------------departmentid
 
-df2 <- df_anomalie %>%
+df_grouped <- df_anomalie %>%
   group_by(departmentid, hour) %>%
   summarise(n = n())
 
+cluster <- kmeans(df_grouped, 2, iter.max = 10000)
 
-k2 <- kmeans(df2 %>% select(departmentid, hour, n), 2)
-df2 <- df2 %>% ungroup() %>%  mutate(cluster = k2$cluster)
+df_grouped <- df_grouped %>%
+  ungroup() %>%
+  mutate(cluster = cluster$cluster %>% as.integer)
 
-df2 %>%
+df_grouped %>%
   ggplot() +
   geom_point(aes(hour, departmentid, color = factor(cluster), size = n)) +
-  geom_text(aes(1.5, 27), label = "outlier", size = 4, color = "black") +
+  geom_segment(aes(3, 26, xend = 0.4, yend = 23), color = "black", size = 1.05,
+               arrow = arrow(length = unit(0.02, "npc"))) +
+  # geom_text(aes(3.3, 29, label = "outlier"), size = 4) +
   theme_light() +
   theme(panel.background = element_blank(),
         panel.grid = element_blank()) +
   scale_color_manual(values = c("#ef8a62", "#67a9cf"))
 
+# search outlier
+df_grouped %>% filter(hour == 0, cluster == 1)
 
+# Verteilung der departmentid 23
 df_anomalie %>%
   filter(departmentid == 23) %>%
   ggplot(aes(factor(hour), fill = factor(employeeid))) +
   geom_bar() +
-  scale_fill_brewer(palette = "Paired") +
+  scale_fill_viridis(discrete = TRUE, option = "B") +
   theme(panel.background = element_blank(),
         panel.grid = element_blank())
 
+# innerhalb des departements 23 sind die Daten normal verteilt, 
+# bis auf den outlier mit der employeeid 23
 
-
-# outlier detected!!!
 
 
 
