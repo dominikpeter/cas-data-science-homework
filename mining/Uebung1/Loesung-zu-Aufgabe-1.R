@@ -78,11 +78,13 @@ df_anomalie <- dest_csv %>%
 df_anomalie %>% 
   reshape2::melt(value.name = "value", variable.name = "id") %>% 
   ggplot(aes(x = factor(value))) +
-  geom_bar() +
+  geom_bar(fill = "#1DABB8") +
   theme_minimal() +
   theme(panel.background = element_blank(),
         panel.grid = element_blank()) +
-  facet_wrap(~id, scales = "free")
+  facet_wrap(~id, scales = "free") +
+  ylab("Anzahl") +
+  xlab("Wert")
 
 # employeeid und clientid sehen eher gleichverteilt aus. hour sieht sehr künstlich aus mit
 # der perfekt symetrischen verteilung
