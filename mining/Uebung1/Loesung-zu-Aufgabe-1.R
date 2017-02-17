@@ -54,7 +54,7 @@ names(df) <- 1:ncol(df)
 df <- df %>% select(1, 4, 8, 9, 10)
 names(df) <- c("IP", "LogID", "departmentid", "employeeid", "clientid")
 
-
+# Resultat Aufgabe a)
 result <- df %>%
   select(employeeid, departmentid, clientid); result
 
@@ -64,12 +64,12 @@ result_with_time <- df %>%
          hour = hour(time)) %>% 
   select(-LogID)
 
-
+# Resultat Aufgabe b)
 final_result <- result_with_time %>%
   select(hour, employeeid, departmentid, clientid); final_result
 
 
-# Anomalie Detection
+# Anomalie Detection (Lösung zu Aufgabe 2.)
 # --------------------------------------------------------------------------------------------------
 url_csv <- "https://raw.githubusercontent.com/romeokienzler/developerWorks/master/testdata.csv"
 dest_csv <- "testdata.csv"
