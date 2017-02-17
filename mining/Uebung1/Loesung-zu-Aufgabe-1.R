@@ -121,7 +121,7 @@ df_grouped %>%
 # suchen des Outliers anhand der visuellen Betrachtung
 df_grouped %>% filter(hour == 0) %>%
   group_by(cluster) %>% 
-  filter(n() == 1) ##Cluster soltle nur ein Punkt haben
+  filter(n() == 1) ##Cluster sollte nur ein Punkt haben
 #deparmentid 23 hat 1000 aufrufe in der Stunde 0
 
 
