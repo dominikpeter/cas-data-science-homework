@@ -1,4 +1,11 @@
 
+# ------------------------------------------------------------------------------------------------
+# Title:  Lösung zu Aufgaben X2
+# Autor:  Dominik Peter
+# Date:   2017-01-18
+# ------------------------------------------------------------------------------------------------
+
+# ------------------------------------------------------------------------------------------------
 # 2016 HS CAS Datenanalyse
 # Seitenpfad
 # Startseite / ▶︎ TI Technik und Informatik / ▶︎ Weiterbildung / ▶︎ 2016 HS CAS DA / ▶︎ Data Mining / ▶︎ Aufgabe 1
@@ -18,6 +25,9 @@
 # 2. Die bekommen nun das aus Aufgabe 1 extrahierte CSV file von Ihrem Junior Data Scientist geliefert.
 # Die Forensik Abteilung möchte wissen ob in diesem Trace anomales Verhalten auftritt. Können Sie helfen?
 # Zuletzt geändert: Donnerstag, 25. Februar 2016, 11:38
+
+# ------------------------------------------------------------------------------------------------
+
 rm(list = ls())
 
 library(readr)
@@ -29,8 +39,11 @@ library(ggplot2)
 
 
 # Data Wrangling
+url_log <- "https://raw.githubusercontent.com/romeokienzler/developerWorks/master/log"
+dest_log <- "logfile"
+download.file(url_log, destfile = dest_log)
 
-raw_file <- read_log("https://raw.githubusercontent.com/romeokienzler/developerWorks/master/log")
+raw_file <- dest_log %>% read_log()
 
 df <- raw_file[seq(2, nrow(raw_file),by = 2 ), ]
 
@@ -41,26 +54,28 @@ names(df) <- 1:ncol(df)
 df <- df %>% select(1, 4, 8, 9, 10)
 names(df) <- c("IP", "LogID", "departmentid", "employeeid", "clientid")
 
-result <- df %>% select(employeeid, departmentid, clientid)
+
+result <- df %>%
+  select(employeeid, departmentid, clientid); result
 
 # Time
 result_with_time <- df %>% 
-  mutate(time      = str_extract(LogID, '.+\\ ') %>% dmy_hms,
-         hour      = hour(time)) %>% 
+  mutate(time = str_extract(LogID, '.+\\ ') %>% dmy_hms,
+         hour = hour(time)) %>% 
   select(-LogID)
 
 
 final_result <- result_with_time %>%
-  select(hour, employeeid, departmentid, clientid)
-
-final_result
+  select(hour, employeeid, departmentid, clientid); final_result
 
 
 # Anomalie Detection
 # --------------------------------------------------------------------------------------------------
-url <- "https://raw.githubusercontent.com/romeokienzler/developerWorks/master/testdata.csv"
+url_csv <- "https://raw.githubusercontent.com/romeokienzler/developerWorks/master/testdata.csv"
+dest_csv <- "testdata.csv"
+download.file(url_csv, destfile = dest_csv)
 
-df_anomalie <- url %>%
+df_anomalie <- dest_csv %>%
   read_csv() %>%
   select(-X1)
 
@@ -92,10 +107,11 @@ df_grouped <- df_grouped %>%
   ungroup() %>%
   mutate(cluster = cluster$cluster %>% as.integer)
 
+# visuelle outlier suche
 df_grouped %>%
   ggplot() +
-  geom_point(aes(hour, departmentid, color = factor(cluster), size = n), alpha = .95) +
-  geom_segment(aes(3.5, 26, xend = .6, yend = 23), color = "black", size = 1.05,
+  geom_point(aes(hour, departmentid, color = factor(cluster), size = n)) +
+  geom_segment(aes(3.5, 26, xend = .6, yend = 23.5), color = "black", size = 1.05,
                arrow = arrow(length = unit(.015, "npc"))) +
   theme_light() +
   theme(panel.background = element_blank(),
@@ -103,20 +119,26 @@ df_grouped %>%
   scale_color_manual(values = c("#ef8a62", "#67a9cf"))
 
 # suchen des Outliers anhand der visuellen Betrachtung
-df_grouped %>% filter(hour == 0, cluster == 2)
+df_grouped %>% filter(hour == 0) %>%
+  group_by(cluster) %>% 
+  filter(n() == 1) ##Cluster soltle nur ein Punkt haben
+#deparmentid 23 hat 1000 aufrufe in der Stunde 0
+
 
 # Verteilung der departmentid 23
-library(viridis)
 df_anomalie %>%
   filter(departmentid == 23) %>%
   ggplot(aes(factor(hour), fill = factor(employeeid))) +
   geom_bar() +
-  scale_fill_viridis(discrete = TRUE, option = "B") +
+  scale_fill_brewer(palette = "Paired") +
   theme(panel.background = element_blank(),
-        panel.grid = element_blank())
+        panel.grid = element_blank()) +
+  xlab("Stunde") +
+  ylab("Anzahl")
 
 # innerhalb des departements 23 sind die Daten normal verteilt, 
 # bis auf den outlier mit der employeeid 23
+
 
 
 
