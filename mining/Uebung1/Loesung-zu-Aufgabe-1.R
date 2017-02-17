@@ -6,9 +6,6 @@
 # ------------------------------------------------------------------------------------------------
 
 # ------------------------------------------------------------------------------------------------
-# 2016 HS CAS Datenanalyse
-# Seitenpfad
-# Startseite / ▶︎ TI Technik und Informatik / ▶︎ Weiterbildung / ▶︎ 2016 HS CAS DA / ▶︎ Data Mining / ▶︎ Aufgabe 1
 # Aufgabe 1
 # 1. Datenaufbereitung
 # Ein findiger Programmierer hat den Apache HTTPD server über ein Modul so angepasst dass neben normalen Seitenzugriffen
@@ -22,10 +19,9 @@
 # b) Erweitern Sie Ihr R Script dass nun auch die Stunde des Zugriffsdatums aus der LogID Datei in der ersten Zeile des Data Frame erscheint.
 # Das Format ist nun Spalte 1 > hour, Spalte 2> employeeid, Spalte 3> departmentid, Spalte 4> clientid
 # Der Link zur Datei ist hier: https://raw.githubusercontent.com/romeokienzler/developerWorks/master/testdata.csv
+
 # 2. Die bekommen nun das aus Aufgabe 1 extrahierte CSV file von Ihrem Junior Data Scientist geliefert.
 # Die Forensik Abteilung möchte wissen ob in diesem Trace anomales Verhalten auftritt. Können Sie helfen?
-# Zuletzt geändert: Donnerstag, 25. Februar 2016, 11:38
-
 # ------------------------------------------------------------------------------------------------
 
 rm(list = ls())
@@ -99,6 +95,7 @@ df_grouped <- df_anomalie %>%
   group_by(departmentid, hour) %>%
   summarise(n = n())
 
+# cluster mit zwei Gruppen
 cluster <- kmeans(df_grouped, 2, iter.max = 10000)
 # cluster <- dbscan::dbscan(df_grouped, eps = 2)
 
@@ -112,7 +109,7 @@ df_grouped %>%
   ggplot() +
   geom_point(aes(hour, departmentid, color = factor(cluster), size = n)) +
   geom_segment(aes(3.5, 26, xend = .6, yend = 23.5), color = "black", size = 1.05,
-               arrow = arrow(length = unit(.015, "npc"))) +
+               arrow = arrow(length = unit(.03, "npc"))) +
   theme_light() +
   theme(panel.background = element_blank(),
         panel.grid = element_blank()) +
@@ -122,7 +119,7 @@ df_grouped %>%
 df_grouped %>% filter(hour == 0) %>%
   group_by(cluster) %>% 
   filter(n() == 1) ##Cluster sollte nur ein Punkt haben
-#deparmentid 23 hat 1000 aufrufe in der Stunde 0
+#deparmentid 23 hat 1000 Aufrufe in der Stunde 0
 
 
 # Verteilung der departmentid 23
