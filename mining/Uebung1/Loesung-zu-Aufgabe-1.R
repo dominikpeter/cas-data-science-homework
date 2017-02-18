@@ -1,8 +1,8 @@
 
 # ------------------------------------------------------------------------------------------------
-# Title:  Lösung zu Aufgaben X2
+# Title:  Lösung zu Aufgaben 1 
 # Autor:  Dominik Peter
-# Date:   2017-01-18
+# Date:   2017-02-18
 # ------------------------------------------------------------------------------------------------
 
 # ------------------------------------------------------------------------------------------------
@@ -52,7 +52,7 @@ names(df) <- c("IP", "LogID", "departmentid", "employeeid", "clientid")
 
 # Resultat Aufgabe a)
 result <- df %>%
-  select(employeeid, departmentid, clientid); result
+  select(employeeid, departmentid, clientid); head(result, 5)
 
 # Time
 result_with_time <- df %>% 
@@ -62,7 +62,7 @@ result_with_time <- df %>%
 
 # Resultat Aufgabe b)
 final_result <- result_with_time %>%
-  select(hour, employeeid, departmentid, clientid); final_result
+  select(hour, employeeid, departmentid, clientid); head(final_result, 5)
 
 
 # Anomalie Detection (Lösung zu Aufgabe 2.)
@@ -81,6 +81,9 @@ df_anomalie %>%
   geom_bar(fill = "#1DABB8") +
   theme_minimal() +
   theme(panel.background = element_blank(),
+        panel.grid = element_blank(),
+        panel.border = element_blank()) +
+  theme(panel.background = element_blank(),
         panel.grid = element_blank()) +
   facet_wrap(~id, scales = "free") +
   ylab("Anzahl") +
@@ -91,15 +94,14 @@ df_anomalie %>%
 
 # Fokus auf hour und departmentid
 
-# ---------------departmentid
-
+# departmentid Anzahl Zugriffe pro Stunde
+# ---------------------------------------------
 df_grouped <- df_anomalie %>%
   group_by(departmentid, hour) %>%
   summarise(n = n())
 
 # cluster mit zwei Gruppen
 cluster <- kmeans(df_grouped, 2, iter.max = 10000)
-# cluster <- dbscan::dbscan(df_grouped, eps = 2)
 
 
 df_grouped <- df_grouped %>%
@@ -109,13 +111,18 @@ df_grouped <- df_grouped %>%
 # visuelle outlier suche
 df_grouped %>%
   ggplot() +
-  geom_point(aes(hour, departmentid, color = factor(cluster), size = n)) +
-  geom_segment(aes(3.5, 26, xend = .6, yend = 23.5), color = "black", size = 1.05,
+  geom_point(aes(factor(hour), departmentid, color = factor(cluster), size = n)) +
+  geom_segment(aes(4, 26, xend = 1.5, yend = 23.5), color = "black", size = 1.05,
                arrow = arrow(length = unit(.03, "npc"))) +
-  theme_light() +
+  scale_color_manual(values = c("#ef8a62", "#67a9cf")) +
+  labs(color = "Cluster", size = "Anzahl") +
+  theme_minimal() +
   theme(panel.background = element_blank(),
-        panel.grid = element_blank()) +
-  scale_color_manual(values = c("#ef8a62", "#67a9cf"))
+        panel.grid = element_blank(),
+        panel.border = element_blank()) +
+  xlab("hour") +
+  ggtitle("Visuelle Suche nach Anomalien")
+  
 
 # suchen des Outliers anhand der visuellen Betrachtung
 df_grouped %>% filter(hour == 0) %>%
@@ -129,14 +136,15 @@ df_anomalie %>%
   filter(departmentid == 23) %>%
   ggplot(aes(factor(hour), fill = factor(employeeid))) +
   geom_bar() +
-  scale_fill_brewer(palette = "Paired") +
+  scale_fill_brewer(palette = "Set1") +
+  theme_minimal() +
   theme(panel.background = element_blank(),
         panel.grid = element_blank()) +
   xlab("Stunde") +
-  ylab("Anzahl")
-
-# innerhalb des departements 23 sind die Daten normal verteilt, 
-# bis auf den outlier mit der employeeid 23
+  ylab("Anzahl") +
+  labs(fill = "employeeid")
+# innerhalb des departements 23 sind die Daten normalverteilt, 
+# bis auf den Outlier mit der employeeid 23
 
 
 
