@@ -5,22 +5,27 @@
 # Date:   2017-02-18
 # ------------------------------------------------------------------------------------------------
 
-# ------------------------------------------------------------------------------------------------
+
 # Aufgabe 1
+# ------------------------------------------------------------------------------------------------
 # 1. Datenaufbereitung
+
 # Ein findiger Programmierer hat den Apache HTTPD server über ein Modul so angepasst dass neben normalen Seitenzugriffen
 # auch mitgeLogIDged wird um welchen Mitarbeiter es sich handelt, zu welcher Abteilung er gehört und welchen Kunden er gerade zugegriffen hat.
 # Leider hat er sich keine grossen Gedanken gemacht wie ein Data Scientist die Daten verarbeitet.
 # Der Link zur Datei ist hier: https://raw.githubusercontent.com/romeokienzler/developerWorks/master/LogID
 # Hier wurde einfach über ein Apache HTTPD modul für jeden Request eine 2. Zeile eingefügt in der der Payload die gewünschten Informationen enthält,
 # in folgerner Reihenfolge: departmentid, employeeid, clientid
+
 # a) Lesen Sie die LogID Datei mittels R ein und bereiten Sie so auf, dass daraus ein Data Frame entsteht welcher folgendes Format hat:
 # Spalte 1> employeeid, Spalte 2> departmentid, Spalte 3> clientid
+
 # b) Erweitern Sie Ihr R Script dass nun auch die Stunde des Zugriffsdatums aus der LogID Datei in der ersten Zeile des Data Frame erscheint.
 # Das Format ist nun Spalte 1 > hour, Spalte 2> employeeid, Spalte 3> departmentid, Spalte 4> clientid
 # Der Link zur Datei ist hier: https://raw.githubusercontent.com/romeokienzler/developerWorks/master/testdata.csv
 
-# 2. Die bekommen nun das aus Aufgabe 1 extrahierte CSV file von Ihrem Junior Data Scientist geliefert.
+# 2.
+# Die bekommen nun das aus Aufgabe 1 extrahierte CSV file von Ihrem Junior Data Scientist geliefert.
 # Die Forensik Abteilung möchte wissen ob in diesem Trace anomales Verhalten auftritt. Können Sie helfen?
 # ------------------------------------------------------------------------------------------------
 
@@ -125,9 +130,10 @@ df_grouped %>%
   
 
 # suchen des Outliers anhand der visuellen Betrachtung
-df_grouped %>% filter(hour == 0) %>%
+df_grouped %>%
+  filter(hour == 0) %>%
   group_by(cluster) %>% 
-  filter(n() == 1) ##Cluster sollte nur ein Punkt haben
+  filter(n() == 1) #Cluster sollte nur ein Datenpunkt haben
 #deparmentid 23 hat 1000 Aufrufe in der Stunde 0
 
 
@@ -143,8 +149,9 @@ df_anomalie %>%
   xlab("Stunde") +
   ylab("Anzahl") +
   labs(fill = "employeeid")
-# innerhalb des departements 23 sind die Daten normalverteilt, 
-# bis auf den Outlier mit der employeeid 23
+
+# Innerhalb des Departements 23 sind die Daten normalverteilt, 
+# bis auf den Outlier mit der employeeid 7
 
 
 
