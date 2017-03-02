@@ -115,6 +115,20 @@ df_anomalie %>%
 # korrektur emplyeeid und departmentid
 names(df_anomalie) <- c("hour", "departmentid", "employeeid", "clientid")
 
+# df_anomalie %>% 
+#   reshape2::melt(value.name = "value", variable.name = "id") %>% 
+#   ggplot(aes(x = factor(value))) +
+#   geom_bar(fill = "#1DABB8") +
+#   theme_minimal() +
+#   theme(panel.background = element_blank(),
+#         panel.grid = element_blank(),
+#         panel.border = element_blank()) +
+#   theme(panel.background = element_blank(),
+#         panel.grid = element_blank()) +
+#   facet_wrap(~id, scales = "free") +
+#   ylab("Anzahl") +
+#   xlab("Wert")
+
 
 # Fokus auf hour und employeeid
 
