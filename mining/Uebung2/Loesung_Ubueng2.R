@@ -1,6 +1,13 @@
-
+rm(list = ls())
 #set the working directory specific to my machine
-setwd("mining/HMP_Dataset")
+setwd("./")
+
+
+library(dplyr)
+library(readr)
+library(ggplot2)
+library(stringr)
+library(caret)
 
 #create a data frame from all files in specified folder
 create_activity_dataframe = function(activityFolder,classId) {
@@ -96,24 +103,75 @@ df <- df %>%
 mean(df$correct)
 
 # ------------------------------------all data
-
-library(readr)
-list.files <- list.dirs()[-1]
+rm(list = ls())
+setwd("Homework/mining/HMP_Dataset")
+list_dir <- list.dirs()[-1]
 
 load_all <- function(dir) {
-  setwd("dir")
-  
+  files <- list.files(path = dir, full.names = TRUE)
+  files <- files[grepl(".txt", x = files)]
+  all_files <- lapply(files, function(x) read_delim(x, delim = " ",
+                                                    col_names = c("x","y","z"),
+                                                    col_types = cols(
+                                                      x = "d",
+                                                      y = "d",
+                                                      z = "d"
+                                                    )))
+  df <- bind_rows(all_files)
+  df$Label <- dir
+  df
 }
 
+df <- bind_rows(lapply(list_dir, load_all))
+
+df <- df %>%
+  mutate(Label = str_replace(Label, "./", ""),
+         Label = Label %>% as.factor)
+
+df <- df %>%
+  group_by(Label) %>% 
+  mutate(mean.x  = mean(x),
+         mean.y  = mean(y),
+         mean.z  = mean(z),
+         var.x   = var(x),
+         var.y   = var(y),
+         var.z   = var(z),
+         aad.x   = abs(x - mean.x),
+         aad.y   = abs(y - mean.y),
+         aad.z   = abs(z - mean.z),
+         ara     = Average_resultant_acceleration(x, y, z, nrow(df)),
+         max.y   = max(y)) %>% 
+  ungroup() %>% 
+  mutate(Label = Label %>% )
+
+trainIndex <- createDataPartition(df$Label, p = .3, 
+                                  list = FALSE, 
+                                  times = 1)
+
+df_train <- df[trainIndex, ]
+df_test <- df[-trainIndex, ]
 
 
-df %>% View()
+
+pp_hpc <- preProcess(df_train %>% select(-Label), 
+                     method = c("center", "scale", "nzv"))
+
+transformed <- predict(pp_hpc, newdata = df_train %>% select(-Label))
+transformed$Label <- df_train$Label
+
+
+
+fitControl <- trainControl(## 10-fold CV
+  method = "repeatedcv",
+  number = 10,
+  ## repeated ten times
+  repeats = 2)
+
+model <- train(Label ~ ., data = transformed, 
+                 method = "LogitBoost", 
+                 trControl = fitControl,
+                 verbose = FALSE)
 
 
 
 
-
-
-
-
-   
