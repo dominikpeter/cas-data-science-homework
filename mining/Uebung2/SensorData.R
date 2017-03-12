@@ -1,6 +1,7 @@
 # ------------------------------------all data
 rm(list = ls())
 
+library(plyr)
 library(dplyr)
 library(readr)
 library(ggplot2)
@@ -40,7 +41,6 @@ Average_resultant_acceleration <- function(x, y, z, n){
   (1 / n * sum(sqrt(x^2+y^2+z^2)))
 }
 
-
 df <- df %>%
   group_by(Label) %>% 
   mutate(mean.x  = mean(x),
@@ -64,21 +64,20 @@ trainIndex <- createDataPartition(df$Label, p = .8,
 df_train <- df[trainIndex, ]
 df_test <- df[-trainIndex, ]
 
-pp_hpc <- preProcess(df_train %>% select(-Label), 
+pp_hpc <- preProcess(df_train %>% dplyr::select(-Label), 
                      method = c("center", "scale", "nzv"))
 
-transformed <- predict(pp_hpc, newdata = df_train %>% select(-Label))
+transformed <- predict(pp_hpc, newdata = df_train %>% dplyr::select(-Label))
 transformed$Label <- df_train$Label
-
 
 fitControl <- trainControl(## 10-fold CV
   method = "boot",
   repeats = 5)
-
+  
 cl <- makeCluster(detectCores())
-
+  
 model <- train(Label ~ ., data = transformed, 
-               method = 'adaboost', 
+               method = 'AdaBag', 
                trControl = fitControl,
                verbose = FALSE)
 
