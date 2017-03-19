@@ -1,12 +1,13 @@
 # ------------------------------------all data
 rm(list = ls())
 
+library(caret)
 library(plyr)
 library(dplyr)
 library(readr)
 library(ggplot2)
 library(stringr)
-library(caret)
+
 
 library(doParallel)
 
@@ -77,9 +78,8 @@ fitControl <- trainControl(## 10-fold CV
 cl <- makeCluster(detectCores())
   
 model <- train(Label ~ ., data = transformed, 
-               method = 'AdaBag', 
-               trControl = fitControl,
-               verbose = FALSE)
+               method = 'amdai', 
+               trControl = fitControl)
 
 
 
