@@ -1,0 +1,26 @@
+# Log gestartet 2017-03-20 22:23
+# Aufzeichnung der Sitzungs-Befehle. Bitte beachten, dass diese
+# vor Ausführen als Skript wohl überarbeitet werden muss.
+open "/Users/dominikpeter/Homework/timeseries/Übung 1.xlsx" \
+  --coloffset=1 --rowoffset=1
+setobs 4 2010:1 --time-series
+scatters  T Strom
+scatters  Strom
+series ma_Strom4 = movavg(T, 4, 0)
+setinfo ma_Strom4 \
+  --description="4-Perioden gleitender Durchschnitt von T"
+delete ma_Strom4
+series ma_Strom4 = movavg(Strom, 4, 0)
+setinfo ma_Strom4 \
+  --description="4-Perioden gleitender Durchschnitt von Strom"
+series ma_Strom2 = movavg(Strom, 2, 0)
+setinfo ma_Strom2 \
+  --description="2-Perioden gleitender Durchschnitt von Strom"
+scatters  Strom ma_Strom4 ma_Strom2
+series ema_Strom3 = movavg(Strom, 0.3, 1)
+setinfo ema_Strom3 \
+  --description="Exponenzieller gleitender Durchschnitt von Strom (aktuelles Gewicht 0,3)"
+series ema_Strom6 = movavg(Strom, 0.6, 1)
+setinfo ema_Strom6 \
+  --description="Exponenzieller gleitender Durchschnitt von Strom (aktuelles Gewicht 0,6)"
+scatters  Strom ema_Strom3 ema_Strom6

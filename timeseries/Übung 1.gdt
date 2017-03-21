@@ -1,0 +1,47 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE gretldata SYSTEM "gretldata.dtd">
+
+<gretldata version="1.3" name="Übung 1" frequency="4" startobs="2010:1" endobs="2014:4" type="time-series">
+<description>Daten aus Excel-Datei 'Übung 1.xlsx' importiert, 2017-03-20 22:23:
+</description>
+<variables count="6">
+<variable name="T"
+/>
+<variable name="Strom"
+/>
+<variable name="ma_Strom4"
+ label="4-Perioden gleitender Durchschnitt von Strom"
+/>
+<variable name="ma_Strom2"
+ label="2-Perioden gleitender Durchschnitt von Strom"
+/>
+<variable name="ema_Strom3"
+ label="Exponenzieller gleitender Durchschnitt von Strom (aktuelles Gewicht 0,3)"
+/>
+<variable name="ema_Strom6"
+ label="Exponenzieller gleitender Durchschnitt von Strom (aktuelles Gewicht 0,6)"
+/>
+</variables>
+<observations count="20" labels="false">
+<obs>1 103.5 NA NA 103.49999999999999 103.5 </obs>
+<obs>2 94.7 NA 99.1 100.85999999999999 98.219999999999999 </obs>
+<obs>3 118.6 NA 106.65 106.18199999999999 110.44800000000001 </obs>
+<obs>4 109.3 106.525 113.95 107.11739999999998 109.75920000000001 </obs>
+<obs>5 126.1 112.175 117.7 112.81217999999997 119.56368000000001 </obs>
+<obs>6 116 117.5 121.05 113.76852599999997 117.425472 </obs>
+<obs>7 141.2 123.15 128.6 121.99796819999997 131.69018879999999 </obs>
+<obs>8 131.6 128.725 136.4 124.87857773999997 131.63607551999999 </obs>
+<obs>9 144.5 133.325 138.05 130.76500441799996 139.354430208 </obs>
+<obs>10 137.1 138.6 140.8 132.66550309259998 138.0017720832 </obs>
+<obs>11 159 143.05 148.05 140.56585216481997 150.60070883328001 </obs>
+<obs>12 149.5 147.525 154.25 143.24609651537398 149.94028353331203 </obs>
+<obs>13 166.1 152.925 157.8 150.10226756076179 159.63611341332481 </obs>
+<obs>14 152.5 156.775 159.3 150.82158729253325 155.35444536532992 </obs>
+<obs>15 178.2 161.575 165.35 159.03511110477325 169.06177814613196 </obs>
+<obs>16 169 166.45 173.6 162.02457777334126 169.02471125845278 </obs>
+<obs>17 181.4 170.275 175.2 167.83720444133888 176.4498845033811 </obs>
+<obs>18 171.8 175.1 176.6 169.02604310893722 173.65995380135246 </obs>
+<obs>19 195 179.3 183.4 176.81823017625604 186.46398152054098 </obs>
+<obs>20 184.99 183.2975 189.995 179.26976112337923 185.57959260821639 </obs>
+</observations>
+</gretldata>
