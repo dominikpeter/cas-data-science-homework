@@ -84,6 +84,21 @@ final_result <- result_with_time %>%
 #   xlab("Wert")
 
 
+# final_result %>% 
+#   reshape2::melt(value.name = "value", variable.name = "id") %>% 
+#   ggplot(aes(x = factor(value))) +
+#   geom_bar(fill = "#1DABB8") +
+#   theme_minimal() +
+#   theme(panel.background = element_blank(),
+#         panel.grid = element_blank(),
+#         panel.border = element_blank()) +
+#   theme(panel.background = element_blank(),
+#         panel.grid = element_blank()) +
+#   facet_wrap(~id, scales = "free") +
+#   ylab("Anzahl") +
+#   xlab("Wert")
+
+
 # Anomalie Detection (Lösung zu Aufgabe 2.)
 # --------------------------------------------------------------------------------------------------
 url_csv <- "https://raw.githubusercontent.com/romeokienzler/developerWorks/master/testdata.csv"
@@ -107,7 +122,7 @@ df_anomalie %>%
   facet_wrap(~id, scales = "free") +
   ylab("Anzahl") +
   xlab("Wert")
-# employeeid wohl mit departmentid vertauscht
+# employeeid und departmentid vertauscht
 # departmentid und clientid sehen eher gleichverteilt aus. hour sieht sehr künstlich aus mit
 # der perfekt symetrischen Verteilung
 
@@ -115,8 +130,8 @@ df_anomalie %>%
 # korrektur emplyeeid und departmentid
 names(df_anomalie) <- c("hour", "departmentid", "employeeid", "clientid")
 
-# df_anomalie %>% 
-#   reshape2::melt(value.name = "value", variable.name = "id") %>% 
+# df_anomalie %>%
+#   reshape2::melt(value.name = "value", variable.name = "id") %>%
 #   ggplot(aes(x = factor(value))) +
 #   geom_bar(fill = "#1DABB8") +
 #   theme_minimal() +
@@ -184,11 +199,10 @@ df_anomalie %>%
   labs(fill = "departmentid")
 
 # Innerhalb des Departements 23 sind die Daten normalverteilt, 
-# bis auf den Outlier mit der employeeid 7
+# bis auf den Outlier mit der employeeid 23 in Department 7 hat 
+# 1000 requests in der Stunde 0
 
 
-
-# wenn das so ist, wieso employeeid in mehreren departments?
 
 
 
