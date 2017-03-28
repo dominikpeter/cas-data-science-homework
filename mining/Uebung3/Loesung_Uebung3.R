@@ -136,11 +136,15 @@ pred <- predict(model_rf, test_set[,2:ncol(test_set)])
 Sys.time()-start
 # Time difference of 44.8462 secs
 
+
 confusionMatrix(table(pred$predictions, test_set$label))
 # Accuracy : 0.9622          
 # 95% CI : (0.9584, 0.9657)
 
 
+
+# example with python and sklearn
+# https://htmlpreview.github.io/?https://github.com/dominikpeter/homework/blob/master/mining/Uebung3/archiv/mnist.html
 
 
 
