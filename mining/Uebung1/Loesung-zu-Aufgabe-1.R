@@ -8,25 +8,28 @@
 
 # Aufgabe 1
 # ------------------------------------------------------------------------------------------------
+# Aufgabe 1 - ETL
 # 1. Datenaufbereitung
-
+# 
 # Ein findiger Programmierer hat den Apache HTTPD server über ein Modul so angepasst dass neben normalen Seitenzugriffen
-# auch mitgeLogIDged wird um welchen Mitarbeiter es sich handelt, zu welcher Abteilung er gehört und welchen Kunden er gerade zugegriffen hat.
-# Leider hat er sich keine grossen Gedanken gemacht wie ein Data Scientist die Daten verarbeitet.
-# Der Link zur Datei ist hier: https://raw.githubusercontent.com/romeokienzler/developerWorks/master/LogID
-# Hier wurde einfach über ein Apache HTTPD modul für jeden Request eine 2. Zeile eingefügt in der der Payload die gewünschten Informationen enthält,
-# in folgerner Reihenfolge: departmentid, employeeid, clientid
-
-# a) Lesen Sie die LogID Datei mittels R ein und bereiten Sie so auf, dass daraus ein Data Frame entsteht welcher folgendes Format hat:
+# auch mitgelogged wird um welchen Mitarbeiter es sich handelt, zu welcher Abteilung er gehört und welchen Kunden er gerade
+# zugegriffen hat. Leider hat er sich keine grossen Gedanken gemacht wie ein Data Scientist die Daten verarbeitet.
+# 
+# Der Link zur Datei ist hier: https://raw.githubusercontent.com/romeokienzler/developerWorks/master/log
+# Hier wurde einfach über ein Apache HTTPD modul für jeden Request eine 2. Zeile eingefügt in der der Payload die gewünschten
+# Informationen enthält, in folgerner Reihenfolge: departmentid, employeeid, clientid
+# a) Lesen Sie die LOG Datei mittels R ein und bereiten Sie so auf, dass daraus ein Data Frame entsteht welcher folgendes Format hat:
 # Spalte 1> employeeid, Spalte 2> departmentid, Spalte 3> clientid
-
-# b) Erweitern Sie Ihr R Script dass nun auch die Stunde des Zugriffsdatums aus der LogID Datei in der ersten Zeile des Data Frame erscheint.
+# 
+# b) Erweitern Sie Ihr R Script dass nun auch die Stunde des Zugriffsdatums aus der LOG Datei in der ersten Zeile des Data Frame erscheint.
 # Das Format ist nun Spalte 1 > hour, Spalte 2> employeeid, Spalte 3> departmentid, Spalte 4> clientid
+# 
 # Der Link zur Datei ist hier: https://raw.githubusercontent.com/romeokienzler/developerWorks/master/testdata.csv
-
-# 2.
-# Die bekommen nun das aus Aufgabe 1 extrahierte CSV file von Ihrem Junior Data Scientist geliefert.
-# Die Forensik Abteilung möchte wissen ob in diesem Trace anomales Verhalten auftritt. Können Sie helfen?
+# 
+# 2. Die bekommen nun das aus Aufgabe 1 extrahierte CSV file von Ihrem Junior Data Scientist geliefert. Die Forensik Abteilung möchte wissen ob in diesem Trace anomales Verhalten auftritt.
+# Können Sie helfen?
+# 
+# Zuletzt geändert: Mittwoch, 15. März 2017, 21:14
 # ------------------------------------------------------------------------------------------------
 
 rm(list = ls())
@@ -57,7 +60,9 @@ names(df) <- c("IP", "LogID", "departmentid", "employeeid", "clientid")
 
 # Resultat Aufgabe a)
 result <- df %>%
-  select(employeeid, departmentid, clientid); head(result, 5)
+  select(employeeid, departmentid, clientid)
+
+head(result, 5)
 
 # Time
 result_with_time <- df %>% 
@@ -67,7 +72,9 @@ result_with_time <- df %>%
 
 # Resultat Aufgabe b)
 final_result <- result_with_time %>%
-  select(hour, employeeid, departmentid, clientid); head(final_result, 5)
+  select(hour, employeeid, departmentid, clientid)
+
+head(final_result, 5)
 
 # final_result %>%
 #   reshape2::melt(value.name = "value", variable.name = "id") %>%
@@ -130,20 +137,20 @@ df_anomalie %>%
 # korrektur emplyeeid und departmentid
 names(df_anomalie) <- c("hour", "departmentid", "employeeid", "clientid")
 
-# df_anomalie %>%
-#   reshape2::melt(value.name = "value", variable.name = "id") %>%
-#   ggplot(aes(x = factor(value))) +
-#   geom_bar(fill = "#1DABB8") +
-#   theme_minimal() +
-#   theme(panel.background = element_blank(),
-#         panel.grid = element_blank(),
-#         panel.border = element_blank()) +
-#   theme(panel.background = element_blank(),
-#         panel.grid = element_blank()) +
-#   facet_wrap(~id, scales = "free") +
-#   ylab("Anzahl") +
-#   xlab("Wert")
-
+# Grafik mit Korrektur
+df_anomalie %>%
+  reshape2::melt(value.name = "value", variable.name = "id") %>%
+  ggplot(aes(x = factor(value))) +
+  geom_bar(fill = "#1DABB8") +
+  theme_minimal() +
+  theme(panel.background = element_blank(),
+        panel.grid = element_blank(),
+        panel.border = element_blank()) +
+  theme(panel.background = element_blank(),
+        panel.grid = element_blank()) +
+  facet_wrap(~id, scales = "free") +
+  ylab("Anzahl") +
+  xlab("Wert")
 
 # Fokus auf hour und employeeid
 
@@ -161,7 +168,7 @@ df_grouped <- df_grouped %>%
   ungroup() %>%
   mutate(cluster = cluster$cluster %>% as.integer)
 
-# visuelle outlier suche
+# Visuelle Suche nach Outlier
 df_grouped %>%
   ggplot() +
   geom_point(aes(factor(hour), employeeid, color = factor(cluster), size = n)) +
