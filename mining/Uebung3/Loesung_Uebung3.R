@@ -52,11 +52,10 @@ df <- mnist_matrix %>% as_data_frame()
 # Wieviele Bilder sind in der Matrix mnist_matrix encodiert
 nrow(df)
 # [1] 42000
-
 # 42'000 Bilder
 
 
-#b)
+# b)
 # -----------------------------------------------
 # Da es sich um einen Supervised Machine Learning task handelt muss ein Label (Target Variable)
 # bereitgestellt sein - welche Spalte der Matrix enthält das Label?
@@ -64,7 +63,6 @@ which(!grepl("pixel", colnames(df)))
 # [1] 1
 which(grepl("label", colnames(df)))
 # [1] 1
-
 # Die erste Spalte namens "label" hat das Label
 
 # c) 
@@ -81,6 +79,7 @@ sum(grepl("pixel", colnames(df))) %>% sqrt()
 # [1] 28
 # Die Bilder sind 28 Pixel hoch sowie breit
 
+
 # -----------------------------------------------------------------------------------------------------
 # 2. Nehmen Sie einen Classifier Ihrer Wahl und trainieren Sie Ihn mit der bereitgestellten Matrix.
 # a) Teilen Sie die Matrix in ein sinnvolles Training und Test set auf, lesen Sie hierzu diesen
@@ -95,29 +94,33 @@ sum(grepl("pixel", colnames(df))) %>% sqrt()
 df$label <- as.factor(df$label)
 
 # Split into Train and Test Set
-index <- createDataPartition(df$label,
-                             times = 1,
-                             p = 0.75,
-                             list = FALSE)
+index <- createDataPartition(df$label, times=1, p=.75,list=FALSE)
 
 train_set <- df[index, ]
 test_set <- df[-index, ]
+
 
 # Löschen von Kolonnen mit keinerlei Varianz (alle Wert 0)
 # Zeros nur anhand des Trainsets definieren um Bias beim Testen zu vermeiden
 zeros <- sapply(train_set[,-1], function(x) all(x == 0))
 
 train_set <- train_set[, c(TRUE, !zeros)]
-train_set[,-1] <- lapply(train_set[,-1], rescale)
-
 test_set <- test_set[, c(TRUE, !zeros)]
-test_set[,-1] <- lapply(test_set[,-1], rescale)
+
+#Skalieren der Werte
+train_set[,-1] <- lapply(train_set[,-1], scale)
+test_set[,-1] <- lapply(test_set[,-1], scale)
+
 
 # Support Vector Machine
+# -----------------------------------------------------------------------------------------------------
 start <- Sys.time()
-# Train with 10 Cores
-model <- parallelSVM(label~., data = train_set, numberCores = 10)
-pred <- predict(model, test_set[,2:ncol(test_set)])
+
+model <- parallelSVM(label~., data=train_set, numberCores=10) # Train with 10 Cores
+
+pred <- model %>%
+  predict(test_set[,2:ncol(test_set)])
+
 Sys.time()-start
 # Time difference of 12.49559 mins
 # MacBook Pro (Retina, 13-inch, Late 2013)
@@ -129,10 +132,18 @@ confusionMatrix(table(pred, test_set$label))
 # 95% CI : (0.9039, 0.915)
 
 
-# Train Random Forest with 1k Trees
+
+
+
+# Random Forest
+# -----------------------------------------------------------------------------------------------------
 start <- Sys.time()
+
 model_rf <- ranger(label~., data=train_set, num.trees=250)
-pred <- predict(model_rf, test_set[,2:ncol(test_set)])
+
+pred <- model_rf %>%
+  predict(test_set[,2:ncol(test_set)])
+
 Sys.time()-start
 # Time difference of 44.8462 secs
 
