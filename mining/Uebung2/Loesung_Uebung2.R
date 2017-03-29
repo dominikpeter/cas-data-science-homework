@@ -140,13 +140,14 @@ read_all_files <- function(path){
 
 }
 
+# load all files
 df <- bind_rows(lapply(files, read_all_files))
 
 average_resultant_acceleration <- function(x, y, z, n){
   (1 / n * sum(sqrt(x^2+y^2+z^2)))
 }
 
-
+# feature engineering
 df_transformed <- df %>%
   group_by(class, timestamp) %>% 
   mutate(mean.x  = mean(x),
@@ -166,6 +167,7 @@ df_transformed <- df %>%
 #just using mean of y
 km2 = kmeans(df_transformed %>% select(mean.y),
              centers=2)
+
 
 df_transformed <- df_transformed %>% 
   mutate(cluster = km2$cluster %>% as.integer()) %>% 

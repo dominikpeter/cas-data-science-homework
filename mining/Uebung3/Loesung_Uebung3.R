@@ -108,8 +108,8 @@ train_set <- train_set[, c(TRUE, !zeros)]
 test_set <- test_set[, c(TRUE, !zeros)]
 
 #Skalieren der Werte
-train_set[,-1] <- lapply(train_set[,-1], scale)
-test_set[,-1] <- lapply(test_set[,-1], scale)
+train_set[,-1] <- lapply(train_set[,-1], rescale)
+test_set[,-1] <- lapply(test_set[,-1], rescale)
 
 
 # Support Vector Machine
@@ -122,17 +122,18 @@ pred <- model %>%
   predict(test_set[,2:ncol(test_set)])
 
 Sys.time()-start
-# Time difference of 12.49559 mins
+# Time difference of 10.75163 mins
 # MacBook Pro (Retina, 13-inch, Late 2013)
 # Prozessor  2.8 GHz Intel Core i7
 # Speicher 16 GB 1600 MHz DDR3  
+# Netzwerkbetrieb
 
-confusionMatrix(table(pred, test_set$label))
-# Accuracy : 0.9096         
-# 95% CI : (0.9039, 0.915)
-
-
-
+# mean(pred == test_set$label)
+# die Caret Funktion gibt noch mehr Informationen
+caret::confusionMatrix(table(pred, test_set$label))
+# Accuracy : 0.9181          
+# 95% CI : (0.9127, 0.9232)
+# Der Algo hat Probleme mit der 3, 8 und 9
 
 
 # Random Forest
@@ -147,17 +148,13 @@ pred <- model_rf %>%
 Sys.time()-start
 # Time difference of 44.8462 secs
 
+caret::confusionMatrix(table(pred$predictions, test_set$label))
+# Accuracy : 0.968           
+# 95% CI : (0.9644, 0.9713)
+# Hat Learner hat Probleme mit 3, 8 und 9 jedoch im besser als SVM
 
-confusionMatrix(table(pred$predictions, test_set$label))
-# Accuracy : 0.9622          
-# 95% CI : (0.9584, 0.9657)
 
-
-
-# example with python and sklearn
+# Experiment mit Python and Sklearn
 # https://htmlpreview.github.io/?https://github.com/dominikpeter/homework/blob/master/mining/Uebung3/archiv/mnist.html
 
 
-
-
-<
