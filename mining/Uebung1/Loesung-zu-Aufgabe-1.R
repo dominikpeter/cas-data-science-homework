@@ -189,6 +189,7 @@ df_grouped %>%
   filter(hour == 0) %>%
   group_by(cluster) %>% 
   filter(n() == 1) #Cluster sollte nur ein Datenpunkt haben
+
 #employeeid 23 hat 1000 Aufrufe in der Stunde 0
 
 

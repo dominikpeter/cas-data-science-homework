@@ -20,7 +20,7 @@ set.seed(2323)
 
 #set the working directory specific to my machine
 setwd("~/Homework/mining/HMP_Dataset")
-
+dev.off()
 
 
 library(dplyr)
