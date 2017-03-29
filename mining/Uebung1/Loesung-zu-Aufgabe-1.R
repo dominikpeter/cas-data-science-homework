@@ -205,7 +205,7 @@ df_anomalie %>%
   ylab("Anzahl") +
   labs(fill = "departmentid")
 
-# Innerhalb des Departements 23 sind die Daten normalverteilt, 
+# Die Requests des employee 23 sind normalverteilt 
 # bis auf den Outlier mit der employeeid 23 in Department 7 hat 
 # 1000 requests in der Stunde 0
 
