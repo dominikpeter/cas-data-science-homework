@@ -178,7 +178,7 @@ df_transformed <- df_transformed %>%
 
 correct <- mean(df_transformed$classID == df_transformed$cluster)
 
-# Max because of random clustering from the kmeans algo even when setting a seed
+# Max because of random clustering from the kmeans Algo even when setting a seed
 print(paste("Accuracy of Clustering:" , round(max(1-correct, correct)*100, 2), "%"))
 # [1] "Accuracy of Clustering: 97.41 %"
 
