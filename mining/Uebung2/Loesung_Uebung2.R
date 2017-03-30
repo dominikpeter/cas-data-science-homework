@@ -20,19 +20,20 @@ set.seed(2323)
 
 #set the working directory specific to my machine
 setwd("~/Homework/mining/HMP_Dataset")
-dev.off()
+# dev.off()
 
+if (!require("readr")) install.packages("readr")
+if (!require("dplyr")) install.packages("dplyr")
+if (!require("stringr")) install.packages("string")
+if (!require("caret")) install.packages("caret")
+if (!require("ggplot2")) install.packages("ggplot2")
+if (!require("lubridate")) install.packages("lubridate")
 
-library(dplyr)
-library(readr)
-library(ggplot2)
-library(stringr)
-library(caret)
 
 # 1.
 # ------------------------------------------------
 #set the working directory specific to my machine
-setwd("~/Homework/mining/HMP_Dataset")
+# setwd("~/Homework/mining/HMP_Dataset")
 
 #create a data frame from all files in specified folder
 create_activity_dataframe = function(activityFolder,classId) {
@@ -121,7 +122,7 @@ ds3 = scatterplot3d(data2plot$x,data2plot$y,data2plot$z,color = as.numeric(data2
 # get all file names
 dirs <- list.dirs(full.names = TRUE)
 files <- lapply(dirs, function(x) list.files(path = paste(x), full.names = TRUE))
-files <- files[grepl(".txt", files)] %>% unlist()
+files <- files[grepl(".txt", files)] %>% unlist() # nur .txt Dateien
 
 read_all_files <- function(path){
   require(stringr)
@@ -142,6 +143,7 @@ read_all_files <- function(path){
 
 # load all files
 df <- bind_rows(lapply(files, read_all_files))
+df <- df %>% mutate(timestamp = timestamp %>% lubridate::ymd_hms())
 
 average_resultant_acceleration <- function(x, y, z, n){
   (1 / n * sum(sqrt(x^2+y^2+z^2)))
@@ -176,9 +178,8 @@ df_transformed <- df_transformed %>%
 
 correct <- mean(df_transformed$classID == df_transformed$cluster)
 
-print(paste("Accuracy of Clustering:" , round(max(1-correct, correct)*100, 2), "%"))
 # Max because of random clustering from the kmeans algo even when setting a seed
-
+print(paste("Accuracy of Clustering:" , round(max(1-correct, correct)*100, 2), "%"))
 # [1] "Accuracy of Clustering: 97.41 %"
 
 

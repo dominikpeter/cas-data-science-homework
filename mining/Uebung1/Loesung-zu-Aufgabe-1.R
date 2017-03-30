@@ -34,12 +34,13 @@
 
 rm(list = ls())
 
-library(readr)
-library(dplyr)
-library(stringr)
-library(lubridate)
-library(reshape2)
-library(ggplot2)
+
+if (!require("readr")) install.packages("readr")
+if (!require("dplyr")) install.packages("dplyr")
+if (!require("stringr")) install.packages("string")
+if (!require("lubridate")) install.packages("lubridate")
+if (!require("reshape2")) install.packages("reshape2")
+if (!require("ggplot2")) install.packages("ggplot2")
 
 
 # Data Wrangling

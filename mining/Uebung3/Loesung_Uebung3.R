@@ -9,13 +9,14 @@
 rm(list = ls())
 set.seed(2323)
 
-library(dplyr)
-library(caret)
-library(readr)
-library(scales)
-library(parallelSVM)
-library(ranger)
-library(ggplot2)
+
+if (!require("readr")) install.packages("readr")
+if (!require("dplyr")) install.packages("dplyr")
+if (!require("caret")) install.packages("caret")
+if (!require("ggplot2")) install.packages("ggplot2")
+if (!require("scales")) install.packages("scales")
+if (!require("parallelSVM")) install.packages("parallelSVM")
+if (!require("ranger")) install.packages("ranger")
 
 
 # Aufgabe 3 - Classification
@@ -44,7 +45,6 @@ for(i in 1:100){
 }
 
 # ----------------------------------------------------------
-
 df <- mnist_matrix %>% as_data_frame()
 
 # a)
@@ -63,7 +63,7 @@ which(!grepl("pixel", colnames(df)))
 # [1] 1
 which(grepl("label", colnames(df)))
 # [1] 1
-# Die erste Spalte namens "label" hat das Label
+# Die erste Spalte namens "label" hat das Label, Spalte 1
 
 # c) 
 # -----------------------------------------------
@@ -77,7 +77,7 @@ sum(grepl("pixel", colnames(df)))
 # Wie hoch/breit sind die Bilder?
 sum(grepl("pixel", colnames(df))) %>% sqrt()
 # [1] 28
-# Die Bilder sind 28 Pixel hoch sowie breit
+# Die Bilder sind 28 Pixel hoch sowie breit (28x28)
 
 
 # -----------------------------------------------------------------------------------------------------
@@ -95,15 +95,13 @@ df$label <- as.factor(df$label)
 
 # Split into Train and Test Set
 index <- createDataPartition(df$label, times=1, p=.75,list=FALSE)
-
 train_set <- df[index, ]
 test_set <- df[-index, ]
 
-
 # Löschen von Kolonnen mit keinerlei Varianz (alle Wert 0)
 # Zeros nur anhand des Trainsets definieren um Bias beim Testen zu vermeiden
+# Wahrscheinlich werden die Algos auch schneller mit weniger Variablen
 zeros <- sapply(train_set[,-1], function(x) all(x == 0))
-
 train_set <- train_set[, c(TRUE, !zeros)]
 test_set <- test_set[, c(TRUE, !zeros)]
 
@@ -115,12 +113,9 @@ test_set[,-1] <- lapply(test_set[,-1], rescale)
 # Support Vector Machine
 # -----------------------------------------------------------------------------------------------------
 start <- Sys.time()
-
 model <- parallelSVM(label~., data=train_set, numberCores=10) # Train with 10 Cores
-
 pred <- model %>%
   predict(test_set[,2:ncol(test_set)])
-
 Sys.time()-start
 # Time difference of 10.75163 mins
 # MacBook Pro (Retina, 13-inch, Late 2013)
@@ -129,22 +124,19 @@ Sys.time()-start
 # Netzwerkbetrieb
 
 # mean(pred == test_set$label)
+
 # die Caret Funktion gibt noch mehr Informationen
 caret::confusionMatrix(table(pred, test_set$label))
 # Accuracy : 0.9181          
 # 95% CI : (0.9127, 0.9232)
 # Der Algo hat Probleme mit der 3, 8 und 9
 
-
 # Random Forest
 # -----------------------------------------------------------------------------------------------------
 start <- Sys.time()
-
 model_rf <- ranger(label~., data=train_set, num.trees=250)
-
 pred <- model_rf %>%
   predict(test_set[,2:ncol(test_set)])
-
 Sys.time()-start
 # Time difference of 44.8462 secs
 
