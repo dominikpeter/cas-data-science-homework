@@ -38,10 +38,10 @@ exp_smoothing <- function(t, a = 0.2){
 }
 
 
-rt <- randomTime(50, 10, 0.02, 0.1, 4)
+rt <- randomTime(20, 10, 0.02, 0.1, 4)
 rt_list <- lapply(1:4, function(x) rt)
 
-alphas <- c(0.2, 0.5, 0.7, 0.9)
+alphas <- c(0.05, 0.5, 0.7, 1)
 
 smoothing <- function(x, y){
   x$smoothed <- exp_smoothing(x$t, y)
@@ -51,11 +51,11 @@ smoothing <- function(x, y){
 
 purrr::map2(rt_list, alphas, .f=smoothing) %>% 
   bind_rows(.id = "serie") %>% 
-  mutate(serie = paste("Zeitreienglättung mit a =", a)) %>% 
+  mutate(serie = paste("Zeitreihenglättung mit a =", a)) %>% 
   select(-a, serie, i, observiert=t, geglättet=smoothed) %>% 
   gather(id, value, -i,-serie) %>% 
   ggplot(aes(x=i,y=value, color=id)) +
-  geom_point(size=0.8) +
+  geom_point(size=1.1) +
   geom_line() +
   theme_minimal() +
   theme(panel.grid = element_blank()) +
@@ -64,3 +64,4 @@ purrr::map2(rt_list, alphas, .f=smoothing) %>%
   ggtitle("Exponentielle Glättung") +
   scale_color_manual(values = c("#3498db", "#e67e22"), name="") +
   facet_wrap(~serie)
+
