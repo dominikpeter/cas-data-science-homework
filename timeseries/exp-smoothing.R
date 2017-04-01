@@ -1,6 +1,9 @@
 library(ggplot2)
 library(dplyr)
 library(tidyr)
+library(purrr)
+
+set.seed(232323)
 
 randomTime <- function(n, init,
                        t, s,
@@ -24,13 +27,6 @@ randomTime <- function(n, init,
   time
 }
 
-t1 <- randomTime(50, 10, 0.02, 0.1, 4)
-
-t1 %>% 
-  ggplot(aes(x=i,y=t)) +
-  geom_point() +
-  geom_line()
-
 exp_smoothing <- function(t, a = 0.2){
   smoothed <- vector(mode = "double", length = length(t))
   smoothed[1] <- t[1]
@@ -41,10 +37,22 @@ exp_smoothing <- function(t, a = 0.2){
   smoothed
 }
 
-a <- 1
-t1 %>% 
-  mutate(smoothed = t %>% exp_smoothing(a)) %>% 
-  gather(id, value, -i) %>% 
+
+rt <- randomTime(50, 10, 0.02, 0.1, 4)
+rt_list <- lapply(1:4, function(x) rt)
+alphas <- c(0.2, 0.3, 0.4, 0.5)
+
+smoothing <- function(x, y){
+  x$smoothed <- exp_smoothing(x$t, y)
+  x$a <- y
+  x
+}
+
+purrr::map2(rt_list, alphas, .f=smoothing) %>% 
+  bind_rows(.id = "serie") %>% 
+  mutate(serie = paste("Zeitreienglättung mit a =", a)) %>% 
+  select(-a, serie, i, observiert=t, geglättet=smoothed) %>% 
+  gather(id, value, -i,-serie) %>% 
   ggplot(aes(x=i,y=value, color=id)) +
   geom_point(size=0.8) +
   geom_line() +
@@ -52,5 +60,6 @@ t1 %>%
   theme(panel.grid = element_blank()) +
   xlab("Time") +
   ylab("Value") +
-  ggtitle("Exponentielles Glätten") +
-  scale_color_manual(values = c("#3498db", "#e67e22"))
+  ggtitle("Exponentielle Glättung") +
+  scale_color_manual(values = c("#3498db", "#e67e22"), name="") +
+  facet_wrap(~serie)
