@@ -38,6 +38,3 @@ bind_rows(walks, .id = "id") %>%
   ggtitle("Illustrating Random Walk")
 
 
-
-pacf(AirPassengers)
-
