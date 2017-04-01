@@ -3,7 +3,7 @@ library(dplyr)
 library(tidyr)
 library(purrr)
 
-set.seed(232323)
+# set.seed(23)
 
 randomTime <- function(n, init,
                        t, s,
@@ -12,8 +12,9 @@ randomTime <- function(n, init,
   time <- vector(mode="double")
   time[1] <- init
   error <- rnorm(n, ...)
-  
-  for (i in 2:n) time[i] <- (time[i-1] * (1+t)) + error[i]
+  for (i in 2:n){
+    time[i] <- (time[i-1] * (1+t)) + error[i]
+  }
   intv <- n%/%period*period
   seasonal <- seq(from = 0,
                   to = intv,
@@ -38,7 +39,7 @@ exp_smoothing <- function(t, a = 0.2){
 }
 
 
-rt <- randomTime(20, 10, 0.02, 0.1, 4)
+rt <- randomTime(20, 10, -0.02, 0.1, 4)
 rt_list <- lapply(1:4, function(x) rt)
 
 alphas <- c(0.05, 0.5, 0.7, 1)
