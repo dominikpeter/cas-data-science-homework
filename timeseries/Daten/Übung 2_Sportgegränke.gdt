@@ -1,0 +1,46 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE gretldata SYSTEM "gretldata.dtd">
+
+<gretldata version="1.3" name="unknown" frequency="4" startobs="2006:1" endobs="2013:4" type="time-series">
+<description>Daten aus Excel-Datei 'Vorlesung Zeitreihenanalyse.xlsx' importiert, 2015-09-26 14:45:
+</description>
+<variables count="1">
+<variable name="y"
+ label="Verkäufe von Sportgetränken"
+/>
+</variables>
+<observations count="32" labels="false">
+<obs>72 </obs>
+<obs>116 </obs>
+<obs>136 </obs>
+<obs>96 </obs>
+<obs>77 </obs>
+<obs>123 </obs>
+<obs>146 </obs>
+<obs>101 </obs>
+<obs>81 </obs>
+<obs>131 </obs>
+<obs>158 </obs>
+<obs>109 </obs>
+<obs>87 </obs>
+<obs>140 </obs>
+<obs>167 </obs>
+<obs>120 </obs>
+<obs>94 </obs>
+<obs>147 </obs>
+<obs>177 </obs>
+<obs>128 </obs>
+<obs>102 </obs>
+<obs>162 </obs>
+<obs>191 </obs>
+<obs>134 </obs>
+<obs>106 </obs>
+<obs>170 </obs>
+<obs>200 </obs>
+<obs>142 </obs>
+<obs>115 </obs>
+<obs>177 </obs>
+<obs>218 </obs>
+<obs>149 </obs>
+</observations>
+</gretldata>

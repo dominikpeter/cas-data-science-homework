@@ -1,0 +1,62 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE gretldata SYSTEM "gretldata.dtd">
+
+<gretldata version="1.3" name="Retail sales_S" frequency="4" startobs="1996:1" endobs="2008:1" type="time-series">
+<description>Importierte Daten von Excel, 2016-03-26 21:54
+</description>
+<variables count="1">
+<variable name="Sales"
+/>
+</variables>
+<observations count="49" labels="false">
+<obs>212612 </obs>
+<obs>218015 </obs>
+<obs>209687 </obs>
+<obs>258604 </obs>
+<obs>225488 </obs>
+<obs>227785 </obs>
+<obs>223340 </obs>
+<obs>271933 </obs>
+<obs>230913 </obs>
+<obs>244607 </obs>
+<obs>231686 </obs>
+<obs>289520 </obs>
+<obs>254059 </obs>
+<obs>261477 </obs>
+<obs>254467 </obs>
+<obs>318411 </obs>
+<obs>280154 </obs>
+<obs>281888 </obs>
+<obs>269667 </obs>
+<obs>320481 </obs>
+<obs>280749 </obs>
+<obs>288475 </obs>
+<obs>262645 </obs>
+<obs>326934 </obs>
+<obs>285773 </obs>
+<obs>289456 </obs>
+<obs>273837 </obs>
+<obs>337470 </obs>
+<obs>293827 </obs>
+<obs>301279 </obs>
+<obs>294054 </obs>
+<obs>357704 </obs>
+<obs>319107 </obs>
+<obs>321151 </obs>
+<obs>313444 </obs>
+<obs>386918 </obs>
+<obs>338759 </obs>
+<obs>350614 </obs>
+<obs>332944 </obs>
+<obs>405326 </obs>
+<obs>362536 </obs>
+<obs>367919 </obs>
+<obs>347750 </obs>
+<obs>419493 </obs>
+<obs>377547 </obs>
+<obs>380587 </obs>
+<obs>357452 </obs>
+<obs>429953 </obs>
+<obs>378755 </obs>
+</observations>
+</gretldata>

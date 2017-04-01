@@ -1,0 +1,15 @@
+nulldata 100
+setobs 4 1990:1 --time-series
+series u = normal()
+# Startwert
+u[1] = 0
+series rwalk1 = 0
+series rwalk2 = 0
+# Random Walk ohne Drift, autoregressive Formel
+rwalk1 = rwalk1(-1) + u
+# Random Walk mit Drift
+rwalk2 = 2+ rwalk2(-1) + u
+print u rwalk1 rwalk2 --byobs
+corrgm(u, 19)
+gnuplot u rwalk1 rwalk2 --time-series --with-lines --output=display
+store random.gdt u rwalk1 rwalk2 

@@ -1,0 +1,35 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE gretldata SYSTEM "gretldata.dtd">
+
+<gretldata version="1.3" name="unknown" frequency="4" startobs="2010:1" endobs="2014:4" type="time-series">
+<description>Importierte Daten von Excel, 2017-03-17 10:00
+</description>
+<variables count="2">
+<variable name="T"
+/>
+<variable name="Strom"
+/>
+</variables>
+<observations count="20" labels="false">
+<obs>1 103.5 </obs>
+<obs>2 94.7 </obs>
+<obs>3 118.6 </obs>
+<obs>4 109.3 </obs>
+<obs>5 126.1 </obs>
+<obs>6 116 </obs>
+<obs>7 141.2 </obs>
+<obs>8 131.6 </obs>
+<obs>9 144.5 </obs>
+<obs>10 137.1 </obs>
+<obs>11 159 </obs>
+<obs>12 149.5 </obs>
+<obs>13 166.1 </obs>
+<obs>14 152.5 </obs>
+<obs>15 178.2 </obs>
+<obs>16 169 </obs>
+<obs>17 181.4 </obs>
+<obs>18 171.8 </obs>
+<obs>19 195 </obs>
+<obs>20 184.99 </obs>
+</observations>
+</gretldata>

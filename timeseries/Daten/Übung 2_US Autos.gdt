@@ -1,0 +1,123 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE gretldata SYSTEM "gretldata.dtd">
+
+<gretldata version="1.3" name="Retail sales_S" frequency="12" startobs="1990:01" endobs="1999:01" type="time-series">
+<description>Daten aus Excel-Datei 'US Autos.xls' importiert, 2016-03-25 21:22:
+</description>
+<variables count="1">
+<variable name="y"
+ label="Anzahl neuer registrierter Autos in 1000"
+/>
+</variables>
+<observations count="109" labels="false">
+<obs>98.35 </obs>
+<obs>98.85 </obs>
+<obs>98.72 </obs>
+<obs>96.89 </obs>
+<obs>97.6 </obs>
+<obs>100.45 </obs>
+<obs>98.26 </obs>
+<obs>101.69 </obs>
+<obs>101.92 </obs>
+<obs>100.3 </obs>
+<obs>97.78 </obs>
+<obs>96.33 </obs>
+<obs>96.37 </obs>
+<obs>96.11 </obs>
+<obs>94.61 </obs>
+<obs>94.48 </obs>
+<obs>94.78 </obs>
+<obs>98.63 </obs>
+<obs>96.67 </obs>
+<obs>100.12 </obs>
+<obs>100.82 </obs>
+<obs>99.36 </obs>
+<obs>97.65 </obs>
+<obs>96.37 </obs>
+<obs>97.18 </obs>
+<obs>98.09 </obs>
+<obs>98.49 </obs>
+<obs>98.05 </obs>
+<obs>98.36 </obs>
+<obs>101.44 </obs>
+<obs>99.54 </obs>
+<obs>102.6 </obs>
+<obs>103.15 </obs>
+<obs>102.31 </obs>
+<obs>100.79 </obs>
+<obs>100.01 </obs>
+<obs>100.65 </obs>
+<obs>102.18 </obs>
+<obs>102.65 </obs>
+<obs>101.42 </obs>
+<obs>100.98 </obs>
+<obs>104.51 </obs>
+<obs>102.41 </obs>
+<obs>105.39 </obs>
+<obs>106.56 </obs>
+<obs>104.95 </obs>
+<obs>103.4 </obs>
+<obs>103.35 </obs>
+<obs>104.05 </obs>
+<obs>105.29 </obs>
+<obs>106.63 </obs>
+<obs>105.49 </obs>
+<obs>106.33 </obs>
+<obs>110.39 </obs>
+<obs>107.78 </obs>
+<obs>111.98 </obs>
+<obs>112.86 </obs>
+<obs>111.34 </obs>
+<obs>110.12 </obs>
+<obs>110.32 </obs>
+<obs>111.21 </obs>
+<obs>112.26 </obs>
+<obs>113.2 </obs>
+<obs>110.58 </obs>
+<obs>111.74 </obs>
+<obs>116.05 </obs>
+<obs>112.96 </obs>
+<obs>117.95 </obs>
+<obs>118.69 </obs>
+<obs>116.36 </obs>
+<obs>114.61 </obs>
+<obs>113.92 </obs>
+<obs>114.11 </obs>
+<obs>116.48 </obs>
+<obs>117.45 </obs>
+<obs>115.77 </obs>
+<obs>116.78 </obs>
+<obs>121.71 </obs>
+<obs>118.74 </obs>
+<obs>123.75 </obs>
+<obs>124.89 </obs>
+<obs>122.3 </obs>
+<obs>120.83 </obs>
+<obs>120.33 </obs>
+<obs>120.71 </obs>
+<obs>122.69 </obs>
+<obs>123.88 </obs>
+<obs>123.78 </obs>
+<obs>123.51 </obs>
+<obs>128.39 </obs>
+<obs>126.37 </obs>
+<obs>131 </obs>
+<obs>132.55 </obs>
+<obs>130.43 </obs>
+<obs>128.5 </obs>
+<obs>127.95 </obs>
+<obs>127.65 </obs>
+<obs>128.87 </obs>
+<obs>130.42 </obs>
+<obs>128.79 </obs>
+<obs>129.9 </obs>
+<obs>133.63 </obs>
+<obs>131.12 </obs>
+<obs>135.62 </obs>
+<obs>135.61 </obs>
+<obs>133.58 </obs>
+<obs>130.87 </obs>
+<obs>130.14 </obs>
+<obs>129.88 </obs>
+</observations>
+</gretldata>
