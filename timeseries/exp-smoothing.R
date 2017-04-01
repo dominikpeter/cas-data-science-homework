@@ -40,7 +40,8 @@ exp_smoothing <- function(t, a = 0.2){
 
 rt <- randomTime(50, 10, 0.02, 0.1, 4)
 rt_list <- lapply(1:4, function(x) rt)
-alphas <- c(0.2, 0.3, 0.4, 0.5)
+
+alphas <- c(0.2, 0.5, 0.7, 0.9)
 
 smoothing <- function(x, y){
   x$smoothed <- exp_smoothing(x$t, y)
