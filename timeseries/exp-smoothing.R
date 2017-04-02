@@ -23,7 +23,7 @@ randomTime <- function(n, init,
   for (i in 2:n){
     time[i] <- (time[i-1] * (1+t)) + error[i]
   }
-  intv <- n%/%period*period
+  intv <- n %/% period * period
   seasonal <- seq(from = 0,
                   to = intv,
                   by = period)[-1]
