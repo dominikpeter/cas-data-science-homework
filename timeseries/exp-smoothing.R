@@ -81,5 +81,44 @@ purrr::map2(rt_list, alphas, .f=smoothing) %>%
   scale_color_manual(values = c("#3498db", "#e67e22"), name="") +
   scale_x_continuous(breaks = seq(0, N, 2)) +
   facet_wrap(~serie)
-  
+
+
+
+
+
+rt %>% 
+  ggplot(aes(x=i, y=t, group=1)) +
+  geom_point() +
+  geom_line() + 
+  theme_minimal() +
+  theme(panel.grid = element_blank())
+
+costFunction <- function(alpha, t){
+  esm <- exp_smoothing(t, alpha)
+  cost <- sqrt(sum((esm-t)^2))
+  cost
+}  
+
+# search optim by function
+# -------------------------------------------
+opti <- optimize(costFunction, interval = c(0,1), rt$t)
+opti
+
+
+# search optim by iter
+# -------------------------------------------
+map_df(.x = seq(0,1,by=0.025),
+       .f=function(x) data.frame(i = x,
+                                 cost = costFunction(x, time2$t))) %>% 
+  ggplot(aes(x=i,y=cost, group=1)) + 
+  geom_point(size=2) +
+  geom_line() +
+  theme_minimal() +
+  theme(panel.grid = element_blank()) +
+  ggtitle("Optimales Alpha für exponentielle Glättung",
+          subtitle = paste("Berechnetes Optimum bei a =", round(opti$minimum, 4))) +
+  ylab("Kosten") +
+  xlab("\nIteration") +
+  geom_vline(aes(xintercept=opti$minimum), color = "#9b59b6")
+
 
