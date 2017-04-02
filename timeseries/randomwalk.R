@@ -64,15 +64,14 @@ plotWalk <- function(N=100, pointSize = 1) {
   )
 }
 
-
-plots <- plotWalk(50, 1.4)
-plots[['noise']]
-plots[['walk']]
-
-
 plots <- plotWalk(5000, pointSize = 0.2)
 plots[['noise']]
+
+plots <- plotWalk(50, 1.4)
 plots[['walk']]
+
+
+
 
 
 
