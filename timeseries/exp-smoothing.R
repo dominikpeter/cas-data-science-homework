@@ -1,3 +1,11 @@
+
+# ------------------------------------------------------------------------------------------------
+# Title:  Exponentielle GLättung
+# Autor:  Dominik Peter
+# Date:   2017-04-01
+# ------------------------------------------------------------------------------------------------
+
+
 library(ggplot2)
 library(dplyr)
 library(tidyr)
@@ -38,8 +46,15 @@ exp_smoothing <- function(t, a = 0.2){
   smoothed
 }
 
+# --------------------
+N <- 24
+Start <- 50
+trend <- +0.02
+ses <- 0.1
+period <- 4
+# --------------------
 
-rt <- randomTime(20, 10, -0.02, 0.1, 4)
+rt <- randomTime(N, Start, trend, ses, period)
 rt_list <- lapply(1:4, function(x) rt)
 
 alphas <- c(0.05, 0.5, 0.7, 1)
@@ -62,7 +77,9 @@ purrr::map2(rt_list, alphas, .f=smoothing) %>%
   theme(panel.grid = element_blank()) +
   xlab("Time") +
   ylab("Value") +
-  ggtitle("Exponentielle Glättung") +
+  ggtitle("Exponentielle Glättung", subtitle = "Beispiel an verschiedenen Alpha Levels") +
   scale_color_manual(values = c("#3498db", "#e67e22"), name="") +
+  scale_x_continuous(breaks = seq(0, N, 2)) +
   facet_wrap(~serie)
+  
 
